@@ -1,0 +1,539 @@
+$Date: 2018-10-12 13:10:29 +0000 (Fri, 12 Oct 2018) $
+
+SHOTGROUPS RELEASE VERSIONS at http://cran.r-project.org/
+
+Version 0.7.3.0.999 (October 12, 2018)
+    * targets, drawTarget()
+      - new NRA targets MR-1, MR-1FC, MR-63, MR-63FC, MR-65, MR-65FC, LRFC
+    * runGUI()
+      - The shiny apps automatically pick up information on distance to
+        target, on measurement units, and on the target face from the
+        data, if this information is available and uniquely defined for
+        the currently selected groups
+    * readDataShotMarker()
+      - new function to read CSV files as well as backup files exported
+        from the ShotMarker e-target system
+        thanks: Adam MacDonald
+    * readDataSMT()
+      - new function to read CSV files exported from the
+        Silver Mountain e-target system
+        thanks: Monte Milanuk
+    * readDataOT1(), readDataOT2(), readDataMisc()
+      - add options dist.unit and point.unit to define measurement
+        units for distance to target as well as for point coordinates
+    * groupLocation(), groupSpread(), analyzeGroup()
+      - change default to bootCI="none"
+    * compareGroups()
+      - remove groups with only 1 shot with a warning instead
+        of failing
+    * analyzeGroup(), groupShape(), groupLocation(), groupSpread(),
+      compareGroups(), drawGroup(), drawTarget(), getCEP(),
+      getConvEll(), range2sigma(), getHitProb()
+      - remove defaults for options dstTarget and conversion to make
+        these act as overrides only. The intention is to use information
+        stored in the shot data, if available. If angular size cannot
+        be determined, it is dropped from the output
+    * getMOA(), fromMOA(), getDistance()
+      - remove defaults for options dst and conversion. Return NA if
+        options are missing and angular size cannot be determined
+
+Version 0.7.3 (January 18, 2017)
+    * DFlandy01, DFlandy02, DFlandy03, DFlandy04
+      - new datasets with groups & chronograph readings
+        (905 shots total) from shooting a .22LR rifle at 50m or 50yd
+        thanks: Larry Landercasper & Albert Highe
+    * getXYmat() analyzeGroup(), groupShape(), groupSpread(),
+      compareGroups(), getCEP(), getConfEll(), getHitProb(),
+      drawGroup(), simRingCount()
+      - new option to center groups to mean (0,0) to ignore bias
+    * {d,p,q}rice()
+      - fix bug: recycling for combinations of nu, sigma with
+        signal-to-noise ratio over 24
+    * dHoyt()
+      - fix bug: revert incorrect definition
+
+Version 0.7.2 (September 21, 2016)
+    * pmvnEll()
+      - fix error following renaming of return values in
+        CompQuadForm::farebrother() version 1.4.2
+
+Version 0.7.1 (April 15, 2016)
+    * combineData()
+      - fix bug: revert erroneous merging of all groups
+        thanks: David Bookstaber http://ballistipedia.com/
+    * getMOA(), fromMOA(), getDistance(), getHitProb(),
+      drawGroup(), drawTarget(),
+      - add deg (degree) and rad (radian) as valid angular size units
+
+Version 0.7 (January 25, 2016)
+    * DESCRIPTION
+      - move packages mvoutlier and energy to Suggests to reduce the
+        number of hard dependencies
+    * DFdistr
+      - new data frame with the distribution of range statistics
+        (extreme spread, figure of merit, bounding box diagonal)
+        and Rayleigh sigma from a Monte Carlo simulation under the
+        assumption of bivariate circular normality. Includes the
+        first four moments and several quantiles of each distribution
+    * range2sigma()
+      - new function that uses given range statistics to estimate
+        Rayleigh sigma under the assumption of a circular bivariate
+        normal shot distribution (based on DFdistr)
+    * efficiency()
+      - new function to estimate the number of required groups for
+        a given number of shots per group and CI level to achieve a
+        desired CI width when measuring a range statistic or estimating
+        Rayleigh sigma, assuming bivariate circular normality.
+        Also estimates achievable CI width for given number of shots
+        per group, number of groups, and CI level (based on DFdistr)
+    * runGUI()
+      - new function that starts one of 4 shiny-based web application
+        frontends for separate elements of the shotGroups functionality
+        runGUI("analyze")
+        runGUI("hitprob")
+        runGUI("angular")
+        runGUI("range")
+        (requires installing shiny)
+    * getCEP()
+      - add Ignani estimate from Ignani (2010)
+      - add RMSE estimate from van Diggelen (2007)
+      - add Valstar estimate from Williams (1997)
+      - vectorize in CEPlevel
+      - getCEP.default(): CorrNormal, Grubbs, Rayleigh, and RMSE
+        estimates work with 1D data (in addition to 2D and 3D)
+    * getHitProb()
+      - vectorize in r
+      - getHitProb.default(): CorrNormal, Grubbs, and Rayleigh
+        estimates work with 1D data (in addition to 2D and 3D)
+      - fix bug: type="CorrNormal" and accuracy=FALSE gave same result
+        as accuracy=TRUE
+    * getRayParam()
+      - now also provides estimates for 3D data (Maxwell-Boltzmann
+        distribution) and 1D data (half normal distribution)
+    * getMaxParam()
+      - removed as getRayParam() now handles 3D data
+
+Version 0.6.2 (November 12, 2015)
+    * getCEP()
+      - add Krempasky estimate from Krempasky (2003)
+    * groupSpread()
+      - change y-axis limits to ensure that density estimate and Rayleigh
+        fit are visible everywhere
+
+Version 0.6.1 (September 07, 2015)
+    * DESCRIPTION, NAMESPACE
+      - changes to comply with new CRAN policies and R-devel changes
+    * qRice(), rRice()
+      - also use the Marcum Q-function - like pRice() already did. Remove loUp
+        argument in qRice() and rRice() for numerical root finding of cdf
+    * readDataMisc()
+      - read data exported from Taran 1.0 (http://taran.ptosis.ch/taran.html)
+
+Version 0.6 (August 25, 2014)
+    * Note that this release breaks backwards compatibility in getCEP(),
+      getMOA(), fromMOA(), getDistance(), getRayParam(), groupSpread()
+      by changing arguments (see below)
+    * Vignette
+      - add section about provided distributions
+        (Rayleigh, Maxwell-Boltzmann, Rice, Hoyt, radial error for offset
+        correlated normal variables)
+    * Throughout
+      - variable names of data sets are now always lower case, irrespective
+        of the original file
+    * targets
+      - add DSU targets a2, b2, b3, b4, b5, b5 precision, 200m precision
+        (so far, without simulated score due to oval shape)
+    * combineData(), compareGroups()
+      - create and use more descriptive group labels
+    * compareGroups()
+      - fix bug: statistical tests for equal variance / distance to center
+        were incorrect
+      - add Rayleigh sigma and MR estimates including CI
+      - add option CEPlevel to determine coverage for CEP and the
+        confidence ellipse
+      - add option CIlevel to determine level for sd and Rayleigh sigma/MR CIs
+      - show confidence ellipse for specified level instead of error
+        ellipse
+      - add grouped boxplot of distances to group center
+      - add grouped dotplot of distances to group center including
+        Rayleigh mean radius with CI
+    * dMaxwell(), pMaxwell(), qMaxwell(), rMaxwell()
+      - density function, cumulative distribution function, quantile function,
+        and random deviates for the Maxwell-Boltzmann distribution
+        (= distribution of radius around true center for an uncorrelated
+        trivariate normal variable with equal variances,
+        re-written in polar coordinates radius, azimuth, and elevation)
+    * dRice(), pRice(), qRice(), rRice()
+      - density function, cumulative distribution function, quantile function,
+        and random deviates for the Rice distribution
+        (= distribution of radius around the origin for an uncorrelated
+        bivariate normal variable with equal variances and offset mean,
+        re-written in polar coordinates radius and angle)
+    * dRayleigh(), pRayleigh(), qRayleigh(), rRayleigh()
+      - density function, cumulative distribution function, quantile function,
+        and random deviates for the Rayleigh distribution
+        (= distribution of radius around true center for an uncorrelated
+        bivariate normal variable with equal variances,
+        re-written in polar coordinates radius and angle)
+    * getCEP()
+      - option level has been renamed to CEPlevel
+    * getCEP(), getHitProb()
+      - Rayleigh estimate respects doRob=TRUE
+      - Rayleigh estimate uses Singh C2 correction factor for sigma
+        estimate because true mean is estimated as well
+      - type="Rayleigh" uses the Rice distribution for 2D data whith
+        accuracy=TRUE
+      - type="Rayleigh" uses the Maxwell-Boltzmann distribution for 3D data
+        and accuracy=FALSE, and qmvnEll() with covariance matrix sigma^2*I
+        for 3D data and accuracy=TRUE
+    * getGrubbsParam()
+      - fix bug: correct recycling when parameters are given as vectors
+    * getMaxParam()
+      - new function to estimate parameter sigma of the Maxwell-Boltzmann
+        distribution as well as the mean and standard deviation of 3D radial
+        error, including parametric chi^2 confidence intervals
+    * getMOA(), fromMOA(), getDistance()
+      - rename option type="milrad" to type="mrad"
+      - add option type="mil" for NATO mil (the unit circle circumference is
+        divided into 6400 mils)
+    * getRayParam()
+      - add option doRob to use robust estimate of center and covariance matrix
+        for parameter estimation
+      - remove option accuracy that is replaced by option mu
+      - new option mu for when the true mean is known. In this case, Singh
+        C1 estimate is used, and chi^2 CI has df=2*N. When the true mean is
+        unknown, Singh C2 estimate is used, and chi^2 CI has df=2*(N-1)
+    * getRiceParam()
+      - new function to estimate parameters nu and sigma of the Rice
+        distribution based on a set of 2D-coordinates, as well as the mean and
+        standard deviation of 2D radial error, including parametric chi^2
+        confidence interval for sigma
+    * groupSpread()
+      - option level was split into CEPlevel and CIlevel to allow for separately
+        setting the CEP/confidence ellipse coverage and the width of the sd CIs
+    * qHoyt(), qmvnEll()
+      - fix bug: result for lower.tail=FALSE and q=-Inf or q=Inf was incorrect
+    * qHoyt(), rHoyt(), qmvnEll(), rmvnEll()
+      - if no search interval loUp is provided, try a wider interval to
+        search for the quantile
+    * pmvnEll()
+      - convert vectors of length 1 for sigma and e to matrix before checking
+        for symmetry
+
+Version 0.5 (July 04, 2014)
+    * compareGroups()
+      - validate input for option CEPtype (needs to be one single type)
+    * getDistance()
+      - new function to get distance from absolute and angular size
+    * getHitProb()
+      - fix bug: type="GrubbsLiu" always returned NA
+    * getMOA(), fromMOA()
+      - now vectorized in all arguments except type
+    * groupShape()
+      - fix bug: don't show outlier-plot with plots=FALSE
+    * pmvnEll()
+      - fix bug: return 0 for r=0 instead of -2
+    * rHoyt()
+      - fix bug with method="cdf"
+    * rmvnEll()
+      - new function to simulate random radial errors from a multivariate
+        normal distribution around an offset center
+    * simRingCount()
+      - fix bug: theoretical maximum count for targets with maximum
+        value != 10
+
+Version 0.4 (March 03, 2014)
+
+    * Note that this release breaks backwards compatibility by changing
+      defaults and return values, notably in getCEP() and compareGroups()
+      (see below)
+    * Move package boot from Depends to Imports field of Description file
+    * Import package CompQuadForm to calculate offset circle/ellipse
+      probabilities in pmvnEll()
+    * Vignette
+      - build with knitr, now all diagrams show up
+      - add sections on conversion between absolute size units and angular
+        size measures MOA, SMOA, milliradian; on plotting groups with
+        scaled bullet holes on a target background; on calculating and
+        extrapolating hit probabilities to different distances; on getting
+        a simulated ring count for a given group and target; on CEP
+        literature
+      - add literature references for computational geometry algorithms and
+        for packages used
+    * Throughout
+      - report size in original measurement unit, MOA, SMOA and milliradian
+      - all functions are tested to work with up to at least 100000 points
+    * targets
+      - new list with definitions of a number of circular target types
+        from shooting federations ISSF, DSB, BDS, BDMP
+    * DF300BLKhl
+      - new dataset with groups from shooting a rifle at 100 yd
+        thanks: David Bookstaber http://ballistipedia.com/
+    * dHoyt(), pHoyt(), qHoyt(), rHoyt()
+      - density function, cumulative distribution function, quantile function,
+        and random deviates for the Hoyt (Nakagami Q) distribution
+        (= distribution of radius around true center in a correlated bivariate
+        normal variable re-written in polar coordinates radius and angle)
+    * pmnvEll(), qmvnEll()
+      - new function that integrates the multivariate normal distribution over
+        arbitrary (offset) ellipsoids/circles/spheres and returns their
+        probability. pmvnEll() returns the probability, qmvnEll() the quantile
+    * analyzeGroup()
+      - add option bootCI to select the bootstrap CI type
+    * compareGroups()
+      - add option CEPtype to choose the reported CEP estimate
+      - returned list components sdXY and sdXYci are now themselves lists
+        with one component for each group
+      - add measurement unit to axis labels and distance to subtitle
+      - change axis limits to ensure that all elements are fully visible
+    * drawGroup()
+      - new function to draw a group with scaled bullet holes on a target
+        background. Spread indicators ((minimum-area) bounding box, minimum
+        covering circle, confidence ellipse, CEP, etc.) can be selected
+        individually, plot can be in any absolute or angular size unit,
+        simulated ring value of each shot can be shown
+    * drawTarget()
+      - new function to draw a target pattern given a target definition like
+        those in list targets
+    * getCEP()
+      - fix bug in Grubbs-Patnaik estimate with accuracy=TRUE
+      - report spherical error probable (SEP) when data with tree coordinates
+        is used as input
+      - add estimate based on exact (offset) correlated bivariate normal
+        distribution
+      - add Grubbs-Pearson estimate based on the Pearson three-moment
+        central chi^2 approximation
+      - add Grubbs-Liu estimate based on the Liu-Tang-Zhang four-moment
+        non-central chi^2 approximation
+      - add Ethridge estimate
+      - rename existing type Grubbs to GrubbsPatnaik
+      - add option level to set % coverage for the CEP
+      - add option robust to use the robust MCD estimate of the covariance
+        matrix and center for CEP estimation
+      - only return CEP value for the chosen coverage
+      - change default to the correlated bivariate normal estimate
+      - remove RAND-234 CEP estimate for levels other than 0.5
+    * getConfEll()
+      - return the confidence ellipsoid when three-dimensional data is used
+        as input
+    * getHitProb()
+      - new function to estimate the expected fraction of shots to have at
+        most a given distance to the group center. Based on the correlated
+        bivariate normal, Grubbs chi^2, or Rayleigh distribution
+    * getHoytParam()
+      - new function to return the shape and scale parameter of the Hoyt
+        distribution based on a set of (x,y)-coordinates
+    * getMOA(), fromMOA()
+      - add option type to select which angular measure to report:
+        MOA, SMOA, or milliradian
+      - deal with missing values in input
+    * getMaxPairDist()
+      - much faster for large numbers of 2D-points
+    * getRayParam()
+      - remove option type as Rayleigh and Gauss estimates end up the same
+    * getXYmat()
+      - now recognizes variables Point.Z, Z, Aim.Z for three-dimensional data
+    * groupLocation()
+      - fix bug where bootstrap BCa CI of the center x coordinate is actually
+        that of the y-coordinate
+      - fix error for >= 1500 points from bootstrap BCa CI
+      - add option bootCI to select the bootstrap CI type
+      - remove options target and caliber for drawing on a background target
+        as this functionality has been moved to drawGroup()
+      - add measurement unit to axis labels and distance to subtitle
+      - change axis limits to ensure that all elements are fully visible
+    * groupShape()
+      - fix bug where histogram of y-coordinates would be overdrawn by the
+        chi^2 QQ-plot when outside of RStudio
+      - fix error for input with > 5000 points by then replacing the
+        Shapiro-Wilk-Test with the plug-in Kolmogorov-Smirnov-Test
+      - add options conversion and distance to be able to report measurement
+        unit and distance to target in plots
+      - change axis limits to ensure that all elements are fully visible
+    * groupSpread()
+      - fix error for >= 1500 points from bootstrap BCa CI
+      - add option bootCI to select the bootstrap CI type
+      - change default CEP type to exact correlated bivariate normal
+      - remove option sigmaType as Rayleigh and Gauss estimates are the same
+      - add measurement unit to axis labels and distance to subtitle
+      - change axis limits to ensure that all elements are fully visible
+    * readDataMisc()
+      - now works with comma-separated-values (csv) files
+      - now works with files defining three-dimensional data using variables
+        Point.Z, Z, Aim.Z
+    * readDataOT2()
+      - now works with files exported from OnTarget TDS 3.8* which have an
+        added column with velocity data
+    * simRingCount()
+      - new function to calculate a simulated ring count given a group of
+        bullet holes, the bullet diameter and a target definition
+    * DFcm
+      - correct measurements for Series 4-9 to correspond to DFinch
+
+Version 0.3 (January 08, 2013)
+
+    * Note that this release breaks backwards compatibility by renaming a
+      few returned list components, changing default values, adding and
+      and removing a few options, and changing return values (see below)
+    * Add package vignette: see vignette("shotGroups")
+    * DF300BLK, DFcciHV, DFscar17
+      - new datasets with groups from shooting different rifles at 100 yd
+        thanks: David Bookstaber http://ballistipedia.com/
+    * analyzeGroup()
+      - if no point of aim is given: warn and assume (0,0)
+      - if no distance to target is given: warn and assume 100
+      - add option CEPtype to select which CEP estimate to report
+      - coordinates of points of impact can be named either X, Y or Point.X,
+        Point.Y
+    * combineData()
+      - if no point of aim is given: warn and assume (0,0)
+      - warn if no distance to target is given
+      - if no Group is given: warn and assume 1
+      - coordinates of points of impact can be named either X, Y or Point.X,
+        Point.Y
+    * compareGroups()
+      - if no point of aim is given: warn and assume (0,0)
+      - if no distance to target is given: warn and assume 100
+      - coordinates of points of impact can be named either X, Y or Point.X,
+        Point.Y
+      - report parametric chi^2 confidence intervals for standard deviations
+        of x and y
+      - report figure of merit and length of the diagonal of the minimum-area
+        bounding box instead of its width and height
+      - report Rayleigh 50% CEP estimate instead of modified RAND-234 estimate
+      - fix bug where distance to center would be incorrectly calculated for
+        data with scrambled Group variable
+    * drawBox(), drawBox2(), drawCircle(), drawEllipse()
+      - make generic with methods to also accept objects returned by
+        getBoundingBox(), getMinBBox(), getMinCircle(), getConfEll(),
+        respectively
+    * getBoundingBox(), getMinBBox()
+      - report figure of merit (average side length of the box) and length of
+        the diagonal
+    * getCEP()
+      - better calculation of Rayleigh and RAND estimator
+      - add Grubbs-Patnaik estimator
+      - add option accuracy to take into account systematic location
+        (accuracy) bias - by default, bias is ignored as before
+      - add option type to select which estimate to report
+      - also return group center
+    * getConfEll()
+      - also return (robust) group center and (robust) covariance matrix with
+        its trace and determinant
+    * getMOA()
+      - units for distance to target and for coordinates can be a mixture of
+        imperial (yd, ft, in) and metric units (m, cm, mm)
+    * getRayParam()
+      - new function to estimate radial precision parameter sigma of the
+        Rayleigh distribution together with its standard deviation RSD and
+        mean MR including confidence intervals
+    * groupLocation()
+      - for bootstrap-CIs of center, sample (x,y)-coords simultaneously
+        instead of bootstrapping x, y separately
+      - report parametric CIs and bootstrap CIs for center x, y in the same
+        list components, respectively, with new names ctrXci, ctrYci
+      - remove option unit as it can be inferred from option conversion
+      - option caliber now needs to be given in mm
+      - add option level to select CI level
+      - values for option target are now called "BDS25m" and "DSB25m"
+      - bugfix for plotting a target with imperial measurement units
+    * groupShape()
+      - add option outlier to select which outlier identification method to
+        use - outlier='mcd' is as before, 'pca' uses the robust principal
+        components analysis from mvoutlier::pcout()
+    * groupSpread()
+      - report parametric and bootstrap confidence intervals for (x,y)
+        standard deviations in separate list components, and add MOA
+      - report empirical median as well as mean distance to center, add
+        option to report either Rayleigh or Gauss estimates for precision
+        parameter sigma, radial standard deviation RSD, and mean radius MR
+      - report parametric and bootstrap confidence intervals for sigma, RSD,
+        MR
+      - report width, height, figure of merit and diagonal for (minimum)
+        bounding box
+      - add option CEPtype to select which CEP estimate to report
+      - add Rayleigh fit to histogram of distances to group center
+    * groupLocation(), groupShape(), groupSpread(), getBoundingBox(),
+      getCEP, getConfEll()(), getDistToCtr(), getMaxPairDist(),
+      getMinBBox(), getMinCircle()
+      - make generic with methods to also accept a data frame either with
+        variables Point.X, Point.Y or X, Y
+    * fromMOA()
+      - bugfix increasing numerical precision for large sizes
+    * readData*()
+      - default is now combine=TRUE
+    * readDataMisc()
+      - coordinates of points of impact can be named either X, Y or Point.X,
+        Point.Y
+      - all variables besides coordinates of points are now optional - default
+        values for other variables will be used with a warning
+    * DFlistInch, DFlistSavage, DFlistTalon
+      - remove lists of data frames as they serve no purpose beyond DFlistCm
+    * Documentation improvements
+
+Version 0.2-2 (December 05, 2013)
+
+    * Remove modeltools, KernSmooth from Depends field
+      (boot is not moved to Imports because package energy depends on boot)
+    * getMinCircle()
+      - fix bug where minimal circle is not identified correctly if it only
+        touches the convex hull in two points
+        thanks: Karl Schilling
+    * getDevice()
+      - since RStudio keeps past diagrams, open diagrams in the same device
+        instead of opening new windows
+    * compareGroups()
+      - use more sensible colors
+
+Version 0.2-1 (May 07, 2012)
+
+    * Make opening several new plot windows work under RStudio which
+      currently (0.95.265) cannot deal with multiple calls to dev.new()
+    * getXYmat()
+      - new utility function to extract the matrix of (x,y)-coordinates
+        relative to point of aim from a data frame
+    * getMinBBox()
+      - fix bug where orientation angle would sometimes be that of the shorter
+        (not longer) edge, slightly faster implementation
+
+Version 0.2 (March 13, 2012)
+
+    * compareGroups()
+      - better naming of columns in returned matrices to identify original
+        group
+      - return correlation matrices of (x,y)-coordinates (instead of
+        covariance matrices)
+      - fix bug for plotting data from more than 8 groups
+    * groupShape()
+      - return correlation matrix of (x,y)-coordinates
+      - better y-axis limits for histograms
+      - chi^2 Q-Q-plot of (robust Mahalanobis distances)^2: reference line now
+        has intercept 0 and slope 1, sample quantiles are on the y-axis
+    * groupSpread()
+      - don't return correlation matrix of (x,y)-coordinates (only covariance
+        matrix)
+      - option to select the confidence level for the confidence ellipse
+      - return size, aspect ratio and flattening of the confidence ellipse
+      - return modified RAND R-234 estimate for the circular error probable
+      - return parametric 95%-confidence intervals for the standard deviations
+        of x- and y-coordinates
+    * getConfEll()
+      - new function to return measures of a confidence ellipse
+    * getCEP()
+      - new function to return estimates for the circular error probable (CEP)
+    * DFsavage, DFtalon
+      - new datasets with groups a rifle at 100 to 300m
+        thanks: Charles & Paul McMillan http://www.statshooting.com/
+    * getMinBBox()
+      - more efficient implementation (rotating calipers)
+    * getMinCircle()
+      - fix bug for cases where minimum enclosing circle is defined by two
+        points
+    * drawEllipse()
+      - fix bug for ellipse sometimes being slightly misoriented
+    * Make functions work when there are only 2 points
+    * Leave out robust estimations with less than 4 points
+
+Version 0.1 (March 07, 2012)
+
+    * Initial release

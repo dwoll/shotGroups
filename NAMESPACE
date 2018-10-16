@@ -1,0 +1,72 @@
+import(graphics)
+import(stats)
+import(grDevices)
+import(utils)
+importFrom(tools, file_path_sans_ext, file_ext)
+
+importFrom(boot, boot, boot.ci)
+importFrom(coin, ansari_test, fligner_test, kruskal_test, wilcox_test)
+importFrom(CompQuadForm, farebrother)
+importFrom(robustbase, covMcd)
+importFrom(KernSmooth, bkde2D)
+
+export(analyzeGroup,
+       combineData, compareGroups,
+       drawBox, drawBox2, drawCircle, drawEllipse, drawGroup, drawTarget,
+       dHoyt, pHoyt, qHoyt, rHoyt,
+       dMaxwell, pMaxwell, qMaxwell, rMaxwell,
+       dRayleigh, pRayleigh, qRayleigh, rRayleigh,
+       dRice, pRice, qRice, rRice,
+       pmvnEll, qmvnEll, rmvnEll,
+       getHoytParam, getRayParam, getRiceParam,
+       getDistance, getMOA, fromMOA,
+       getCEP, getHitProb,
+       getBoundingBox, getConfEll, getDistToCtr,
+       getMaxPairDist, getMinBBox, getMinCircle, getXYmat,
+       groupLocation, groupShape, groupSpread,
+       readDataMisc, readDataOT1, readDataOT2, readDataSMT, readDataShotMarker,
+       runGUI,
+       simRingCount, range2sigma, efficiency)
+
+S3method(getBoundingBox, data.frame)
+S3method(getBoundingBox, default)
+S3method(getCEP, data.frame)
+S3method(getCEP, default)
+S3method(getConfEll, data.frame)
+S3method(getConfEll, default)
+S3method(drawBox, list)
+S3method(drawBox, default)
+S3method(drawBox2, list)
+S3method(drawBox2, default)
+S3method(drawCircle, list)
+S3method(drawCircle, default)
+S3method(drawEllipse, list)
+S3method(drawEllipse, default)
+S3method(drawGroup, data.frame)
+S3method(drawGroup, default)
+S3method(getDistToCtr, data.frame)
+S3method(getDistToCtr, default)
+S3method(getHitProb, data.frame)
+S3method(getHitProb, default)
+S3method(getHoytParam, data.frame)
+S3method(getHoytParam, list)
+S3method(getHoytParam, matrix)
+S3method(getHoytParam, default)
+S3method(getMaxPairDist, data.frame)
+S3method(getMaxPairDist, default)
+S3method(getMinBBox, data.frame)
+S3method(getMinBBox, default)
+S3method(getMinCircle, data.frame)
+S3method(getMinCircle, default)
+S3method(getRayParam, data.frame)
+S3method(getRayParam, default)
+S3method(getRiceParam, data.frame)
+S3method(getRiceParam, default)
+S3method(groupLocation, data.frame)
+S3method(groupLocation, default)
+S3method(groupShape, data.frame)
+S3method(groupShape, default)
+S3method(groupSpread, data.frame)
+S3method(groupSpread, default)
+S3method(simRingCount, data.frame)
+S3method(simRingCount, default)
