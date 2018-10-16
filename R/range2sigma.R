@@ -224,18 +224,25 @@ function(p, stat=c("ES", "FoM", "D"), n=5, nGroups=1, sigma, dstTarget, conversi
     idxGroup  <- shotGroups::DFdistr$nGroups == nGroups
     idxN      <- shotGroups::DFdistr$n       == n
     idxNGroup <- idxN & idxGroup
-    # haveN     <- unique(shotGroups::DFdistr$n[idxGroup])
-    has_p     <- hasName(shotGroups::DFdistr, p_var)
+    haveN     <- unique(shotGroups::DFdistr$n[idxGroup])
+    haveP     <- hasName(shotGroups::DFdistr, p_var)
     
-    if((sum(has_p) < 1L) || (sum(idxNGroup) < 1L)) {
-        warning("Lookup table does not have these quantiles")
+    if((sum(haveP) < 1L) || (sum(idxGroup) < 1L)) {
+        warning("Lookup table does not have quantile(s) p")
         return(numeric(0))
     } else {
-        p_var_ok <- p_var[has_p]    
-        qq       <- data.matrix(shotGroups::DFdistr[idxNGroup, p_var_ok, drop=FALSE])
+        p_var_ok <- p_var[haveP]    
+        qq <- if(n %in% haveN) {
+            c(data.matrix(shotGroups::DFdistr[idxNGroup, p_var_ok, drop=FALSE]))
+        } else {
+            warning("Quantile based on monotone spline interpolation for n")
+            vapply(p_var_ok, function(pvo) {
+                       splinefun(haveN, shotGroups::DFdistr[idxGroup, pvo], method="monoH.FC")(n) },
+                   FUN.VALUE=numeric(1))
+        }
 
         ## convert quantiles to MOA
-        qq <- shotGroups:::makeMOA(c(qq), dst=dstTarget, conversion=conversion)
+        qq <- shotGroups:::makeMOA(qq, dst=dstTarget, conversion=conversion)
         if(is.matrix(qq)) {
             colnames(qq) <- p_var_ok
         }

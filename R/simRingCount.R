@@ -1,10 +1,10 @@
 simRingCount <-
-function(xy, center=FALSE, target, caliber, unit="cm", score) {
+function(xy, center=FALSE, target, caliber, unit="cm") {
     UseMethod("simRingCount")
 }
 
 simRingCount.data.frame <-
-function(xy, center=FALSE, target, caliber, unit="cm", score) {
+function(xy, center=FALSE, target, caliber, unit="cm") {
     ## if caliber unspecified but data has caliber, use that
     ## need not be unique
     if(missing(caliber) && hasName(xy, "caliber")) {
@@ -18,19 +18,15 @@ function(xy, center=FALSE, target, caliber, unit="cm", score) {
         target <- unique(xy[["target"]])
     }
 
-    if(missing(score) && hasName(xy, "score")) {
-        
-    }
-
     xy     <- getXYmat(xy, center=center)
     center <- FALSE                   # centering was done in getXYmat()
 
     simRingCount(xy=xy, center=center, target=target, caliber=caliber,
-                 unit=unit, score=score)
+                 unit=unit)
 }
 
 simRingCount.default <-
-function(xy, center=FALSE, target, caliber, unit="cm", score) {
+function(xy, center=FALSE, target, caliber, unit="cm") {
     if(!is.matrix(xy))       { stop("xy must be a matrix") }
     if(!is.numeric(xy))      { stop("xy must be numeric") }
     if(ncol(xy) != 2L)       { stop("xy must have two columns") }
@@ -55,7 +51,6 @@ function(xy, center=FALSE, target, caliber, unit="cm", score) {
     ## do we need a special simScore function?
     fun <- if(hasName(trgt, "simScore_fun")) {
         eval(trgt[["simScore_fun"]])
-        
     } else {
         simScore_default
     }

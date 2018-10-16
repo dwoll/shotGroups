@@ -2,7 +2,6 @@
 
 ## Short / medium term
 
- * ShotMarker -> use score, rename simRingCount -> simScore
  * new `readData()` function that uses `file=Sys.glob("*pat1/*.csv")` and option
    `type` to select input file type
  * `qRange(x, stat=c("ES", "FoM", "D"), n=5, nGroups=1, dstTarget, conversion)` vectorized in x
