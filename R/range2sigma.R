@@ -185,68 +185,93 @@ function(x, stat="ES", n=5, nGroups=1, CIlevel=0.95, collapse=TRUE,
 }
 
 ## TODO
-## interpolate n
+## interpolate p
 qRange <-
-function(p, stat=c("ES", "FoM", "D"), n=5, nGroups=1, sigma, dstTarget, conversion) {
-    n       <- as.integer(n[1])
-    nGroups <- as.integer(nGroups[1])
-    stopifnot(all(p   > 0), all(p < 1),
-              n       > 1L, n       <= max(shotGroups::DFdistr$n),
-              nGroups > 0L, nGroups <= max(shotGroups::DFdistr$nGroups))
-    stat  <- match.arg(toupper(stat), choices=c("ES", "FOM", "D"), several.ok=TRUE)
-    argL  <- recycle(p, stat)
-    p     <- argL[[1]]
-    stat  <- c(ES="ES", FOM="FoM", D="D")[argL[[2]]]
-    p_var <- paste0(stat, "_Q", sprintf("%.03d", 1000*p))
-    qq    <- rep(NA_real_, length(p))
+function(p, sigma=1, nPerGroup=5, nGroups=1, stat=c("ES", "FoM", "D", "RS"),
+         lower.tail=TRUE) {
+    stat      <- match.arg(toupper(stat), choices=c("ES", "FOM", "D", "RS"))
+    stat      <- c(ES="ES", FOM="FoM", D="D")[stat]
+    nPerGroup <- as.integer(nPerGroup[1])
+    nGroups   <- as.integer(nGroups[1])
+    stopifnot(nPerGroup > 1L, nPerGroup <= max(shotGroups::DFdistr$n),
+              nGroups   > 0L, nGroups   <= max(shotGroups::DFdistr$nGroups))
 
-    if(!missing(sigma)) {
-        sigma <- sigma[1]
-        stopifnot(is.numeric(sigma), sigma > 0)
-    }
+    sigma <- sigma[1]
+    stopifnot(is.numeric(sigma), sigma > 0)
 
-    dstTarget <- if(missing(dstTarget)    ||
-                    all(is.na(dstTarget)) ||
-                    (length(unique(dstTarget)) > 1L)) {
-        NA_real_
+    p_var <- if(lower.tail) {
+        paste0(stat, "_Q", sprintf("%.03d", 1000*p))
     } else {
-        unique(dstTarget)
+        paste0(stat, "_Q", sprintf("%.03d", 1000*(1-p)))
     }
-    
-    conversion <- if(missing(conversion)    ||
-                     all(is.na(conversion)) ||
-                     (length(unique(conversion)) > 1L)) {
-        NA_character_
+    qq       <- setNames(rep(NA_real_, length(p)), p_var)
+    idxGroup <- shotGroups::DFdistr$nGroups == nGroups
+    idxN     <- shotGroups::DFdistr$n       == nPerGroup
+    haveN    <- unique(shotGroups::DFdistr$n[idxGroup])
+    havePV   <- hasName(shotGroups::DFdistr, p_var)
+
+    ## interpolate p if necessary
+    # if(!all(havePV)) {
+    #     allPV <- regmatches(names(shotGroups::DFdistr),
+    #                         regexpr(paste0("^", stat, "_Q[[:digit:]]{3}$"),
+    #                                 names(shotGroups::DFdistr)))
+    #     
+    #     ## available probabilities
+    #     allP <- as.numeric(sub(paste0(stat, "_Q([[:digit:]]{3})$"), "\\1" , allPV)) / 1000
+    #     ## get all quantiles in correct order 
+    #     allQ <- DFdistr[idxN & idxGroup, allPV][order(allP)]
+    #     ## interpolate
+    #     splinefun(allP[order(allP)],
+    #               DFdistr[idxN & idxGroup, allPV][order(allP)],
+    #               method="monoH.FC")(p)
+    # }
+
+    if((sum(havePV) < 1L) || (sum(idxGroup) < 1L)) {
+        warning("Lookup table does not have quantile(s) for given statistic")
     } else {
-        unique(conversion)
-    }
-    
-    idxGroup  <- shotGroups::DFdistr$nGroups == nGroups
-    idxN      <- shotGroups::DFdistr$n       == n
-    idxNGroup <- idxN & idxGroup
-    haveN     <- unique(shotGroups::DFdistr$n[idxGroup])
-    haveP     <- hasName(shotGroups::DFdistr, p_var)
-    
-    if((sum(haveP) < 1L) || (sum(idxGroup) < 1L)) {
-        warning("Lookup table does not have quantile(s) p")
-        return(numeric(0))
-    } else {
-        p_var_ok <- p_var[haveP]    
-        qq <- if(n %in% haveN) {
-            c(data.matrix(shotGroups::DFdistr[idxNGroup, p_var_ok, drop=FALSE]))
+        qq[havePV] <- if(n %in% haveN) {
+            c(data.matrix(shotGroups::DFdistr[idxN & idxGroup, p_var[havePV], drop=FALSE]))
         } else {
-            warning("Quantile based on monotone spline interpolation for n")
-            vapply(p_var_ok, function(pvo) {
-                       splinefun(haveN, shotGroups::DFdistr[idxGroup, pvo], method="monoH.FC")(n) },
+            warning("Quantile based on monotone spline interpolation for nPerGroup")
+            vapply(p_var[havePV], function(pvo) {
+                       splinefun(haveN, shotGroups::DFdistr[idxGroup, pvo], method="monoH.FC")(nPerGroup) },
                    FUN.VALUE=numeric(1))
         }
-
-        ## convert quantiles to MOA
-        qq <- shotGroups:::makeMOA(qq, dst=dstTarget, conversion=conversion)
-        if(is.matrix(qq)) {
-            colnames(qq) <- p_var_ok
-        }
-        
-        if(missing(sigma)) { qq } else { qq*sigma }
     }
+    
+    qq*sigma
+}
+
+## simulates range statistics for 1 group of shots with
+## circular bivariate normal distribution
+getRange <- function(nPerGroup, sigma) {
+    xy  <- matrix(rnorm(2*nPerGroup, mean=0, sd=sigma), ncol=2)
+    H   <- chull(xy)       # convex hull indices (vertices ordered clockwise)
+    ES  <- max(dist(xy[H, ], method="euclidean"))  # extreme spread
+    bbW <- abs(diff(range(xy[ , 1])))
+    bbH <- abs(diff(range(xy[ , 2])))
+    FoM <- (bbW + bbH) / 2                         # figure of merit
+    D   <- sqrt(bbW^2 + bbH^2)                     # diagonal
+    c(ES=ES, FoM=FoM, D=D)
+}
+
+rRange <- function(n, sigma=1, nPerGroup=5, nGroups=1, stat=c("ES", "FoM", "D")) {
+    stat      <- match.arg(toupper(stat), choices=c("ES", "FOM", "D"))
+    stat      <- c(ES="ES", FOM="FoM", D="D")[unique(stat)]
+    nPerGroup <- as.integer(nPerGroup[1])
+    nGroups   <- as.integer(nGroups[1])
+    sigma     <- sigma[1]
+
+    n <- if(length(n) > 1L) { length(n) } else { n }
+    stopifnot(is.numeric(sigma), sigma > 0)
+    stopifnot(nPerGroup > 1L, nPerGroup <= max(shotGroups::DFdistr$n),
+              nGroups   > 0L, nGroups   <= max(shotGroups::DFdistr$nGroups))
+
+    getOneRange <- function() {
+        rs <- vapply(integer(nGroups), function(x) { getRange(nPerGroup, sigma) },
+                     FUN.VALUE=numeric(3))
+        rowMeans(rs)[stat]
+    }
+    
+    unname(replicate(n, getOneRange()))
 }
