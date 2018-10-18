@@ -5,7 +5,7 @@
  * new `readData()` function that uses `file=Sys.glob("*pat1/*.csv")` and option
    `type` to select input file type
  * `pRange()`
- * check Gammon 2017 Shot Group Statistics -> ideas for possible functionality
+ * Gammon 2017 Shot Group Statistics p25 ex16
  * lstange/mcgs: Kuchnost based on four shots and calculated as follows:
     - Find mean point of impact of the four shots
     - Using this point as the center, find minimum radius of circle that encloses all shots
