@@ -4,7 +4,7 @@
 
  * new `readData()` function that uses `file=Sys.glob("*pat1/*.csv")` and option
    `type` to select input file type
- * `rRange()`, `qRange(..., CEP=)` (instead of sigma), generally quick way to get from sigma to CEP
+ * `pRange()`
  * check Gammon 2017 Shot Group Statistics -> ideas for possible functionality
  * lstange/mcgs: Kuchnost based on four shots and calculated as follows:
     - Find mean point of impact of the four shots

@@ -8,7 +8,7 @@ Maintainer: Daniel Wollschlaeger <dwoll@kuci.org>
 Depends: R (>= 3.1.1)
 Imports: boot, coin, CompQuadForm (>= 1.4.2), graphics, grDevices,
          KernSmooth, robustbase, stats, tools, utils
-Suggests: knitr, energy, mvoutlier, shiny, jsonlite
+Suggests: knitr, energy, mvoutlier, shiny, jsonlite, akima
 LazyData: yes
 VignetteBuilder: knitr
 Description: Analyzes shooting data with respect to group shape,

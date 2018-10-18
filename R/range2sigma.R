@@ -210,32 +210,67 @@ function(p, sigma=1, nPerGroup=5, nGroups=1, stat=c("ES", "FoM", "D", "RS"),
     haveN    <- unique(shotGroups::DFdistr$n[idxGroup])
     havePV   <- hasName(shotGroups::DFdistr, p_var)
 
-    ## interpolate p if necessary
-    # if(!all(havePV)) {
-    #     allPV <- regmatches(names(shotGroups::DFdistr),
-    #                         regexpr(paste0("^", stat, "_Q[[:digit:]]{3}$"),
-    #                                 names(shotGroups::DFdistr)))
-    #     
-    #     ## available probabilities
-    #     allP <- as.numeric(sub(paste0(stat, "_Q([[:digit:]]{3})$"), "\\1" , allPV)) / 1000
-    #     ## get all quantiles in correct order 
-    #     allQ <- DFdistr[idxN & idxGroup, allPV][order(allP)]
-    #     ## interpolate
-    #     splinefun(allP[order(allP)],
-    #               DFdistr[idxN & idxGroup, allPV][order(allP)],
-    #               method="monoH.FC")(p)
-    # }
-
-    if((sum(havePV) < 1L) || (sum(idxGroup) < 1L)) {
-        warning("Lookup table does not have quantile(s) for given statistic")
+    if(sum(idxGroup) < 1L) {
+        warning(paste0("Lookup table does not have quantile(s) for nGroups=", nGroups))
     } else {
-        qq[havePV] <- if(n %in% haveN) {
-            c(data.matrix(shotGroups::DFdistr[idxN & idxGroup, p_var[havePV], drop=FALSE]))
+        if(all(havePV)) {
+            ## all probabilities available
+            qq <- if(nPerGroup %in% haveN) {
+                ## nPerGroup available
+                c(data.matrix(shotGroups::DFdistr[idxN & idxGroup, p_var[havePV], drop=FALSE]))
+            } else {
+                ## interpolate nPerGroup
+                warning("Quantile(s) based on monotone spline interpolation for nPerGroup")
+                vapply(p_var[havePV], function(pvo) {
+                    splinefun(haveN, shotGroups::DFdistr[idxGroup, pvo], method="monoH.FC")(nPerGroup) },
+                    FUN.VALUE=numeric(1))
+            }
         } else {
-            warning("Quantile based on monotone spline interpolation for nPerGroup")
-            vapply(p_var[havePV], function(pvo) {
-                       splinefun(haveN, shotGroups::DFdistr[idxGroup, pvo], method="monoH.FC")(nPerGroup) },
-                   FUN.VALUE=numeric(1))
+            ## interpolate p, but only within available min/max prob
+            ## available probabilities
+            allPV <- regmatches(names(shotGroups::DFdistr),
+                                regexpr(paste0("^", stat, "_Q[[:digit:]]{3}$"),
+                                        names(shotGroups::DFdistr)))
+            allP <- as.numeric(sub(paste0(stat, "_Q([[:digit:]]{3})$"), "\\1" , allPV)) / 1000
+            ## make sure probabilities are sorted
+            allPV <- allPV[order(allP)]
+            allP  <- allP[order(allP)]
+            ## check range of p is within limits
+            p_mm  <- range(allP)
+            keep  <- (p >= p_mm[1]) & (p <= p_mm[2])
+            if(nPerGroup %in% haveN) {
+                warning("Quantile(s) based on monotone spline interpolation for p")
+                ## nPerGroup available
+                ## get all quantiles in correct order
+                allQ <- DFdistr[idxN & idxGroup, allPV]
+                ## interpolate
+                qq[keep] <- splinefun(allP, DFdistr[idxN & idxGroup, allPV],
+                                      method="monoH.FC")(p[keep])
+            } else if(requireNamespace("akima", quietly=TRUE)) {
+                warning("Quantile(s) based on bilinear interpolation for p and nPerGroup")
+            # } else if(requireNamespace("mgcv", quietly=TRUE)) {
+            #     warning("Quantile(s) based on bivariate spline interpolation for p and nPerGroup")
+                grid_npq <- expand.grid(n=haveN, p=allP)
+                allQ     <- vapply(haveN, function(n) {
+                                   qRange(allP, sigma=sigma,
+                                          nPerGroup=n,
+                                          nGroups=nGroups,
+                                          stat=stat,
+                                          lower.tail=lower.tail) },
+                                   FUN.VALUE=numeric(length(allP)))
+                grid_npq[["q"]] <- c(t(allQ))
+                # fit_gam <- mgcv::gam(q ~ te(n, p, bs="cr", fx=TRUE), data=grid_npq)
+                # mgcv::vis.gam(fit_gam)
+                # qq[keep] <- mgcv::predict.gam(fit_gam,
+                #                               newdata=data.frame(n=nPerGroup,
+                #                                                  p=p[keep]))
+                qq[keep] <- akima::interp(grid_npq[["n"]], grid_npq[["p"]], grid_npq[["q"]],
+                                          xo=nPerGroup, yo=p[keep],
+                                          linear=TRUE, extrap=FALSE)[["z"]]
+            } else {
+                warning("Install package 'akima' to enable bivariate interpolation\\n
+                         for p and nPerGroup")
+            }
         }
     }
     
