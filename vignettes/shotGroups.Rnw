@@ -605,7 +605,26 @@ pmvnEll(1.5, sigma=diag(c(sdX^2, sdY^2)), mu=c(0, 0), e=diag(2), x0=c(0, 0))
 
 When it seems too costly to collect $(x,y)$-coordinates of all shots, range statistics like extreme spread, figure of merit, or the length of the bounding box diagonal are often measured instead (section \ref{sec:descPrecMeas}). The statistical distribution of these measures depends on the number of shots per group $n$, and on the true spread of the distribution, but its exact form is unknown \cite{Taylor1975b}. Nevertheless, it is possible to use range statistics for inference on the true spread of the distribution (Rayleigh parameter $\sigma$, section \ref{sec:CEP}) when assuming a circular bivariate normal shot distribution with 0 mean.
 
-Following the approach from \citeA{Taylor1975b}, a Monte Carlo simulation of circular bivariate normal shot groups with 0 mean and variance 1 in both directions was carried out. The result is a lookup table for the distribution of extreme spread, figure of merit, bounding box diagonal, and Rayleigh $\sigma$. The table records the first four moments (mean, variance, skewness, kurtosis), the coefficient of variation, as well as the median and other major quantiles of the Monte Carlo distribution over 2 million repetitions in each scenario. One scenario was a combination of the $n$ shots in each group, and the $n_{g}$ groups over which individual range statistics were averaged. Values for $n$ were 2, 3, \ldots, 49, 50, 55, \ldots, 95, 100. Values for $n_{g}$ were 1, 2, \ldots, 9, 10. The lookup table with the simulation results is available as data frame \texttt{DFdistr}.
+Following the approach from \citeA{Taylor1975b}, a Monte Carlo simulation of circular bivariate normal shot groups with 0 mean and standard deviation 1 in both directions was carried out, see also \citeA{Gammon2017}. The result is a lookup table for the distribution of extreme spread, figure of merit, bounding box diagonal, and Rayleigh $\sigma$. The table records the first four moments (mean, variance, skewness, kurtosis), the coefficient of variation, as well as the median and other major quantiles of the Monte Carlo distribution over 2 million repetitions in each scenario. One scenario was a combination of the $n$ shots in each group, and the $n_{g}$ groups over which individual range statistics were averaged. Values for $n$ were 2, 3, \ldots, 49, 50, 55, \ldots, 95, 100. Values for $n_{g}$ were 1, 2, \ldots, 9, 10. The lookup table with the simulation results is available as data frame \texttt{DFdistr}.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection{Distribution of range statistics}
+\label{sec:rangeDistrib}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Based on the lookup table \texttt{DFdistr}, functions \texttt{pRangeStat()} and \texttt{qRangeStat()} give the approximate cumulative distribution function and the quantile function of range statistics within the parameter space covered by \texttt{DFdistr} (number of shots, number of groups, probabilities). For parameter combinations that were not simulated, interpolation between the supporting points is carried out. \texttt{rRangeStat()} generates random deviates.
+
+<<cRangeDistrib1>>=
+# cumulative probability of extreme spread (ES) 4 and 5 with true
+# sigma 1.5, and ES averaged over 3 groups with 5 shots each
+(q45 <- pRangeStat(c(4, 5), sigma=1.5, n=5, nGroups=3, stat="ES"))
+
+# quantiles for the returned probabilities, should be exactly 4 and 5
+qRangeStat(q45, sigma=1.5, n=5, nGroups=3, stat="ES")
+
+# random deviates
+rRangeStat(5, sigma=2, nPerGroup=5, nGroups=3, stat="D")
+@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsubsection{Estimate Rayleigh $\sigma$ from range statistics}
@@ -614,7 +633,7 @@ Following the approach from \citeA{Taylor1975b}, a Monte Carlo simulation of cir
 
 Based on the lookup table from the Monte Carlo simulation, function \texttt{range2sigma()} estimates the Rayleigh $\sigma$ parameter from measured range statistics -- extreme spread, figure of merit, and the bounding box diagonal, assuming a circular bivariate normal shot distribution with 0 mean. This is possible because, conditional on $n$ and $n_{g}$, range statistics directly scale with $\sigma$. Dividing the simulated mean range statistic for $\sigma = 1$ and the given $n$ as well as $n_{g}$ by the empirically measured range statistic therefore estimates $\sigma$. Confidence intervals can be inferred from the corresponding quantiles of the Monte Carlo distribution.
 
-If $\sigma$ should be estimated for a value of $n$ that was not simulated (but is less than 100), a spline interpolation between the neighboring simulated values is used. If the desired coverage probability for the confidence interval corresponds to quantiles that were not calculated, the Monte Carlo distribution of squared extreme spread is approximated by a Patnaik $\chi^{2}$ distribution as suggested by \citeA{Taylor1975b}.\footnote{Fort details, see \url{http://ballistipedia.com/index.php?title=Range_Statistics}}
+If $\sigma$ should be estimated for a value of $n$ that was not simulated (but is less than 100), a monotonic spline interpolation between the neighboring supporting points is used. If the desired coverage probability for the confidence interval corresponds to quantiles that were not calculated, the Monte Carlo distribution of squared extreme spread is approximated by a Patnaik $\chi^{2}$ distribution as suggested by \citeA{Taylor1975b}.\footnote{Fort details, see \url{http://ballistipedia.com/index.php?title=Range_Statistics}}
 
 <<cRange1>>=
 # get range statistics from DFscar17 data
