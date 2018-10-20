@@ -51,7 +51,7 @@ function(x, stat="ES", n=5, nGroups=1, CIlevel=0.95, collapse=TRUE,
         ## can use lookup table for sigma estimate
         idx <- which((shotGroups::DFdistr$n       == n) &
                      (shotGroups::DFdistr$nGroups == nGroups))
-        M <- data.matrix(DFdistr[idx, paste0(stat, "_M"), drop=FALSE])
+        M <- data.matrix(shotGroups::DFdistr[idx, paste0(stat, "_M"), drop=FALSE])
         M <- setNames(c(M), stat)
 
         ## for Grubbs-Patnaik ES-CI approximation

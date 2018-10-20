@@ -21,11 +21,11 @@ Version 0.7.3.0.999 (October 12, 2018)
     * readDataOT1(), readDataOT2(), readDataMisc()
       - add options dist.unit and point.unit to define measurement
         units for distance to target as well as for point coordinates
-    * qRangeStat(), rRangeStat()
-      - new functions for the quantile function and random deviates
-        of range statistics (extreme spread, figure of merit, bounding
-        box diagonal), assuming a circular bivariate normal shot
-        distribution
+    * pRangeStat(), qRangeStat(), rRangeStat()
+      - new functions for the approximate cumulative distribution
+        function, quantile function and random deviates of range
+        statistics (extreme spread, figure of merit, bounding box
+        diagonal), given a circular bivariate normal shot distribution
     * groupLocation(), groupSpread(), analyzeGroup()
       - change default to bootCI="none"
     * compareGroups()

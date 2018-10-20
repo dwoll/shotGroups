@@ -1,8 +1,8 @@
 pRangeStat <-
-function(q, sigma=1, nPerGroup=5, nGroups=1, stat=c("ES", "FoM", "D", "RS"),
-         lower.tail=TRUE) {
+function(q, sigma=1, nPerGroup=5, nGroups=1, stat=c("ES", "FoM", "D"),
+         lower.tail=TRUE, loUp) {
 
-    stat      <- match.arg(toupper(stat), choices=c("ES", "FOM", "D", "RS"))
+    stat      <- match.arg(toupper(stat), choices=c("ES", "FOM", "D"))
     stat      <- c(ES="ES", FOM="FoM", D="D")[stat]
     nPerGroup <- as.integer(nPerGroup[1])
     nGroups   <- as.integer(nGroups[1])
@@ -12,18 +12,44 @@ function(q, sigma=1, nPerGroup=5, nGroups=1, stat=c("ES", "FoM", "D", "RS"),
     sigma <- sigma[1]
     stopifnot(is.numeric(sigma), sigma > 0)
 
+    ## available probabilities -> range is search interval for uniroot()
+    allPV <- regmatches(names(shotGroups::DFdistr),
+                        regexpr(paste0("^", stat, "_Q[[:digit:]]{3}$"),
+                                names(shotGroups::DFdistr)))
+    
+    if(missing(loUp)) {
+        ## use whole probability range from lookup table for search
+        loUp  <- range(as.numeric(sub(paste0(stat, "_Q([[:digit:]]{3})$"), "\\1" , allPV)) / 1000)   
+    }
+
     # pp   <- numeric(length(q))               # initialize probabilities to 0
     pp   <- rep(NA_real_, length(q))         # initialize probabilities to NA
     keep <- which((q >= 0) | !is.finite(q))  # keep non-negative q, NA, NaN, -Inf, Inf
+
+    qdf <- function(p, q, sigma, nPerGroup, nGroups, stat, lower.tail) {
+        qobs <- qRangeStat(p=p, sigma=sigma, nPerGroup=nPerGroup, nGroups=nGroups,
+                   stat=stat, lower.tail=lower.tail)
+        # print(c(p, q, qobs, qobs-q))
+        qobs - q
+    }
     
+    getP <- function(q, sigma, nPerGroup, nGroups, stat, loUp, lower.tail) {
+        tryCatch(uniroot(qdf, interval=loUp, q=q, sigma=sigma,
+                         nPerGroup=nPerGroup, nGroups=nGroups,
+                         stat=stat, lower.tail=lower.tail)$root,
+                 error=function(e) { return(NA_real_) })
+    }
+    
+    pp[keep] <- unlist(Map(getP, q=q[keep], sigma=list(sigma),
+                           nPerGroup=nPerGroup, nGroups=nGroups,
+                           stat=stat, loUp=list(loUp),
+                           lower.tail=lower.tail[1]))
+    
+    ## special cases that are distribution independent
     if(lower.tail) {
-        ## TODO
-        ## special cases not caught so far
         pp[q == -Inf] <- 0
         pp[q ==  Inf] <- 1
     } else {
-        ## TODO
-        ## special cases not caught so far
         pp[q < 0]    <- 1
         pp[q == Inf] <- 0
     }
@@ -34,9 +60,9 @@ function(q, sigma=1, nPerGroup=5, nGroups=1, stat=c("ES", "FoM", "D", "RS"),
 ## TODO
 ## bivariate *spline* interpolation for nPerGroup & p over regular grid
 qRangeStat <-
-function(p, sigma=1, nPerGroup=5, nGroups=1, stat=c("ES", "FoM", "D", "RS"),
+function(p, sigma=1, nPerGroup=5, nGroups=1, stat=c("ES", "FoM", "D"),
          lower.tail=TRUE) {
-    stat      <- match.arg(toupper(stat), choices=c("ES", "FOM", "D", "RS"))
+    stat      <- match.arg(toupper(stat), choices=c("ES", "FOM", "D"))
     stat      <- c(ES="ES", FOM="FoM", D="D")[stat]
     nPerGroup <- as.integer(nPerGroup[1])
     nGroups   <- as.integer(nGroups[1])
@@ -46,16 +72,17 @@ function(p, sigma=1, nPerGroup=5, nGroups=1, stat=c("ES", "FoM", "D", "RS"),
     sigma <- sigma[1]
     stopifnot(is.numeric(sigma), sigma > 0)
     
-    p_var <- if(lower.tail) {
-        paste0(stat, "_Q", sprintf("%.03d", 1000*p))
-    } else {
-        paste0(stat, "_Q", sprintf("%.03d", 1000*(1-p)))
-    }
+    if(!lower.tail) { p <- 1-p}
+
+    p_var    <- paste0(stat, "_Q", sprintf("%.03d", round(1000*p)))
     qq       <- setNames(rep(NA_real_, length(p)), p_var)
     idxGroup <- shotGroups::DFdistr$nGroups == nGroups
     idxN     <- shotGroups::DFdistr$n       == nPerGroup
     haveN    <- unique(shotGroups::DFdistr$n[idxGroup])
-    havePV   <- hasName(shotGroups::DFdistr, p_var)
+    ## in checking whether probability is in lookup table, use 1 more decimal place
+    havePV   <- paste0(stat, "_Q", sprintf("%.04d", trunc(10000*p))) %in%
+        paste0(names(shotGroups::DFdistr), "0")
+    # hasName(shotGroups::DFdistr, p_var)
     
     if(sum(idxGroup) < 1L) {
         warning(paste0("Lookup table does not have quantile(s) for nGroups=", nGroups))
@@ -89,9 +116,9 @@ function(p, sigma=1, nPerGroup=5, nGroups=1, stat=c("ES", "FoM", "D", "RS"),
                 warning("Quantile(s) based on monotone spline interpolation for p")
                 ## nPerGroup available
                 ## get all quantiles in correct order
-                allQ <- DFdistr[idxN & idxGroup, allPV]
+                allQ <- shotGroups::DFdistr[idxN & idxGroup, allPV]
                 ## interpolate
-                qq[keep] <- splinefun(allP, DFdistr[idxN & idxGroup, allPV],
+                qq[keep] <- splinefun(allP, shotGroups::DFdistr[idxN & idxGroup, allPV],
                                       method="monoH.FC")(p[keep])
             } else if(requireNamespace("akima", quietly=TRUE)) {
                 warning("Quantile(s) based on bilinear interpolation for p and nPerGroup")
