@@ -2,6 +2,7 @@
 
 ## Short / medium term
 
+ * `range2CEP()` -> shiny app
  * new `readData()` function that uses `file=Sys.glob("*pat1/*.csv")` and option
    `type` to select input file type
  * Gammon 2017 Shot Group Statistics p25 ex16

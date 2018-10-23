@@ -1,5 +1,6 @@
 \name{rangeStat}
 \alias{rangeStat}
+\alias{pRangeStat}
 \alias{qRangeStat}
 \alias{rRangeStat}
 \title{Distribution of range statistics}

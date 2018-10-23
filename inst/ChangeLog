@@ -21,6 +21,12 @@ Version 0.7.3.0.999 (October 12, 2018)
     * readDataOT1(), readDataOT2(), readDataMisc()
       - add options dist.unit and point.unit to define measurement
         units for distance to target as well as for point coordinates
+    * getRangeStat()
+      - new function to return range statistics for a given group
+        (extreme spread, figure of merit, bounding box diagonal)
+    * range2CEP()
+      - new function to estimate Rayleigh CEP from range statistics
+        (based on range2sigma())
     * pRangeStat(), qRangeStat(), rRangeStat()
       - new functions for the approximate cumulative distribution
         function, quantile function and random deviates of range

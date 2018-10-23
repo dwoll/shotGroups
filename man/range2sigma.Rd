@@ -15,9 +15,9 @@
   \item{conversion}{how to convert the measurement unit for distance to target to that of the (x,y)-coordinates in MOA calculation. Example \code{'m2cm'}. See \code{\link[shotGroups]{getMOA}}.}
 }
 \details{
-Based on the lookup table \code{\link[shotGroups]{DFdistr}} with results form a Monte Carlo simulation. If the value of \code{n} is not among those simulated (but is less than 100), a spline interpolation between the neighboring simulated values of the statistic's coefficient of variation is used.
+Based on the lookup table \code{\link[shotGroups]{DFdistr}} with results form a Monte Carlo simulation. If the value of \code{n} is not among those simulated (but is less than 100), a monotonic spline interpolation between the neighboring simulated values of the statistic's coefficient of variation is used.
 
-If the Rayleigh sigma should be calculated for a value of \code{n} that was not simulated (but is less than 100), a spline interpolation between the neighboring simulated values is used.
+For conversion to the circular error probable, see \code{\link[shotGroups]{range2CEP}}.
 
 Details for the calculation can be found under
 
@@ -35,6 +35,7 @@ A list with the calculated values for sigma in one component, and the correspond
 }
 \seealso{
 \code{\link[shotGroups]{DFdistr}},
+\code{\link[shotGroups]{range2CEP}},
 \code{\link[shotGroups]{efficiency}},
 \code{\link[shotGroups]{getRayParam}},
 \code{\link[shotGroups]{getMaxPairDist}},

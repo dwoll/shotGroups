@@ -3,6 +3,11 @@
 ## to Rayleigh sigma using lookup table from 1000000 runs for each
 ## combination of n*nGroups
 ## http://ballistipedia.com/index.php?title=Range_Statistics
+
+## bug?
+## range2sigma(c(1, 2, 3), stat=c("ES", "FoM", "D"), n=5, nGroups=3, dstTarget=100, conversion="m2cm")
+## -> column names _1, not _1 _2 _3
+## why CI for D?
 range2sigma <-
 function(x, stat="ES", n=5, nGroups=1, CIlevel=0.95, collapse=TRUE,
          dstTarget, conversion) {
@@ -69,7 +74,7 @@ function(x, stat="ES", n=5, nGroups=1, CIlevel=0.95, collapse=TRUE,
         ## only interpolate for requested number of groups
         M <- setNames(numeric(length(x)), stat)
         M[names(M) == "ES"]  <- splinefun(haveN, shotGroups::DFdistr$ES_M[idxGroup],  method="monoH.FC")(n)
-        M[names(M) == "FOM"] <- splinefun(haveN, shotGroups::DFdistr$FoM_M[idxGroup], method="monoH.FC")(n)
+        M[names(M) == "FoM"] <- splinefun(haveN, shotGroups::DFdistr$FoM_M[idxGroup], method="monoH.FC")(n)
         M[names(M) == "D"]   <- splinefun(haveN, shotGroups::DFdistr$D_M[idxGroup],   method="monoH.FC")(n)
 
         ## spline interpolation for Grubbs-Patnaik ES-CI approximation
@@ -88,7 +93,7 @@ function(x, stat="ES", n=5, nGroups=1, CIlevel=0.95, collapse=TRUE,
 
     ## need extreme spread for sigma CI
     xES  <- setNames(x[names(x) == "ES"],  NULL)
-    xFoM <- setNames(x[names(x) == "FOM"], NULL)
+    xFoM <- setNames(x[names(x) == "FoM"], NULL)
     xD   <- setNames(x[names(x) == "D"],   NULL)
     if(CIlevel %in% haveCI) {
         CIlo <- sprintf("%04.1f", round((1-(alpha/2))*100, digits=1))
@@ -143,7 +148,7 @@ function(x, stat="ES", n=5, nGroups=1, CIlevel=0.95, collapse=TRUE,
     ## convert CIs to MOA
     sigma <- makeMOA(sigma, dst=dstTarget, conversion=conversion)
     if(is.matrix(sigma)) {
-        colnames(sigma) <- paste0(colnames(sigma), "_",  round(xES, digits=2))
+        colnames(sigma) <- paste0(names(x), "_", round(x, digits=3))
     }
     
     sigmaESCI  <- lapply(seq_along(ES_CIlo),  function(i) {
@@ -182,4 +187,53 @@ function(x, stat="ES", n=5, nGroups=1, CIlevel=0.95, collapse=TRUE,
     ## sigmaCI might be empty list when no ES is given
     Filter(function(l) { !is.null(l) && (length(l) > 0L) },
            list(sigma=sigma, sigmaCI=sigmaCI))
+}
+
+range2CEP <-
+function(x, stat="ES", n=5, nGroups=1, CEPlevel=0.5, CIlevel=0.95,
+         collapse=TRUE, dstTarget, conversion) {
+    sigma <- range2sigma(x=x, stat=stat, n=n, nGroups=nGroups,
+                         CIlevel=CIlevel, collapse=FALSE,
+                         dstTarget=dstTarget, conversion=conversion)
+    CEP <- qRayleigh(CEPlevel, scale=sigma$sigma)
+    CEP <- if(is.matrix(sigma$sigma)) {
+        dim(CEP)      <- dim(sigma$sigma)
+        rownames(CEP) <- rownames(sigma$sigma)
+        colnames(CEP) <- gsub("sigma", "CEP", colnames(sigma$sigma))
+        CEP
+    } else {
+        setNames(CEP, names(sigma$sigma))
+    }
+    
+    if(hasName(sigma, "sigmaCI")) {
+        CEPCI <- lapply(sigma$sigmaCI, function(y) {
+            lapply(y, function(z) {
+                res <- qRayleigh(CEPlevel, scale=z)
+                if(is.matrix(z)) {
+                    dim(res)      <- dim(z)
+                    rownames(res) <- rownames(z)
+                    colnames(res) <- gsub("sigma", "CEP", colnames(z))
+                }
+                
+                res
+            })
+        })
+
+        list(CEP=CEP, CEPCI=CEPCI)
+    } else {
+        list(CEP=CEP)
+    }
+
+    ## collapse sigmaCI list if required and possible
+    if(hasName(sigma, "sigmaCI") && collapse) {
+        for(i in seq_along(CEPCI)) {
+            if(length(CEPCI[[i]]) == 1L) { CEPCI[[i]] <- CEPCI[[c(i, 1)]] }
+        }
+        
+        if(length(CEPCI) == 1L) { CEPCI <- CEPCI[[1]] }
+        
+        list(CEP=CEP, CEPCI=CEPCI)
+    } else {
+        list(CEP=CEP)
+    }
 }

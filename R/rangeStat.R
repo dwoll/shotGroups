@@ -19,7 +19,7 @@ function(q, sigma=1, nPerGroup=5, nGroups=1, stat=c("ES", "FoM", "D"),
     
     if(missing(loUp)) {
         ## use whole probability range from lookup table for search
-        loUp  <- range(as.numeric(sub(paste0(stat, "_Q([[:digit:]]{3})$"), "\\1" , allPV)) / 1000)   
+        loUp <- range(as.numeric(sub(paste0(stat, "_Q([[:digit:]]{3})$"), "\\1" , allPV)) / 1000)   
     }
 
     # pp   <- numeric(length(q))               # initialize probabilities to 0
@@ -154,7 +154,7 @@ function(p, sigma=1, nPerGroup=5, nGroups=1, stat=c("ES", "FoM", "D"),
 
 ## simulates range statistics for 1 group of shots with
 ## circular bivariate normal distribution
-getRangeStat <-
+simRangeStat <-
 function(nPerGroup, sigma) {
     xy  <- matrix(rnorm(2*nPerGroup, mean=0, sd=sigma), ncol=2)
     H   <- chull(xy)       # convex hull indices (vertices ordered clockwise)
@@ -180,11 +180,11 @@ function(n, sigma=1, nPerGroup=5, nGroups=1, stat=c("ES", "FoM", "D")) {
     stopifnot(nPerGroup > 1L, nPerGroup <= max(shotGroups::DFdistr$n),
               nGroups   > 0L, nGroups   <= max(shotGroups::DFdistr$nGroups))
     
-    getOneRangeStat <- function() {
+    simOneRangeStat <- function() {
         rs <- vapply(integer(nGroups), function(x) {
-            getRangeStat(nPerGroup, sigma) }, FUN.VALUE=numeric(3))
+            simRangeStat(nPerGroup, sigma) }, FUN.VALUE=numeric(3))
         rowMeans(rs)[stat]
     }
     
-    unname(replicate(n, getOneRangeStat()))
+    unname(replicate(n, simOneRangeStat()))
 }
