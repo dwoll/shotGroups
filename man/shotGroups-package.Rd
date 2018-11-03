@@ -8,8 +8,8 @@
 \tabular{ll}{
 Package: \tab shotGroups\cr
 Type: \tab Package\cr
-Version: \tab 0.7.3.0.999\cr
-Date: \tab 2018-09-21\cr
+Version: \tab 0.7.4\cr
+Date: \tab 2018-11-01\cr
 Depends: \tab R (>= 3.1.1)\cr
 Imports: \tab boot, coin, CompQuadForm (>= 1.4.2), graphics, grDevices, KernSmooth, robustbase, stats, tools, utils\cr
 Suggests: \tab knitr, energy, mvoutlier, shiny, jsonlite\cr

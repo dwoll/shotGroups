@@ -1,8 +1,8 @@
-$Date: 2018-10-12 13:10:29 +0000 (Fri, 12 Oct 2018) $
+$Date: 2018-11-01 14:58:29 +0000 (Thu, 01 Nov 2018) $
 
 SHOTGROUPS RELEASE VERSIONS at http://cran.r-project.org/
 
-Version 0.7.3.0.999 (October 12, 2018)
+Version 0.7.4 (November 01, 2018)
     * targets, drawTarget()
       - new NRA targets MR-1, MR-1FC, MR-63, MR-63FC, MR-65, MR-65FC, LRFC
     * runGUI()
@@ -26,7 +26,6 @@ Version 0.7.3.0.999 (October 12, 2018)
         (extreme spread, figure of merit, bounding box diagonal)
     * range2CEP()
       - new function to estimate Rayleigh CEP from range statistics
-        (based on range2sigma())
     * pRangeStat(), qRangeStat(), rRangeStat()
       - new functions for the approximate cumulative distribution
         function, quantile function and random deviates of range
@@ -35,8 +34,7 @@ Version 0.7.3.0.999 (October 12, 2018)
     * groupLocation(), groupSpread(), analyzeGroup()
       - change default to bootCI="none"
     * compareGroups()
-      - remove groups with only 1 shot with a warning instead
-        of failing
+      - remove groups with only 1 shot instead of failing
     * analyzeGroup(), groupShape(), groupLocation(), groupSpread(),
       compareGroups(), drawGroup(), drawTarget(), getCEP(),
       getConvEll(), range2sigma(), getHitProb()

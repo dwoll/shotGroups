@@ -4,10 +4,6 @@
 ## combination of n*nGroups
 ## http://ballistipedia.com/index.php?title=Range_Statistics
 
-## bug?
-## range2sigma(c(1, 2, 3), stat=c("ES", "FoM", "D"), n=5, nGroups=3, dstTarget=100, conversion="m2cm")
-## -> column names _1, not _1 _2 _3
-## why CI for D?
 range2sigma <-
 function(x, stat="ES", n=5, nGroups=1, CIlevel=0.95, collapse=TRUE,
          dstTarget, conversion) {

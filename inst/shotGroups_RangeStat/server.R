@@ -11,25 +11,36 @@ shinyServer(function(input, output, session) {
         stat           <- rangeStatInv[input$rangeStatType1]
         n              <- input$rangeStatN
         nGroups        <- input$rangeStatNGroups
+        CEPlevel       <- input$rangeStatCEPLevel
         CIlevel        <- input$rangeStatCILevel
         dstTrgt1       <- input$dstTrgt1
         unitDstTrgt1   <- unitsDstInv[input$unitDstTrgt1]
         unitXY1        <- unitsXYInv[input$unitXY1]
         conversion     <- paste0(unitDstTrgt1, "2", unitXY1, collapse="")
-        range2sigma(rangeStatStats, stat=stat, n=n, nGroups=nGroups,
-                    CIlevel=CIlevel, collapse=TRUE, dstTarget=dstTrgt1,
-                    conversion=conversion)
+
+        if(input$rangeStatSigmaCEP == 1) {
+            sigma <- range2sigma(rangeStatStats, stat=stat, n=n, nGroups=nGroups,
+                                 CIlevel=CIlevel, collapse=TRUE, dstTarget=dstTrgt1,
+                                 conversion=conversion)
+            Filter(Negate(is.null), sigma)
+        } else {
+            CEP <- range2CEP(rangeStatStats, stat=stat, n=n, nGroups=nGroups,
+                             CEPlevel=CEPlevel, CIlevel=CIlevel,
+                             collapse=TRUE, dstTarget=dstTrgt1,
+                             conversion=conversion)
+            Filter(Negate(is.null), CEP)
+        }
     })
 
     ## save output to file
-    output$saveShape <- downloadHandler(
-        filename=function() { "range2sigma.txt" },
-        content=function(file) {
-            writeLines(fileName(), con=file)
-            "ABC"
-        },
-        contentType='text/plain' # MIME type
-    )
+    # output$saveSigma <- downloadHandler(
+    #     filename=function() { "range2sigma.txt" },
+    #     content=function(file) {
+    #         writeLines(fileName(), con=file)
+    #         "ABC"
+    #     },
+    #     contentType='text/plain' # MIME type
+    # )
 
     #####---------------------------------------------------------------------------
     ## Efficiency - required number of groups
