@@ -616,13 +616,13 @@ Based on the lookup table \texttt{DFdistr}, functions \texttt{pRangeStat()} and 
 
 <<cRangeDistrib1>>=
 # cumulative probability of extreme spread (ES) 4 and 5 with true
-# sigma 1.5, and ES averaged over 3 groups with 5 shots each
+# Rayleigh sigma 1.5, and ES averaged over 3 groups with 5 shots each
 (q45 <- pRangeStat(c(4, 5), sigma=1.5, n=5, nGroups=3, stat="ES"))
 
 # quantiles for the returned probabilities, should be exactly 4 and 5
 qRangeStat(q45, sigma=1.5, n=5, nGroups=3, stat="ES")
 
-# random deviates
+# random deviates for bounding box diagonal
 rRangeStat(5, sigma=2, nPerGroup=5, nGroups=3, stat="D")
 @
 
@@ -651,6 +651,8 @@ Compare the results with estimating Rayleigh $\sigma$ from using $(x,y)$-coordin
 <<cRange2>>=
 getRayParam(DFscar17, level=0.9)$sigma
 @
+
+Function \texttt{range2CEP()} directly estimates Rayleigh CEP from range statistics, by calling \texttt{getCEP()} based on the Rayleigh $\sigma$ as estimated by \texttt{range2sigma()}.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsubsection{Efficiency of group statistics}
