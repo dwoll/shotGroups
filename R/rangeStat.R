@@ -57,13 +57,13 @@ function(q, sigma=1, nPerGroup=5, nGroups=1, stat=c("ES", "FoM", "D"),
     return(pp)
 }
 
-## TODO
-## bivariate *spline* interpolation for nPerGroup & p over regular grid
 qRangeStat <-
 function(p, sigma=1, nPerGroup=5, nGroups=1, stat=c("ES", "FoM", "D"),
+         method=c("linear", "spline"),
          lower.tail=TRUE) {
     stat      <- match.arg(toupper(stat), choices=c("ES", "FOM", "D"))
     stat      <- c(ES="ES", FOM="FoM", D="D")[stat]
+    method    <- match.arg(toupper(method), choices=c("LINEAR", "SPLINE"))
     nPerGroup <- as.integer(nPerGroup[1])
     nGroups   <- as.integer(nGroups[1])
     stopifnot(nPerGroup > 1L, nPerGroup <= max(shotGroups::DFdistr$n),
@@ -120,10 +120,8 @@ function(p, sigma=1, nPerGroup=5, nGroups=1, stat=c("ES", "FoM", "D"),
                 ## interpolate
                 qq[keep] <- splinefun(allP, shotGroups::DFdistr[idxN & idxGroup, allPV],
                                       method="monoH.FC")(p[keep])
-            } else if(requireNamespace("akima", quietly=TRUE)) {
-                warning("Quantile(s) based on bilinear interpolation for p and nPerGroup")
-                # } else if(requireNamespace("mgcv", quietly=TRUE)) {
-                #     warning("Quantile(s) based on bivariate spline interpolation for p and nPerGroup")
+            } else {
+                ## bivariate interpolation over support grid
                 grid_npq <- expand.grid(n=haveN, p=allP)
                 allQ     <- vapply(haveN, function(n) {
                     qRangeStat(allP, sigma=sigma,
@@ -133,18 +131,31 @@ function(p, sigma=1, nPerGroup=5, nGroups=1, stat=c("ES", "FoM", "D"),
                                lower.tail=lower.tail) },
                     FUN.VALUE=numeric(length(allP)))
                 grid_npq[["q"]] <- c(t(allQ))
-                # fit_gam <- mgcv::gam(q ~ te(n, p, bs="cr", fx=TRUE), data=grid_npq)
-                # fit_gam <- mgcv::gam(q ~ ti(n, fx=TRUE) + ti(p, fx=TRUE) + ti(n, p, fx=TRUE), data=grid_npq)
-                # mgcv::vis.gam(fit_gam)
-                # qq[keep] <- mgcv::predict.gam(fit_gam,
-                #                               newdata=data.frame(n=nPerGroup,
-                #                                                  p=p[keep]))
-                qq[keep] <- akima::interp(grid_npq[["n"]], grid_npq[["p"]], grid_npq[["q"]],
-                                          xo=nPerGroup, yo=p[keep],
-                                          linear=TRUE, extrap=FALSE)[["z"]]
-            } else {
-                warning("Install package 'akima' to enable bivariate interpolation\\n
-                         for p and nPerGroup")
+
+                if(method == "LINEAR") {
+                    if(requireNamespace("interp", quietly=TRUE)) {
+                        warning("Quantile(s) based on bilinear interpolation for p and nPerGroup")
+                        qq[keep] <- interp::interp(grid_npq[["n"]], grid_npq[["p"]], grid_npq[["q"]],
+                                                   xo=rep(nPerGroup, length(p[keep])),
+                                                   yo=p[keep],
+                                                   linear=TRUE, extrap=FALSE, output="points")[["z"]]
+                    } else {
+                        warning("Install package 'interp' to enable bilinear interpolation\\n
+                                 for p and nPerGroup")
+                    }
+                } else if(method == "SPLINE") {
+                    if(requireNamespace("MBA", quietly=TRUE)) {
+                        warning("Quantile(s) based on bivariate spline interpolation for p and nPerGroup")
+                        surf  <- MBA::mba.surf(grid_npq, no.X=500, no.Y=500)
+                        idx_x <- which.min(abs(surf$xyz.est$x - nPerGroup))
+                        idx_y <- vapply(p[keep], function(pp) {
+                            which.min(abs(surf$xyz.est$y - pp)) }, FUN.VALUE=integer(1))
+                        qq[keep] <- surf$xyz.est$z[cbind(rep(idx_x, length(idx_y)), idx_y)]
+                    } else {
+                        warning("Install package 'interp' to enable bivariate spline interpolation\\n
+                                 for p and nPerGroup")
+                    }
+                }
             }
         }
     }

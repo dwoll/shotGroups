@@ -1,5 +1,4 @@
 # TODO
-
 ## Short / medium term
 
  * Gammon 2017 Shot Group Statistics p25 ex16
@@ -11,8 +10,6 @@
     - Unless there is an outlier, in which case discard the outlier and repeat the procedure with the three remaining shots.
     - Outlier is a shot 2.5 times or more distant from mean point of impact of the other three shots than any of these three shots.
  * Rayleigh order stats estimators from lstange/mcgs
- * Kuonen saddlepoint approximation as an alternative to `CompQuadForm::farebrother()`?
- * `sadists::dsumchisqpow()` as an alternative to `CompQuadForm::farebrother()`?
 
 ### Statistics
 
