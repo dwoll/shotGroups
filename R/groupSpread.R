@@ -411,7 +411,7 @@ function(xy, which=1L, center=FALSE, CEPlevel=0.5, CIlevel=0.95,
     if(!is.numeric(CIlevel))  { stop("CIlevel must be numeric") }
     if(CIlevel <= 0)          { stop("CIlevel must be > 0") }
 
-    which <- match.arg(as.character(which), choices=1L:3L)
+    which <- match.arg(as.character(which), choices=1:3)
 
     ## check if CEP / CI level is given in percent
     if(CIlevel >= 1) {

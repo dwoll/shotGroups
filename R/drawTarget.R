@@ -409,6 +409,42 @@ function(x, cex=par("cex")) {
     text(0,    0, cex=cex, label="X",    col=cols1[1])
 }
 
+drawTarget_NRA_LR <-
+function(x, cex=par("cex")) {
+    ## outer frame
+    with(x$inUnit, rect(-frame, -frame, frame, frame, col=x$colsTxt[1], border=NA))
+    ## draw circles first, start from the outside
+    with(x$inUnit, symbols(rep(0, length(ringR)), rep(0, length(ringR)), add=TRUE,
+                           circles=rev(ringR), bg=rev(x$cols), fg=rev(x$colsTxt),
+                           inches=FALSE))
+    # abline(v=0, h=0, col="lightgray")    # add point of aim
+    
+    ## add ring numbers except for bullseye (ring number maxVal)
+    ## bullseye has inner sub-division -> start numbers on ring 3
+    rings1 <- with(x, seq(from=maxVal-nRings+1, to=maxVal, length.out=nRings)) # left side of center
+    # rings2 <- c(rings1, rev(rings1))                                           # both sides
+    rings2 <- rev(rings1[-1]) # top except 7
+    pos1   <- with(x$inUnit,
+                   c(ringR[2]                                    - (ringW/2),
+                     ringR[3           :(2+x$nSmall-1)]          - (ringW/2),
+                     ringR[(2+x$nSmall):(2+x$nSmall+x$nLarge-1)] - (ringWL/2), # top of center
+                     ringR[(2+x$nSmall+x$nLarge):length(ringR)]  - (ringWLL/2))) # top of center
+    # pos2   <- c(-rev(pos1), pos1)                                              # both sides
+    pos2   <- pos1[-length(pos1)]
+    cols1  <- with(x$inUnit, x$colsTxt[2:length(ringR)])                       # left side of center
+    # cols2  <- c(rev(cols1), cols1)                                             # both sides
+    cols2 <- cols1[-length(cols1)]
+    
+    angX  <- 45*pi/180
+    posLU <- cbind(pos1[4], 0) %*% with(x, cbind(c(cos(5*angX), sin(5*angX)), c(-sin(5*angX), cos(5*angX))))
+    posRU <- cbind(pos1[4], 0) %*% with(x, cbind(c(cos(7*angX), sin(7*angX)), c(-sin(7*angX), cos(7*angX))))
+    text(posLU[ , 1], posLU[ , 2], cex=cex, label="7", col=cols1[length(cols1)])
+    text(posRU[ , 1], posRU[ , 2], cex=cex, label="7", col=cols1[length(cols1)])
+    
+    text(0, pos2, cex=cex, label=rings2, col=cols2)
+    text(0, 0,    cex=cex, label="X",    col=cols1[1])
+}
+
 drawTarget_NRA_MR65FC <-
 function(x, cex=par("cex")) {
     ## outer frame

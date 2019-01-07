@@ -32,13 +32,14 @@ List containing definitions of several circular german (DSB, BDS, BDMP, DSU), IS
   \item{\code{NRA_HPR_SR}}{NRA 200yd High Powered Rifle SR: Military Target, Rifle Competition, Short Range.}
   \item{\code{NRA_HPR_SR3}}{NRA 300yd High Powered Rifle SR-3.}
   \item{\code{NRA_P_B16}}{NRA 25yd Pistol Slow Fire B-16.}
-  \item{\code{NRA_P_B6}}{NRA 50yd Standard American B-6.}
   \item{\code{NRA_MR-1}}{NRA MR-1.}
+  \item{\code{NRA_MR-1FC}}{NRA MR-1 F-class.}
   \item{\code{NRA_MR-63}}{NRA MR-63 300yd.}
   \item{\code{NRA_MR-63FC}}{NRA MR-63 F-class.}
   \item{\code{NRA_MR-65}}{NRA MR-65 500yd.}
   \item{\code{NRA_MR-65FC}}{NRA MR-65 F-class.}
-  \item{\code{NRA_LRFC}}{NRA LRFC F-class.}
+  \item{\code{NRA_LR}}{NRA LR.}
+  \item{\code{NRA_LRFC}}{NRA LR F-class.}
 
   \item{\code{DSB1}}{DSB 10m Luftgewehr (same as \code{ISSF_10mAR}).}
   \item{\code{DSB2}}{DSB 15m Zimmerstutzen.}

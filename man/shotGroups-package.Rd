@@ -10,7 +10,7 @@ Package: \tab shotGroups\cr
 Type: \tab Package\cr
 Version: \tab 0.7.4\cr
 Date: \tab 2018-11-01\cr
-Depends: \tab R (>= 3.1.1)\cr
+Depends: \tab R (>= 3.4.0)\cr
 Imports: \tab boot, coin, CompQuadForm (>= 1.4.2), graphics, grDevices, KernSmooth, robustbase, stats, tools, utils\cr
 Suggests: \tab knitr, energy, mvoutlier, shiny, jsonlite\cr
 License: \tab GPL (>= 2)\cr
