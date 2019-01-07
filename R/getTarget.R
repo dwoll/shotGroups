@@ -91,9 +91,10 @@ convertTarget_default <- function(x, unit, dstTarget, conversion) {
     x$unitConv <- unit                           # add unit converted to
     x$inUnit <- if(tolower(unit) %in% c("deg", "moa", "smoa", "rad", "mrad", "mil"))  {  # angular size
         ## infer distance unit from conversion
-        unitDst  <- getUnits(conversion, first=TRUE)
+        dst      <- unique(dstTarget)
+        unitDst  <- unique(getUnits(conversion, first=TRUE))
         ringConv <- paste0(unitDst, "2", x[["unitTarget"]])
-        Map(getMOA, x[["convert"]], conversion=ringConv, dst=dstTarget, type=unit)
+        Map(getMOA, x[["convert"]], conversion=ringConv, dst=dst, type=unit)
     } else {                                     # absolute size
         ringConv <- getConvFac(paste0(x[["unitTarget"]], "2", unit))
         Map(function(y, rc) { rc*y }, y=x[["convert"]], rc=ringConv)
