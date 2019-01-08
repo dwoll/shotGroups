@@ -131,6 +131,8 @@ function(x, shape, radius=1, nv=100, axes=FALSE,
 
         matlines(xMat, yMat, col=fg, lwd=lwd, lty=lty)
     }
+    
+    return(invisible(ellCtr))
 }
 
 drawEllSector <-
@@ -163,6 +165,8 @@ function(x, shape=diag(2), radius=1, sect0=0, sect1=90, rot=0, nv=100,
     ## draw center, ellipse
     points(x[1], x[2], col=colCtr, pch=pch, lwd=lwd, cex=cex)  # center
     polygon(sectCtr, border=fg, col=bg, lwd=lwd, lty=lty)      # ellipse
+    
+    return(invisible(sectCtr))
 }
 
 drawTriSector <-

@@ -7,22 +7,22 @@
 \usage{drawGroup(xy, center = FALSE, xyTopLeft = TRUE,
           bb = FALSE, bbMin = FALSE, bbDiag = FALSE,
           minCirc = FALSE, maxSpread = FALSE, meanDist = FALSE, confEll = FALSE,
-          CEP = FALSE, ringID = FALSE, doRob = FALSE, level = 0.95, scaled = TRUE,
-          caliber = 9, dstTarget, conversion,
+          CEP = FALSE, ringID = FALSE, valueID = FALSE, doRob = FALSE,
+          level = 0.95, scaled = TRUE, caliber = 9, dstTarget, conversion,
           unit = 'unit', alpha = 0.5, target)
 
 \method{drawGroup}{data.frame}(xy, center = FALSE, xyTopLeft = TRUE,
           bb = FALSE, bbMin = FALSE, bbDiag = FALSE,
           minCirc = FALSE, maxSpread = FALSE, meanDist = FALSE, confEll = FALSE,
-          CEP = FALSE, ringID = FALSE, doRob = FALSE, level = 0.95, scaled = TRUE,
-          caliber = 9, dstTarget, conversion,
+          CEP = FALSE, ringID = FALSE, valueID = FALSE, doRob = FALSE,
+          level = 0.95, scaled = TRUE, caliber = 9, dstTarget, conversion,
           unit = 'unit', alpha = 0.5, target)
 
 \method{drawGroup}{default}(xy, center = FALSE, xyTopLeft = TRUE,
           bb = FALSE, bbMin = FALSE, bbDiag = FALSE,
           minCirc = FALSE, maxSpread = FALSE, meanDist = FALSE, confEll = FALSE,
-          CEP = FALSE, ringID = FALSE, doRob = FALSE, level = 0.95, scaled = TRUE,
-          caliber = 9, dstTarget, conversion,
+          CEP = FALSE, ringID = FALSE, valueID = FALSE, doRob = FALSE,
+          level = 0.95, scaled = TRUE, caliber = 9, dstTarget, conversion,
           unit = 'unit', alpha = 0.5, target)}
 \arguments{
   \item{xy}{either a numerical (n x 2)-matrix with the (x,y)-coordinates of n points (1 row of coordinates per point), or a data frame with either the variables \code{x}, \code{y} or \code{point.x}, \code{point.y} as well as \code{aim.x}, \code{aim.y} giving the point of aim. If missing, point of aim is assumed to be in (0,0).}
@@ -37,6 +37,7 @@
   \item{confEll}{logical: draw confidence ellipse with coverage \code{level}?}
   \item{CEP}{draw estimate of CEP circle with coverage \code{level}? Either logical or a string defining the CEP type. See \code{\link[shotGroups]{getCEP}}.}
   \item{ringID}{logical: identify and display the ring count for each shot?}
+  \item{valueID}{logical: display numerical values?}
   \item{doRob}{logical: use robust estimation of group center and confidence ellipse?}
   \item{scaled}{logical: draw bullet holes to scale?}
   \item{caliber}{a numerical value indicating the bullet diameter in mm.}

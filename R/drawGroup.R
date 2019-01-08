@@ -2,6 +2,7 @@ drawGroup <-
 function(xy, center=FALSE,
          xyTopLeft=TRUE, bb=FALSE, bbMin=FALSE, bbDiag=FALSE, minCirc=FALSE,
          maxSpread=FALSE, meanDist=FALSE, confEll=FALSE, CEP=FALSE, ringID=FALSE,
+         valueID=FALSE,
          doRob=FALSE, level=0.95, scaled=TRUE, caliber=9,
          dstTarget, conversion, unit="unit", alpha=0.5, target) {
     UseMethod("drawGroup")
@@ -11,6 +12,7 @@ drawGroup.data.frame <-
 function(xy, center=FALSE,
          xyTopLeft=TRUE, bb=FALSE, bbMin=FALSE, bbDiag=FALSE, minCirc=FALSE,
          maxSpread=FALSE, meanDist=FALSE, confEll=FALSE, CEP=FALSE, ringID=FALSE,
+         valueID=FALSE,
          doRob=FALSE, level=0.95, scaled=TRUE, caliber=9,
          dstTarget, conversion, unit="unit", alpha=0.5, target) {
     ## distance to target from override or from data
@@ -41,6 +43,7 @@ function(xy, center=FALSE,
     drawGroup(xy=xy, center=center, xyTopLeft=xyTopLeft, bb=bb, bbMin=bbMin,
               bbDiag=bbDiag, minCirc=minCirc, maxSpread=maxSpread,
               meanDist=meanDist, confEll=confEll, CEP=CEP, ringID=ringID,
+              valueID=valueID,
               doRob=doRob, level=level, scaled=scaled, caliber=caliber,
               dstTarget=dstTarget, conversion=conversion, unit=unit,
               alpha=alpha, target=target)
@@ -50,6 +53,7 @@ drawGroup.default <-
 function(xy, center=FALSE,
          xyTopLeft=TRUE, bb=FALSE, bbMin=FALSE, bbDiag=FALSE, minCirc=FALSE,
          maxSpread=FALSE, meanDist=FALSE, confEll=FALSE, CEP=FALSE, ringID=FALSE,
+         valueID=FALSE,
          doRob=FALSE, level=0.95, scaled=TRUE, caliber=9,
          dstTarget, conversion, unit="unit", alpha=0.5, target) {
     if(!is.matrix(xy))       { stop("xy must be a matrix") }
@@ -380,6 +384,17 @@ function(xy, center=FALSE,
         legLty  <- c(legLty, 1)
         legLwd  <- c(legLwd, 2)
         legPch  <- c(legPch, NA)
+        
+        if(valueID) {
+            txtPosW_X <- bBox$pts["xleft"] + 0.5*(bBox$pts["xright"] - bBox$pts["xleft"])
+            txtPosW_Y <- bBox$pts["ytop"]
+            
+            txtPosH_X <- bBox$pts["xleft"]
+            txtPosH_Y <- bBox$pts["ybottom"] + 0.5*(bBox$pts["ytop"] - bBox$pts["ybottom"])
+            
+            text(x=txtPosW_X, y=txtPosW_Y, labels=round(bBox$width, 2),  col="darkgreen", adj=c(0, 0))
+            text(x=txtPosH_X, y=txtPosH_Y, labels=round(bBox$height, 2), col="darkgreen", adj=c(0.5, 0.5), srt=90)
+        }
     }
 
     if(bbMin) {                          # minimum bounding box
@@ -423,6 +438,12 @@ function(xy, center=FALSE,
         legLty  <- c(legLty, 1)
         legLwd  <- c(legLwd, 2)
         legPch  <- c(legPch, NA)
+        
+        if(valueID) {
+            txtPos_X <- mCirc$ctr[1]
+            txtPos_Y <- mCirc$ctr[2] + mCirc$rad
+            text(x=txtPos_X, y=txtPos_Y, labels=round(mCirc$rad, 2), col="darkgreen", adj=c(0, 1))
+        }
     }
 
     if(maxSpread) {                      # maximum group spread
@@ -434,6 +455,20 @@ function(xy, center=FALSE,
         legLty  <- c(legLty, 1)
         legLwd  <- c(legLwd, 2)
         legPch  <- c(legPch, NA)
+        
+        if(valueID) {
+            m <- xyNew[maxPD$idx, ]
+            txtPos_X <- min(m[ , 1]) + 0.75*(max(m[ , 1]) - min(m[ , 1]))
+            txtPos_Y <- min(m[ , 2]) + 0.75*(max(m[ , 2]) - min(m[ , 2]))
+
+            ## angle of longer edge pointing up
+            dPts <- diff(m)
+            eUp  <- dPts * sign(dPts[2])            # rotate upwards 180 deg if necessary
+            deg  <- atan2(eUp[2], eUp[1])*180 / pi  # angle in degrees
+            
+            text(x=txtPos_X, y=txtPos_Y, labels=round(maxPD$d, 2), col="darkgreen",
+                 srt=deg, adj=c(0,0))
+        }
     }
 
     if(meanDist) {                       # mean distance to center
@@ -443,15 +478,30 @@ function(xy, center=FALSE,
         legLty  <- c(legLty, 1)
         legLwd  <- c(legLwd, 2)
         legPch  <- c(legPch, NA)
+
+        if(valueID) {
+            ctr <- colMeans(xy)
+            txtPos_X <- ctr[1]
+            txtPos_Y <- ctr[2] + meanDstCtr
+            text(x=txtPos_X, y=txtPos_Y, labels=round(meanDstCtr, 2), col="darkgreen", adj=c(0, 0))
+        }
     }
 
     if(confEll) {                        # confidence ellipse
-        lapply(cEll, function(x) drawEllipse(x, pch=4, fg=cols["confEll"], lwd=2))
+        ellCtrL <- lapply(cEll, function(x) { drawEllipse(x, pch=4, fg=cols["confEll"], lwd=2) })
         legText <- c(legText, paste("conf ellipse", paste(level, collapse=" ")))
         legCol  <- c(legCol, cols["confEll"])
         legLty  <- c(legLty, 1)
         legLwd  <- c(legLwd, 2)
         legPch  <- c(legPch, NA)
+        
+        if(valueID) {
+            idx      <- which.max(ellCtrL[[1]][ , 1])
+            txtPos_X <- ellCtrL[[1]][idx, 1]
+            txtPos_Y <- ellCtrL[[1]][idx, 2]
+            text(x=txtPos_X, y=txtPos_Y, labels=round(cEllCopy[[1]]$size["semi-major"], 2), col="darkgreen", adj=c(0, 0))
+            text(x=txtPos_X, y=txtPos_Y, labels=round(cEllCopy[[1]]$size["semi-minor"], 2), col="darkgreen", adj=c(0, 1))
+        }
     }
 
     if(CEP != "FALSE") {                 # circular error probable
@@ -462,6 +512,12 @@ function(xy, center=FALSE,
         legLty  <- c(legLty, 1)
         legLwd  <- c(legLwd, 2)
         legPch  <- c(legPch, NA)
+        
+        if(valueID) {
+            txtPos_X <- CEPres$ctr[1]
+            txtPos_Y <- CEPres$ctr[2] + CEPres$CEP[[1]]["unit", ]
+            text(x=txtPos_X, y=txtPos_Y, labels=signif(CEPres$CEP[[1]]["unit", ], 2), col="darkgreen", adj=c(0, 0))
+        }
     }
 
     if(ringID && haveTarget) {
