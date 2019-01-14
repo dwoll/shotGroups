@@ -112,6 +112,7 @@ shinyUI(fluidPage(
                             min=0, max=1, value=0.5, step=0.1),
                 uiOutput("trgtTargetSel"),
                 checkboxInput("trgtRingID",    "Show ring count", FALSE),
+                checkboxInput("trgtValueID",   "Show calculated values", TRUE),
                 uiOutput("trgtCaliberSel"),
                 selectInput("trgtUnitPlot",    "Measurement unit plot",
                             choices=unitsPlot, selected=3)
