@@ -37,7 +37,7 @@
   \item{confEll}{logical: draw confidence ellipse with coverage \code{level}?}
   \item{CEP}{draw estimate of CEP circle with coverage \code{level}? Either logical or a string defining the CEP type. See \code{\link[shotGroups]{getCEP}}.}
   \item{ringID}{logical: identify and display the ring count for each shot?}
-  \item{valueID}{logical: display numerical values of calcualted measures in the diagram?}
+  \item{valueID}{logical: display numerical values of calculated measures in the diagram?}
   \item{doRob}{logical: use robust estimation of group center and confidence ellipse?}
   \item{scaled}{logical: draw bullet holes to scale?}
   \item{caliber}{a numerical value indicating the bullet diameter in mm.}

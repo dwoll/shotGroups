@@ -386,13 +386,13 @@ function(xy, center=FALSE,
         legPch  <- c(legPch, NA)
         
         if(valueID) {
-            txtPosW_X <- bBox$pts["xleft"] + 0.5*(bBox$pts["xright"] - bBox$pts["xleft"])
-            txtPosW_Y <- bBox$pts["ytop"]
+            txtPosW_X <- bBox$pts["xleft"] + 0.15*(bBox$pts["xright"] - bBox$pts["xleft"])
+            txtPosW_Y <- bBox$pts["ytop"]  + strheight("1234")
             
-            txtPosH_X <- bBox$pts["xleft"]
-            txtPosH_Y <- bBox$pts["ybottom"] + 0.5*(bBox$pts["ytop"] - bBox$pts["ybottom"])
+            txtPosH_X <- bBox$pts["xleft"]   - strheight("1234")
+            txtPosH_Y <- bBox$pts["ybottom"] + 0.85*(bBox$pts["ytop"]  - bBox$pts["ybottom"])
             
-            text(x=txtPosW_X, y=txtPosW_Y, labels=round(bBox$width, 2),  col=cols["bb"], adj=c(0, 0))
+            text(x=txtPosW_X, y=txtPosW_Y, labels=round(bBox$width, 2),  col=cols["bb"], adj=c(0.5, 0.5))
             text(x=txtPosH_X, y=txtPosH_Y, labels=round(bBox$height, 2), col=cols["bb"], adj=c(0.5, 0.5), srt=90)
         }
     }
@@ -407,8 +407,7 @@ function(xy, center=FALSE,
         
         if(valueID) {
             ## angle of longer edge pointing up
-            m      <- bBoxMin$pts
-            dPts   <- diff(m)
+            dPts   <- diff(bBoxMin$pts)
             idxMax <- which.max(rowSums(dPts^2))    # one of the longer edges
             idxMin <- which.min(rowSums(dPts^2))    # one of the shorter edges
             eMax   <- dPts[idxMax, ]
@@ -418,15 +417,31 @@ function(xy, center=FALSE,
             degMax <- atan2(eMaxUp[2], eMaxUp[1])*180 / pi  # angle in degrees
             degMin <- atan2(eMinUp[2], eMinUp[1])*180 / pi  # angle in degrees
             
-            txtPos1_X <- m[idxMax, 1] + 0.25*(m[idxMax+1, 1] - m[idxMax, 1])
-            txtPos1_Y <- m[idxMax, 2] + 0.25*(m[idxMax+1, 2] - m[idxMax, 2])
-            txtPos2_X <- m[idxMin, 1] + 0.25*(m[idxMin+1, 1] - m[idxMin, 1])
-            txtPos2_Y <- m[idxMin, 2] + 0.25*(m[idxMin+1, 2] - m[idxMin, 2])
+            ang     <- -bBoxMin$angle * pi/180
+            rotMat  <- matrix(c(cos(ang), sin(ang), -sin(ang), cos(ang)), nrow=2)
+            bbMin90 <- t(rotMat %*% t(bBoxMin$pts))
+            idxMax  <- which.max(rowSums(bbMin90^2))    # one of the longer edges
+            idxMin  <- which.min(rowSums(bbMin90^2))    # one of the shorter edges
+
+            txtPosW_X <- min(bbMin90[ , 1]) + 0.15*(max(bbMin90[ , 1]) - min(bbMin90[ , 1]))
+            txtPosW_Y <- max(bbMin90[ , 2]) + strheight("1234")
+            txtPosH_X <- min(bbMin90[ , 1]) - strheight("1234")
+            txtPosH_Y <- min(bbMin90[ , 2]) + 0.85*(max(bbMin90[ , 2]) - min(bbMin90[ , 2]))
             
-            text(x=txtPos1_X, y=txtPos1_Y, labels=round(bBoxMin$width, 2),
-                 col=cols["bbMin"], adj=c(0, 0), srt=degMax)
-            text(x=txtPos2_X, y=txtPos2_Y, labels=round(bBoxMin$height, 2),
-                 col=cols["bbMin"], adj=c(1, 1), srt=degMin)
+            # drawBox2(bbMin90)
+            # text(x=txtPosW_X, y=txtPosW_Y, labels=round(bBoxMin$width, 2),
+            #      col=cols["bbMin"], adj=c(0.5, 0.5))
+            # text(x=txtPosH_X, y=txtPosH_Y, labels=round(bBoxMin$height, 2),
+            #      col=cols["bbMin"], adj=c(0.5, 0.5), srt=90)
+            txtPosWH_XY <- matrix(c(txtPosW_X, txtPosW_Y, txtPosH_X, txtPosH_Y), byrow=TRUE, nrow=2)
+            ang         <- bBoxMin$angle * pi/180
+            rotMat      <- matrix(c(cos(ang), sin(ang), -sin(ang), cos(ang)), nrow=2)
+            txtPos12_XY <- t(rotMat %*% t(txtPosWH_XY))
+
+            text(x=txtPos12_XY[1, 1], y=txtPos12_XY[1, 2], labels=round(bBoxMin$width, 2),
+                 col=cols["bbMin"], adj=c(0.5, 0.5), srt=degMax)
+            text(x=txtPos12_XY[2, 1], y=txtPos12_XY[2, 2], labels=round(bBoxMin$height, 2),
+                 col=cols["bbMin"], adj=c(0.5, 0.5), srt=degMin)
         }
     }
 
@@ -443,11 +458,14 @@ function(xy, center=FALSE,
             legPch  <- c(legPch, NA)
             
             if(valueID) {
-                txtPos_X <- bBox$pts["xleft"]   + 0.75*(bBox$pts["xright"] - bBox$pts["xleft"])
-                txtPos_Y <- bBox$pts["ybottom"] + 0.75*(bBox$pts["ytop"]   - bBox$pts["ybottom"])
+                dPts   <- c(bBox$pts["xright"]-bBox$pts["xleft"], bBox$pts["ytop"]-bBox$pts["ybottom"])
+                dPtsU  <- dPts / sqrt(sum(dPts^2))
+                dPtsUO <- c(dPtsU[2], -dPtsU[1])
+                
+                txtPos_X <- bBox$pts["xleft"]   + 0.75*(bBox$pts["xright"] - bBox$pts["xleft"])   + strheight("1234")*dPtsUO[1]
+                txtPos_Y <- bBox$pts["ybottom"] + 0.75*(bBox$pts["ytop"]   - bBox$pts["ybottom"]) + strheight("1234")*dPtsUO[2]
                 
                 ## angle of longer edge pointing up
-                dPts <- c(bBox$pts["xright"]-bBox$pts["xleft"], bBox$pts["ytop"]-bBox$pts["ybottom"])
                 eUp  <- dPts * sign(dPts[2])            # rotate upwards 180 deg if necessary
                 deg  <- atan2(eUp[2], eUp[1])*180 / pi  # angle in degrees
                 
@@ -467,17 +485,20 @@ function(xy, center=FALSE,
             legPch  <- c(legPch, NA)
 
             if(valueID) {
-                txtPos_X <- bBoxMin$pts[1, 1] + 0.75*(bBoxMin$pts[3, 1] - bBoxMin$pts[1, 1])
-                txtPos_Y <- bBoxMin$pts[1, 2] + 0.75*(bBoxMin$pts[3, 2] - bBoxMin$pts[1, 2])
+                dPts   <- diff(bBoxMin$pts)
+                dPtsU  <- dPts / sqrt(sum(dPts^2))
+                dPtsUO <- c(dPtsU[2], -dPtsU[1])
+
+                txtPos_X <- bBoxMin$pts[1, 1] + 0.75*(bBoxMin$pts[3, 1] - bBoxMin$pts[1, 1]) + strheight("1234")*dPtsUO[1]
+                txtPos_Y <- bBoxMin$pts[1, 2] + 0.75*(bBoxMin$pts[3, 2] - bBoxMin$pts[1, 2]) + strheight("1234")*dPtsUO[2]
                 
                 ## angle of longer edge pointing up
-                m    <- bBoxMin$pts[c(1, 3), ]
-                dPts <- diff(m)
+                dPts <- diff(bBoxMin$pts[c(1, 3), ])
                 eUp  <- dPts * sign(dPts[2])            # rotate upwards 180 deg if necessary
                 deg  <- atan2(eUp[2], eUp[1])*180 / pi  # angle in degrees
                 
                 text(x=txtPos_X, y=txtPos_Y, labels=round(bBoxMin$diag, 2),
-                     col=cols["bbDiag"], srt=deg, adj=c(0,0))
+                     col=cols["bbDiag"], srt=deg, adj=c(0.5, 0.5))
             }
         }
     }
@@ -491,10 +512,15 @@ function(xy, center=FALSE,
         legPch  <- c(legPch, NA)
         
         if(valueID) {
-            txtPos_X <- mCirc$ctr[1]
-            txtPos_Y <- mCirc$ctr[2] + mCirc$rad
+            txtPos_X_top <- 0
+            txtPos_Y_top <- mCirc$rad + strheight("1234")
+            ang    <- pi/4
+            rotMat <- matrix(c(cos(ang), sin(ang), -sin(ang), cos(ang)), nrow=2)
+            txtPos_XY <- rotMat %*% matrix(c(txtPos_X_top, txtPos_Y_top), nrow=2)
+            txtPos_X  <- mCirc$ctr[1] + txtPos_XY[1, 1]
+            txtPos_Y  <- mCirc$ctr[2] + txtPos_XY[2, 1]
             text(x=txtPos_X, y=txtPos_Y, labels=round(mCirc$rad, 2),
-                 col=cols["minCirc"], adj=c(0, 1))
+                 srt=180*ang/pi, col=cols["minCirc"], adj=c(0.5, 0.5))
         }
     }
 
@@ -509,12 +535,14 @@ function(xy, center=FALSE,
         legPch  <- c(legPch, NA)
         
         if(valueID) {
-            m <- xyNew[maxPD$idx, ]
-            txtPos_X <- min(m[ , 1]) + 0.75*(max(m[ , 1]) - min(m[ , 1]))
-            txtPos_Y <- min(m[ , 2]) + 0.75*(max(m[ , 2]) - min(m[ , 2]))
+            m      <- xyNew[maxPD$idx, ]
+            dPts   <- diff(m)
+            dPtsU  <- dPts / sqrt(sum(dPts^2))
+            dPtsUO <- c(dPtsU[2], -dPtsU[1])
+            txtPos_X <- m[1, 1] + 0.75*dPts[1] + strheight("1234")*dPtsUO[1]
+            txtPos_Y <- m[1, 2] + 0.75*dPts[2] + strheight("1234")*dPtsUO[2]
 
             ## angle of longer edge pointing up
-            dPts <- diff(m)
             eUp  <- dPts * sign(dPts[2])            # rotate upwards 180 deg if necessary
             deg  <- atan2(eUp[2], eUp[1])*180 / pi  # angle in degrees
             
@@ -533,10 +561,16 @@ function(xy, center=FALSE,
 
         if(valueID) {
             ctr <- colMeans(xy)
-            txtPos_X <- ctr[1]
-            txtPos_Y <- ctr[2] + meanDstCtr
+            txtPos_X_top <- 0
+            txtPos_Y_top <- meanDstCtr + strheight("1234")
+            ang    <- -pi/4
+            rotMat <- matrix(c(cos(ang), sin(ang), -sin(ang), cos(ang)), nrow=2)
+            txtPos_XY <- rotMat %*% matrix(c(txtPos_X_top, txtPos_Y_top), nrow=2)
+            txtPos_X  <- ctr[1] + txtPos_XY[1, 1]
+            txtPos_Y  <- ctr[2] + txtPos_XY[2, 1]
+
             text(x=txtPos_X, y=txtPos_Y, labels=round(meanDstCtr, 2),
-                 col=cols["meanDist"], adj=c(0, 0))
+                 srt=180*ang/pi, col=cols["meanDist"], adj=c(0.5, 0.5))
         }
     }
 
@@ -550,12 +584,13 @@ function(xy, center=FALSE,
         
         if(valueID) {
             idx      <- which.max(ellCtrL[[1]][ , 1])
-            txtPos_X <- ellCtrL[[1]][idx, 1]
+            txtPos_X <- ellCtrL[[1]][idx, 1] + strheight("1234")
             txtPos_Y <- ellCtrL[[1]][idx, 2]
-            text(x=txtPos_X, y=txtPos_Y, labels=round(cEllCopy[[1]]$size["semi-major"], 2),
-                 col=cols["confEll"], adj=c(0, 0))
-            text(x=txtPos_X, y=txtPos_Y, labels=round(cEllCopy[[1]]$size["semi-minor"], 2),
-                 col=cols["confEll"], adj=c(0, 1))
+            label    <- paste0(c(round(cEllCopy[[1]]$size["semi-major"], 2),
+                                 round(cEllCopy[[1]]$size["semi-minor"], 2)),
+                               collapse="; ")
+            text(x=txtPos_X, y=txtPos_Y, labels=label,
+                 srt=-90, col=cols["confEll"], adj=c(0.5, 0.5))
         }
     }
 
@@ -570,9 +605,9 @@ function(xy, center=FALSE,
         
         if(valueID) {
             txtPos_X <- CEPres$ctr[1]
-            txtPos_Y <- CEPres$ctr[2] + CEPres$CEP[[1]]["unit", ]
+            txtPos_Y <- CEPres$ctr[2] + CEPres$CEP[[1]]["unit", ] + strheight("1234")
             text(x=txtPos_X, y=txtPos_Y, labels=signif(CEPres$CEP[[1]]["unit", ], 2),
-                 col=cols["CEP"], adj=c(0, 0))
+                 col=cols["CEP"], adj=c(0.5, 0.5))
         }
     }
 
