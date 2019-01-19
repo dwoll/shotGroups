@@ -131,12 +131,11 @@ function(xy) {
 
     ## min circle may touch convex hull in only two points
     ## if so, it is centered between the hull points with max distance
-    maxPD  <- getMaxPairDist(hPts)
-    idx    <- maxPD$idx    # index of points with max distance
-    rad    <- maxPD$d / 2  # half the distance -> radius
-    rangeX <- c(hPts[idx[1], 1], hPts[idx[2], 1])
-    rangeY <- c(hPts[idx[1], 2], hPts[idx[2], 2])
-    ctr    <- c(rangeX[1] + 0.5*diff(rangeX), rangeY[1] + 0.5*diff(rangeY))
+    maxPD   <- getMaxPairDist(hPts)
+    idx     <- maxPD$idx    # index of points with max distance
+    rad     <- maxPD$d / 2  # half the distance -> radius
+    rangeXY <- hPts[idx, ]
+    ctr     <- rangeXY[1, ] + 0.5 * diff(rangeXY)
 
     ## check if circle centered between hPts[pt1Idx, ] and hPts[pt2Idx, ]
     ## contains all points (all distances <= rad)

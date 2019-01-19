@@ -23,6 +23,7 @@ export(analyzeGroup,
        getDistance, getMOA, fromMOA,
        getCEP, getHitProb,
        getRangeStat,
+       getKuchnost,
        getBoundingBox, getConfEll, getDistToCtr,
        getMaxPairDist, getMinBBox, getMinCircle, getXYmat,
        groupLocation, groupShape, groupSpread,
@@ -47,6 +48,8 @@ S3method(drawEllipse, list)
 S3method(drawEllipse, default)
 S3method(drawGroup, data.frame)
 S3method(drawGroup, default)
+S3method(getKuchnost, data.frame)
+S3method(getKuchnost, default)
 S3method(getDistToCtr, data.frame)
 S3method(getDistToCtr, default)
 S3method(getHitProb, data.frame)

@@ -4,11 +4,6 @@
  * Gammon 2017 Shot Group Statistics p25 ex16
  * `readData()` function that uses `file=Sys.glob("*pat1/*.csv")` and option
    `type` to select input file type
- * lstange/mcgs: Kuchnost based on four shots and calculated as follows:
-    - Find mean point of impact of the four shots
-    - Using this point as the center, find minimum radius of circle that encloses all shots
-    - Unless there is an outlier, in which case discard the outlier and repeat the procedure with the three remaining shots.
-    - Outlier is a shot 2.5 times or more distant from mean point of impact of the other three shots than any of these three shots.
  * Rayleigh order stats estimators from lstange/mcgs
 
 ### Statistics

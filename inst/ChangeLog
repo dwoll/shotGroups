@@ -16,6 +16,9 @@ Version 0.7.4.0.999 (January 7, 2019)
         if both p and nPerGroup are missing from DFdistr
       - add option for bivariate spline approximation of support grid
         if both p and nPerGroup are missing from DFdistr
+    * getKuchnost()
+      - new function to estimate the Kuchnost measure of group
+        precision
 
 Version 0.7.4 (November 01, 2018)
     * targets, drawTarget()
