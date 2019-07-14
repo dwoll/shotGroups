@@ -1,8 +1,8 @@
 Package: shotGroups
 Type: Package
 Title: Analyze Shot Group Data
-Version: 0.7.4.0.999
-Date: 2018-11-23
+Version: 0.7.5
+Date: 2019-07-14
 Author: Daniel Wollschlaeger
 Maintainer: Daniel Wollschlaeger <dwoll@kuci.org>
 Depends: R (>= 3.4.0)

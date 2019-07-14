@@ -1,5 +1,6 @@
 # TODO
 ## Short / medium term
+### Misc
 
  * Gammon 2017 Shot Group Statistics p25 ex16
  * `readData()` function that uses `file=Sys.glob("*pat1/*.csv")` and option
@@ -8,6 +9,7 @@
 
 ### Statistics
 
+ * `polyCub::polyCub()` for integration of other multivariate distribution functions over elliptical domain like in `pmvnEll()`
  * Zhang & An 2012 CEP estimator - general case and Rice case
  * CEP CIs: parametric, delta method with (parametric) bootstrap calibration
 
@@ -18,7 +20,7 @@
 ### Target definitions
 
  * DSU targets a2, b2, b5 simulated score -> score function
- * BDMP PP target -> add and create score function
+ * BDMP PP target -> add target and create score function
  * WRABF targets
 
 ## Long term
