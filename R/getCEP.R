@@ -88,10 +88,10 @@ function(xy, CEPlevel=0.5, dstTarget, conversion,
 
     #####-----------------------------------------------------------------------
     ## some basic calculations used later
-    if(doRob && haveRob) {        # center
+    if(doRob && haveRob) {
         rob   <- robustbase::covMcd(xy, cor=FALSE)
-        ctr   <- rob$center                       # robust estimate: group center
-        sigma <- rob$cov
+        ctr   <- rob$center       # robust estimate: group center
+        sigma <- rob$cov          # robust estimate: group covariance matrix
     } else {
         ctr   <- colMeans(xy)
         sigma <- cov(xy)
@@ -100,7 +100,7 @@ function(xy, CEPlevel=0.5, dstTarget, conversion,
     ## error ellipse characteristics -> radii = sqrt of eigenvalues
     ## aspect ratio of ellipse = sqrt of condition index kappa
     aspRat <- sqrt(kappa(sigma, exact=TRUE))
-    flat   <- 1 - (1/aspRat)             # flattening
+    flat   <- 1 - (1/aspRat)      # flattening
 
     #####-----------------------------------------------------------------------
     ## CEP estimates

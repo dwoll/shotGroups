@@ -12,7 +12,7 @@ Version: \tab 0.7.5\cr
 Date: \tab 2019-07-14\cr
 Depends: \tab R (>= 3.4.0)\cr
 Imports: \tab boot, coin, CompQuadForm (>= 1.4.2), graphics, grDevices, KernSmooth, robustbase, stats, tools, utils\cr
-Suggests: \tab knitr, energy, mvoutlier, shiny, jsonlite, interp\cr
+Suggests: \tab knitr, energy, mvoutlier, shiny, jsonlite, interp, MBA\cr
 License: \tab GPL (>= 2)\cr
 }
 Use \code{help(package='shotGroups')} for a list of all functions and links to the detailed help pages with information on options, usage and output. For further explanantions and an example walkthrough, see \code{vignette('shotGroups')}.

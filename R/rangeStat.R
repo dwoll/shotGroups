@@ -152,7 +152,7 @@ function(p, sigma=1, nPerGroup=5, nGroups=1, stat=c("ES", "FoM", "D"),
                             which.min(abs(surf$xyz.est$y - pp)) }, FUN.VALUE=integer(1))
                         qq[keep] <- surf$xyz.est$z[cbind(rep(idx_x, length(idx_y)), idx_y)]
                     } else {
-                        warning("Install package 'interp' to enable bivariate spline interpolation\\n
+                        warning("Install package 'MBA' to enable bivariate spline interpolation\\n
                                  for p and nPerGroup")
                     }
                 }

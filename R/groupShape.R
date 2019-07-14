@@ -108,7 +108,7 @@ function(xy, center=FALSE, plots=TRUE, bandW=0.5, outlier=c("mcd", "pca"),
         }
 
         ##  identified outliers
-        res$Outliers <- if((outlier == "mcd") && !is.na(outXY$outliers)) {
+        res$Outliers <- if((outlier == "mcd") && any(!is.na(outXY$outliers))) {
             which(outXY$outliers)
         } else if((outlier == "pca") && haveMVoutlier) {
             which(mvoutlier::pcout(xy, makeplot=FALSE, ...)$wfinal01 == 0)

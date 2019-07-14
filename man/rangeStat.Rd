@@ -40,7 +40,8 @@ Based on the lookup table \code{\link[shotGroups]{DFdistr}} with results form a 
 \code{\link[shotGroups]{DFdistr}},
 \code{\link[shotGroups]{range2sigma}},
 \code{\link[shotGroups]{Rayleigh}},
-\code{\link[akima]{interp}},
+\code{\link[interp]{interp}},
+\code{\link[MBA]{mba.surf}},
 }
 \examples{
 (q45 <- pRangeStat(c(4, 5), sigma=1.5, n=5, nGroups=3, stat="ES"))
