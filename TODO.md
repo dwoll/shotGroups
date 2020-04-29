@@ -2,9 +2,9 @@
 ## Short / medium term
 ### Misc
 
+ * Switch to `rrcov::CovMrcd()` from `robustbase::covMcd()`
  * Gammon 2017 Shot Group Statistics p25 ex16
- * `readData()` function that uses `file=Sys.glob("*pat1/*.csv")` and option
-   `type` to select input file type
+ * `readData()` function that uses `file=Sys.glob("*pat1/*.csv")` and option `type` to select input file type
  * Rayleigh order stats estimators from lstange/mcgs
 
 ### Statistics

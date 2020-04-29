@@ -299,11 +299,11 @@ function(DF,
                                           data=dstCtrDF, distribution="exact")
     } else {                             # compare more than two groups
         res$FlignerX <- coin::fligner_test(x ~ series, data=DF,
-                                           distribution=coin::approximate(B=9999))  # x
+                                           distribution=coin::approximate(nresample=9999))  # x
         res$FlignerY <- coin::fligner_test(y ~ series, data=DF,
-                                           distribution=coin::approximate(B=9999))  # y
+                                           distribution=coin::approximate(nresample=9999))  # y
         res$Kruskal  <- coin::kruskal_test(dstCtr ~ series,    # dist to center
-                                           data=dstCtrDF, distribution=coin::approximate(B=9999))
+                                           data=dstCtrDF, distribution=coin::approximate(nresample=9999))
     }
 
     if(plots) {

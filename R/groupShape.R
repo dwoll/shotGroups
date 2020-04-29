@@ -103,7 +103,7 @@ function(xy, center=FALSE, plots=TRUE, bandW=0.5, outlier=c("mcd", "pca"),
                 return(list(outliers=NA)) })
             dev.off()
         } else {
-            warning(c("Package mvoutlier is not installed"))
+            warning(c("Package mvoutlier needs to be installed. Beware it has many dependencies."))
             outXY <- list(outliers=NA)
         }
 
@@ -146,7 +146,8 @@ function(xy, center=FALSE, plots=TRUE, bandW=0.5, outlier=c("mcd", "pca"),
         res$multNorm <- if(haveEnergy) {
             energy::mvnorm.etest(xy, R=1499)
         } else {
-            warning("Package energy for multivariate normality test not installed")
+            warning(c("Package energy for multivariate normality test needs to be installed\n",
+                      "for outlier analysis. Beware it has a heavy dependency."))
             NULL
         }
    } else {

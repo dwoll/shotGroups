@@ -325,7 +325,7 @@ shinyUI(fluidPage(
                       uses functionality provided by the R packages boot, coin, CompQuadForm,
                       energy, mvoutlier, and robustbase:"),
 
-                    p("Canty, A., & Ripley, B. D. (2017). boot: Bootstrap R (S-Plus) Functions.", br(),
+                    p("Canty, A., & Ripley, B. D. (2020). boot: Bootstrap R (S-Plus) Functions.", br(),
                       a("http://CRAN.R-project.org/package=boot",
                         href="http://CRAN.R-project.org/package=boot")),
                     p("Duchesne, P., & Lafaye de Micheaux, P. (2010). Computing the distribution
@@ -348,18 +348,18 @@ shinyUI(fluidPage(
                     p("R Core Team (2018). R: A language and environment for statistical computing.
                        R Foundation for Statistical Computing, Vienna, Austria.", br(),
                        a("http://www.R-project.org/", br(), href="http://www.R-project.org/")),
-                    p("Rizzo, M. L., & Szekely, G. J. (2018). energy: E-statistics
+                    p("Rizzo, M. L., & Szekely, G. J. (2019). energy: E-statistics
                       (energy statistics).", br(),
                       a("http://CRAN.R-project.org/package=energy",
                         href="http://CRAN.R-project.org/package=energy")),
                     p("Rousseeuw, P. J., Croux, C., Todorov, V., Ruckstuhl, A., Salibian-Barrera, M.,
-                       Verbeke, T., & Maechler, M. (2018). robustbase: Basic Robust Statistics.", br(),
+                       Verbeke, T., & Maechler, M. (2020). robustbase: Basic Robust Statistics.", br(),
                       a("http://CRAN.R-project.org/package=robustbase",
                         href="http://CRAN.R-project.org/package=robustbase")),
-                    p("RStudio Inc. (2018). shiny: Web Application Framework for R.", br(),
+                    p("RStudio Inc. (2020). shiny: Web Application Framework for R.", br(),
                        a("http://CRAN.R-project.org/package=shiny", href="http://CRAN.R-project.org/package=shiny"), br(),
                        a("http://shiny.rstudio.com/", href="http://shiny.rstudio.com/")),
-                    p("Wollschlaeger, D. (2018). shotGroups: Analyze shot group data.", br(),
+                    p("Wollschlaeger, D. (2020). shotGroups: Analyze shot group data.", br(),
                        a("http://CRAN.R-project.org/package=shotGroups",
                          href="http://CRAN.R-project.org/package=shotGroups"), br(),
                        a("http://github.com/dwoll/shotGroups/",

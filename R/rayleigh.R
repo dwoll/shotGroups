@@ -39,6 +39,10 @@ function(xy, level=0.95, mu, doRob=FALSE) {
         warning(c("level must be in (0,1) and was set to ", level))
     }
 
+    N     <- nrow(xy)
+    p     <- ncol(xy)
+    alpha <- 1-level
+    
     ## check if we can do robust estimation if so required
     haveRob <- if(nrow(xy) < 4L) {
         if(doRob) {
@@ -47,19 +51,17 @@ function(xy, level=0.95, mu, doRob=FALSE) {
         FALSE
     } else {
         rob <- robustbase::covMcd(xy, cor=FALSE)
+        ## sum of squared radii of centered data =
+        ## N*trace of uncorrected covariance matrix -> N*trace((N-1)/N)*cov(xy)
+        rSqSumRob <- (N-1)*sum(diag(rob$cov))
         TRUE
     }                                    # if(nrow(xy) < 4L)
 
-    N     <- nrow(xy)
-    p     <- ncol(xy)
-    alpha <- 1-level
-
     if(!missing(mu)) {                   # Singh C1 - true mean is known
-        xyCtr  <- sweep(xy, 2, mu, "-")  # center with true mean
         rSqSum <- if(doRob && haveRob) { # sum squared radii centered data
-            ## = N*trace of uncorrected covariance matrix -> N*trace((N-1)/N)*cov(xy)
-            (N-1)*sum(diag(rob$cov))
+            rSqSumRob
         } else {
+            xyCtr <- sweep(xy, 2, mu, "-")  # centered data with true mean
             sum(xyCtr^2)                 # sum squared radii
         }                                # if(doRob && haveRob)
 
@@ -68,15 +70,13 @@ function(xy, level=0.95, mu, doRob=FALSE) {
         chisqDF <- p*N                   # chi^2 degrees of freedom
     } else {                             # Singh C2 - true center is estimated
         rSqSum <- if(doRob && haveRob) { # sum squared radii centered data
-            ## = N*trace of uncorrected covariance matrix -> N*trace((N-1)/N)*cov(xy)
-            (N-1)*sum(diag(rob$cov))
+            rSqSumRob
         } else {
             xyCtr <- scale(xy, scale=FALSE, center=TRUE)  # centered data
             sum(xyCtr^2)                 # sum squared radii
         }                                # if(doRob && haveRob)
 
-        ## unbiased variance estimate including Bessel correction
-        varHat  <- rSqSum/(p*(N-1))
+        varHat  <- rSqSum/(p*(N-1))      # unbiased variance estimate - Bessel correction
         corrFac <- 1/c4(p*N - (p-1))     # c4 correction with n = 2*N - 1
         chisqDF <- p*(N-1)               # chi^2 degrees of freedom
     }                                    # if(!missing(mu))

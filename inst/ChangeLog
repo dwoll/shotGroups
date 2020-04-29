@@ -1,8 +1,14 @@
-$Date: 2019-07-14 09:58:29 +0000 (Sun, 14 Jul 2019) $
+$Date: 2019-07-15 00:18:29 +0000 (Mon, 15 Jul 2019) $
 
 SHOTGROUPS RELEASE VERSIONS at http://cran.r-project.org/
 
-Version 0.7.5 (July 14, 2019)
+Version 0.7.5.2 (April 29, 2020)
+    * compareGroups()
+      - use coin::approximate(nresample=9999) as B=... has been
+        deprecated
+        thanks: Monte Milanuk
+
+Version 0.7.5.1 (July 15, 2019)
     * targets
       - new NRA target LR
       - corrections to help file
