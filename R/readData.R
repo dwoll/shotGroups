@@ -145,9 +145,11 @@ function(fPath=".", fNames, fPat, combine=TRUE, dstTarget, conversion) {
 
     ## read in files into a list of data frames
     readMe <- function(f) {
-        DF <- read.delim(f, colClasses=c("character", "factor", "character",
-                                         "numeric", "numeric", "numeric", "numeric", "numeric",
-                                         "numeric", "numeric", "NULL"), strip.white=TRUE,
+        DF <- read.delim(f,
+                         colClasses=c("character", "factor", "character",
+                                      "numeric", "numeric", "numeric", "numeric",
+                                      "numeric", "numeric", "numeric", "NULL"),
+                         strip.white=TRUE,
                          stringsAsFactors=FALSE)
         DF <- setNames(DF, tolower(names(DF)))  # convert var names to lower case
         DF[["file"]] <- basename(tools::file_path_sans_ext(f))  # add filename
@@ -286,11 +288,7 @@ function(fPath=".", fNames, fPat, combine=TRUE) {
     readMe <- function(f) {
         ## there are different versions of SMT files
         n_fields <- unique(count.fields(f, sep=","))
-        if(length(n_fields) > 1L) {
-            ## inconsistent number of fields
-            return(NULL)
-        }
-        
+
         if(n_fields != length(colClasses)) {
             if(n_fields == (length(colClasses) + 2L)) {
                 ## probably two additional variables
@@ -389,7 +387,7 @@ function(fPath=".", fNames, fPat, combine=TRUE) {
             if(requireNamespace("jsonlite", quietly=TRUE)) {
                 parse_ShotMarkerBackup(f)
             } else {
-                stop("Could not find package jsonlite - please install first")
+                stop("Could not find package 'jsonlite' - please install first")
             }
         } else {
             stop("Unknown file type")

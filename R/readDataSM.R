@@ -60,21 +60,26 @@ parse_ShotMarkerCSV <- function(x) {
                           header=TRUE,
                           stringsAsFactors=FALSE)
         
-        shots_date_time <- paste0(session_date, " ", shots[["time"]])
-        data.frame(group=session_name, # group,
-                   date=session_date,
-                   date.time=as.POSIXct(strptime(shots_date_time, format="%Y-%m-%d %I:%M:%S %p")),
-                   distance=session_dist,
-                   distance.unit=session_dist_unit,
-                   aim.x=0,
-                   aim.y=0,
-                   point.x=shots[["x..inch."]],
-                   point.y=shots[["y..inch."]],
-                   point.unit="in",
-                   score=shots[["score"]],
-                   velocity=shots[["v..fps."]],
-                   velocity.unit="ft",
-                   stringsAsFactors=FALSE)
+        if(nrow(shots) < 1L) {
+            NULL
+        } else {
+            shots_date_time <- paste0(session_date, " ", shots[["time"]])
+            data.frame(group=session_name,
+                       date=session_date,
+                       date.time=as.POSIXct(strptime(shots_date_time,
+                                                     format="%Y-%m-%d %I:%M:%S %p")),
+                       distance=session_dist,
+                       distance.unit=session_dist_unit,
+                       aim.x=0,
+                       aim.y=0,
+                       point.x=shots[["x..inch."]],
+                       point.y=shots[["y..inch."]],
+                       point.unit="in",
+                       score=shots[["score"]],
+                       velocity=shots[["v..fps."]],
+                       velocity.unit="ft",
+                       stringsAsFactors=FALSE)
+        }
     }
 
     coordL <- Map(get_coords, sessionL, seq_along(sessionL))
@@ -89,34 +94,38 @@ parse_string <- function(s, n) {
     dunits <- c(m="m", mm="mm", y="yd", yd="yd", f="ft", ft="ft")
     dshots <- as.data.frame(s[["shots"]])
 
-    d <- data.frame(group=s[["name"]], # n,
-               caliber=s[["bullet"]],
-               shot=as.character(dshots[["display_text"]]),
-               date=as.Date(as.POSIXct(dshots[["ts"]] / 1000, origin="1970-01-01")),
-               date.time=   as.POSIXct(dshots[["ts"]] / 1000, origin="1970-01-01"),
-               distance=s[["dist"]],
-               distance.unit=unname(dunits[s[["dist_unit"]]]),
-               aim.x=0,
-               aim.y=0,
-               point.x=dshots[["x"]] + s[["cal_x"]],
-               point.y=dshots[["y"]] + s[["cal_y"]],
-               point.unit="mm",
-               velocity=dshots[["v"]],
-               target=paste0("x_", s[["face_id"]]),
-               stringsAsFactors=FALSE)
-    
-    d[["score"]] <- if(hasName(dshots, "score")) {
-        dshots[["score"]]
-    } else { NA_integer_ }
-
-    ## some shots are invalid -> attribute hide = TRUE, otherwise NA
-    dsub <- if(hasName(dshots, "hide")) {
-        d[is.na(dshots[["hide"]]) | !dshots[["hide"]], , drop=FALSE]
+    if(nrow(dshots) < 1L) {
+        NULL
     } else {
-        d
+        d <- data.frame(group=s[["name"]],
+                        caliber=s[["bullet"]],
+                        shot=as.character(dshots[["display_text"]]),
+                        date=as.Date(as.POSIXct(dshots[["ts"]] / 1000, origin="1970-01-01")),
+                        date.time=   as.POSIXct(dshots[["ts"]] / 1000, origin="1970-01-01"),
+                        distance=s[["dist"]],
+                        distance.unit=unname(dunits[s[["dist_unit"]]]),
+                        aim.x=0,
+                        aim.y=0,
+                        point.x=dshots[["x"]] + s[["cal_x"]],
+                        point.y=dshots[["y"]] + s[["cal_y"]],
+                        point.unit="mm",
+                        velocity=dshots[["v"]],
+                        target=paste0("x_", s[["face_id"]]),
+                        stringsAsFactors=FALSE)
+        
+        d[["score"]] <- if(hasName(dshots, "score")) {
+            dshots[["score"]]
+        } else { NA_integer_ }
+        
+        ## some shots are invalid -> attribute hide = TRUE, otherwise NA
+        dsub <- if(hasName(dshots, "hide")) {
+            d[is.na(dshots[["hide"]]) | !dshots[["hide"]], , drop=FALSE]
+        } else {
+            d
+        }
+        
+        dsub
     }
-
-    dsub
 }
 
 parse_ShotMarkerBackup <- function(f) {
