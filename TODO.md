@@ -1,4 +1,7 @@
 # TODO
+
+ * https://cran.r-project.org/web/packages/momentchi2/
+
 ## Short / medium term
 ### Misc
 

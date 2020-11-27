@@ -121,7 +121,7 @@ function(CEPlevel=0.5, ctr=c(0, 0), sigma=diag(length(ctr)), accuracy=FALSE,
             sigma*(A0 + A1*r0 + A2*r0^2 + A3*r0^3 + A4*r0^4 + A5*r0^5)
         } else {
             if(r0 <= 3) {
-                d <-   4
+                d  <-  4
                 B0 <-  2.2458024
                 B1 <-  0.2200099
                 B2 <- -0.01003873
