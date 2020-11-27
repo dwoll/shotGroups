@@ -1,11 +1,11 @@
 # TODO
 
- * https://cran.r-project.org/web/packages/momentchi2/
+ * http://CRAN.R-project.org/package=momentchi2
 
 ## Short / medium term
 ### Misc
 
- * Switch to `rrcov::CovMrcd()` from `robustbase::covMcd()`
+ * Switch to `rrcov::CovMrcd()` from `robustbase::covMcd()`?
  * Gammon 2017 Shot Group Statistics p25 ex16
  * `readData()` function that uses `file=Sys.glob("*pat1/*.csv")` and option `type` to select input file type
  * Rayleigh order stats estimators from lstange/mcgs
