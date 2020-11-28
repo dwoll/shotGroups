@@ -1,0 +1,52 @@
+fluidPage(
+    fluidRow(
+        bs4Box(
+            title="Settings for target plot",
+            width=4,
+            uiOutput("trgtGroups"),
+            checkboxInput("trgtCenter",    "Center groups", FALSE),
+            checkboxInput("trgtXYTL",      "XY-origin top-left", TRUE),
+            checkboxInput("trgtBB",        "Bounding box", TRUE),
+            checkboxInput("trgtBBmin",     "Min-area bounding box", FALSE),
+            checkboxInput("trgtBBdiag",    "Bounding-box diagonal", TRUE),
+            checkboxInput("trgtMinCirc",   "Minimum-area circle", FALSE),
+            checkboxInput("trgtMaxSpread", "Maximum spread", TRUE),
+            checkboxInput("trgtMeanDist",  "Mean dist to center", FALSE),
+            checkboxInput("trgtConfEll",   "Confidence ellipse", FALSE),
+            checkboxInput("trgtCEP",       "CEP", FALSE),
+            sliderInput("trgtCEPlevel",    "CEP level",
+                        min=0.5, max=1, value=0.5, step=0.01),
+            checkboxInput("trgtScaled",    "Scaled bullet holes", TRUE),
+            sliderInput("trgtAlpha",       "Visibility bullet holes",
+                        min=0, max=1, value=0.5, step=0.1),
+            uiOutput("trgtTargetSel"),
+            selectInput("trgtUnitPlot",    "Measurement unit plot",
+                        choices=unitsPlot, selected=3),
+            checkboxInput("trgtRingID",    "Show ring count", FALSE),
+            checkboxInput("trgtValueID",   "Show calculated values", TRUE),
+            uiOutput("trgtCaliberSel")
+        ),
+        bs4Box(
+            title="Target plot",
+            width=8,
+            p("For details, see the documentation for",
+              a("drawGroup()",
+                href="http://www.rdocumentation.org/packages/shotGroups/functions/drawGroup"),
+              "and the",
+              a("shotGroups vignette",
+                href="http://cran.rstudio.com/web/packages/shotGroups/vignettes/shotGroups.pdf"),
+              "section 3.3"),
+            downloadButton("saveTargetPDF", "Save diagram as pdf"),
+            plotOutput("targetPlot", height="600px"),
+            h6("Simulated ring count (requires a selected target)"),
+            p("For details, see the documentation for",
+              a("simRingCount()",
+                href="http://www.rdocumentation.org/packages/shotGroups/functions/simRingCount"),
+              "and the",
+              a("shotGroups vignette",
+                href="http://cran.rstudio.com/web/packages/shotGroups/vignettes/shotGroups.pdf"),
+              "section 3.4"),
+            verbatimTextOutput("simRingCount")
+        )
+    )
+)

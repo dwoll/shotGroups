@@ -24,7 +24,7 @@ Example of a data frame from one file with one group of bullet holes.}
 \details{
 One group of shooting an FN SCAR 17 rifle in .308 Win at 100yd. The measurement unit for coordinates is inch, for distance yards. \cr
 This data frame is like those returned by \code{\link[shotGroups]{readDataOT1}}, \code{\link[shotGroups]{readDataOT2}}, or \code{\link[shotGroups]{readDataMisc}} with option \code{combine=TRUE}. \cr
-Data courtesy of David Bookstaber, 2013. \url{http://ballistipedia.com/}
+Data courtesy of David Bookstaber, 2013. \code{http://ballistipedia.com/}
 }
 \seealso{
 \code{\link[shotGroups]{combineData}},

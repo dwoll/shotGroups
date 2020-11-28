@@ -26,7 +26,7 @@ Example of a combined data frame from several original files, each with one grou
 \details{
 Several groups of shooting a Savage 12 FT/R rifle in .308 Win at distances from 100 to 300m. The measurement unit for coordinates is mm, for distance meters. Shots 1-5 in \code{series} 4, and shots 1-3 in \code{series} 7 moved the scope. \cr
 This data frame is like those returned by \code{\link[shotGroups]{readDataOT1}}, \code{\link[shotGroups]{readDataOT2}}, or \code{\link[shotGroups]{readDataMisc}} with option \code{combine=TRUE}. \cr
-Data copyright Charles McMillan and Paul McMillan, 2008. \url{http://statshooting.com/}
+Data copyright Charles McMillan and Paul McMillan, 2008.
 }
 \seealso{
 \code{\link[shotGroups]{combineData}},

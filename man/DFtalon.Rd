@@ -25,7 +25,7 @@ Example of a combined data frame from several original files, each file containi
 \details{
 Several groups of shooting a Talon SS air rifle at 10m. The measurement unit for coordinates is mm, for distance meters. \cr
 This data frame is like those returned by \code{\link[shotGroups]{readDataOT1}}, \code{\link[shotGroups]{readDataOT2}}, or \code{\link[shotGroups]{readDataMisc}} with option \code{combine=TRUE}. \cr
-Data copyright Charles McMillan and Paul McMillan, 2008. \url{http://statshooting.com/}
+Data copyright Charles McMillan and Paul McMillan, 2008.
 }
 \seealso{
 \code{\link[shotGroups]{combineData}},

@@ -1,12 +1,16 @@
-$Date: 2019-07-15 00:18:29 +0000 (Mon, 15 Jul 2019) $
+$Date: 2019-11-27 19:18:29 +0000 (Fri, 27 Nov 2020) $
 
-SHOTGROUPS RELEASE VERSIONS at http://cran.r-project.org/
+SHOTGROUPS RELEASE VERSIONS at https://cran.r-project.org/
 
-Version 0.7.5.2 (April 29, 2020)
+Version 0.7.5.2 (November 27, 2020)
     * compareGroups()
       - use coin::approximate(nresample=9999) as B=... has been
         deprecated
         thanks: Monte Milanuk
+    * readDataShotMarker()
+      - fix handling newer files
+    * readDataSMT()
+      - fix handling newer files
 
 Version 0.7.5.1 (July 15, 2019)
     * targets
