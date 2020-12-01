@@ -289,8 +289,8 @@ function(fPath=".", fNames, fPat, combine=TRUE) {
         ## there are different versions of SMT files
         n_fields <- unique(count.fields(f, sep=","))
 
-        if(n_fields != length(colClasses)) {
-            if(n_fields == (length(colClasses) + 2L)) {
+        if(max(n_fields) != length(colClasses)) {
+            if(max(n_fields) == (length(colClasses) + 2L)) {
                 ## probably two additional variables
                 colClasses <- c("numeric", colClasses, "character")
                 varNames   <- c("number", varNames, "blank")

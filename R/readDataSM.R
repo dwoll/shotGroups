@@ -136,7 +136,8 @@ parse_ShotMarkerBackup <- function(f) {
     Sys.chmod(tmpd, mode="0755")
     
     ## read data and archive json structures
-    jdata    <- jsonlite::read_json(file.path(tmpd, "data.txt"))
+    ## data not always included
+    ## jdata    <- jsonlite::read_json(file.path(tmpd, "data.txt"))
     jarchive <- jsonlite::read_json(file.path(tmpd, "archive.txt"))
     strings  <- names(jarchive)
 
