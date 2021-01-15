@@ -45,7 +45,6 @@ bs4DashSidebar(
             tabName="tab_about",
             icon="lightbulb"
         ),
-        tagList(br(), p("Current data:")),
         uiOutput("fileInfoShort")
     )
 )

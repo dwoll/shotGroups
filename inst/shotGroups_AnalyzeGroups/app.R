@@ -15,52 +15,44 @@ source("global.R", encoding="UTF8")
 ## app code
 #####---------------------------------------------------------------------------
 
-shiny::shinyApp(
+shinyApp(
     #####-----------------------------------------------------------------------
     ## UI
     #####-----------------------------------------------------------------------
-    ui=bs4DashPage(
+    ui=dashboardPage(
         # theme = "custom.css",
         title="Analyze location, accuracy, precision using shotGroups",
-        sidebar_mini=TRUE,
-        sidebar_collapsed=FALSE,
         sidebar=source("app_ui_sidebar.R", encoding="UTF8")$value,
-        navbar=bs4DashNavbar(skin="light",
-                             border=FALSE,
-                             fixed=TRUE,
-                             sidebarIcon="bars",
-                             # controlbarIcon="th",
-                             leftUi=tagList(
-                                 tags$code(tags$h3("Analyze location, accuracy, precision using 'shotGroups'"))
-                             )
+        header=dashboardHeader(
+            tags$code(tags$h3("Analyze location, accuracy, precision using 'shotGroups'"))
         ),
-        body=bs4DashBody(
-            bs4TabItems(
-                bs4TabItem(
+        body=dashboardBody(
+            tabItems(
+                tabItem(
                     tabName="tab_data",
                     source("app_ui_tab_data.R", local=TRUE, encoding="UTF8")$value
                 ),
-                bs4TabItem(
+                tabItem(
                     tabName="tab_group_shape",
                     source("app_ui_tab_group_shape.R", local=TRUE, encoding="UTF8")$value
                 ),
-                bs4TabItem(
+                tabItem(
                     tabName="tab_group_precision",
                     source("app_ui_tab_group_precision.R", local=TRUE, encoding="UTF8")$value
                 ),
-                bs4TabItem(
+                tabItem(
                     tabName="tab_group_accuracy",
                     source("app_ui_tab_group_accuracy.R", local=TRUE, encoding="UTF8")$value
                 ),
-                bs4TabItem(
+                tabItem(
                     tabName="tab_group_compare",
                     source("app_ui_tab_group_compare.R", local=TRUE, encoding="UTF8")$value
                 ),
-                bs4TabItem(
+                tabItem(
                     tabName="tab_target_plot",
                     source("app_ui_tab_target_plot.R", local=TRUE, encoding="UTF8")$value
                 ),
-                bs4TabItem(
+                tabItem(
                     tabName="tab_about",
                     source("app_ui_tab_about.R", local=TRUE, encoding="UTF8")$value
                 )

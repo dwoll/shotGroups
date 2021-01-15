@@ -209,14 +209,15 @@ shiny::shinyApp(
                 }
                 
                 x <- if(input$datIn == "1") {
-                    paste0("<p>Name: ", dataBuiltIn[input$builtInData], "<br />")
+                    paste0("Name: ", dataBuiltIn[input$builtInData], "<br />")
                 } else if((input$datIn == "2") && !is.null(input$fileUpload)) {
-                    paste0("<p>Name: ", paste(basename(input$fileUpload$name), collapse=", "), "<br />")
+                    paste0("Name: ", paste(basename(input$fileUpload$name), collapse=", "), "<br />")
                 } else {
-                    paste0("<p>Pasted data<br />")
+                    paste0("Pasted data<br />")
                 }
                 
-                y <- paste0(x, "Number of shots: ", nrow(xy),
+                y <- paste0("<p>Current data:<br />",
+                            x, "Number of shots: ", nrow(xy),
                             "<br />Number of groups: ", nGroups, "</p>")
                 HTML(y)
             })
@@ -256,12 +257,79 @@ shiny::shinyApp(
         #####---------------------------------------------------------------------------
         ## distance to target, unit distance, unit xy-coords - UI element
         #####---------------------------------------------------------------------------
-        
-        dst_current <- reactiveValues(d=-1)
 
+        getCurrentGroups <- reactive({
+            xy <- coords()
+            
+            showModal(modalDialog("Triggered", "Triggered"))
+                if(!is.null(xy) && (nrow(xy) >= 1L)) {
+                    if(       input$sidebar == "tab_group_shape") {
+                        if(hasName(input, "shapeGroupSel")) {
+                            getGroups(xy)[input$shapeGroupSel]
+                        } else {
+                            getGroups(xy)
+                        }
+                    } else if(input$sidebar == "tab_group_precision") {
+                        if(hasName(input, "spreadGroupSel")) {
+                            getGroups(xy)[input$spreadGroupSel]
+                        } else {
+                            getGroups(xy)
+                        }
+                    } else if(input$sidebar == "tab_group_accuracy") {
+                        if(hasName(input, "locGroupSel")) {
+                            getGroups(xy)[input$locGroupSel]
+                        } else {
+                            getGroups(xy)
+                        }
+                    } else if(input$sidebar == "tab_group_compare") {
+                        if(hasName(input, "compGroupSel")) {
+                            getGroups(xy)[input$compGroupSel]
+                        } else {
+                            getGroups(xy)
+                        }
+                    } else {
+                        getGroups(xy)
+                    }
+                } else {
+                    NULL
+                }
+        })        
+
+        getXYsub <- reactive({
+            groupSel <- getCurrentGroups()
+            xy       <- coords()
+            if(!is.null(groupSel) && !is.null(xy) && (nrow(xy) >= 1L)) {
+                xySub <- xy[xy$series %in% groupSel, , drop=FALSE]
+                if(nrow(xySub) >= 1L) {
+                    xySub
+                } else {
+                    NULL
+                }
+            } else {
+                NULL
+            }
+        })
+     
+        dst_current <- reactiveValues(d=-1)
+        setCurrentDst <- reactive({
+            xySub <- getXYsub()
+            if(!is.null(xySub) && hasName(xySub, "distance")) {
+                if(length(unique(xySub$distance)) == 1L) {
+                    ## distance to target is given in input data and unique
+                    dst_old <- dst_current$d
+                    dst_new <- round(unique(xySub$distance))
+                    if(is.na(dst_old) || (dst_old != dst_new)) {
+                        dst_current$d <- dst_new
+                    }
+                } else {
+                    # browser()
+                    dst_current$d <- -1
+                }
+            }
+        })
+        
         getUnitDstXY <- reactive({
             input$applyData
-            
             ## isolate against changes in input$task
             ## only needs to change when new data is applied
             ## or when distance to target changes
@@ -338,8 +406,10 @@ shiny::shinyApp(
                                      min=0, step=1, value=unitDstXY$dstTarget),
                         selectInput("unitDst", h5("Measurement unit distance"),
                                     choices=unitsDst, selected=unitDstXY$unitDst),
-                        selectInput("unitXY", h5("Measurement unit coordinates"),
+                        selectInput("unitXY", h5("Measurement unit coords"),
                                     choices=unitsXY, selected=unitDstXY$unitXY))
+            } else {
+                NULL
             }
         })
         
@@ -349,8 +419,12 @@ shiny::shinyApp(
         #####---------------------------------------------------------------------------
         
         conversionStr <- reactive({
-            paste0(unitsDstInv[input$unitDst], "2",
-                   unitsXYInv[input$unitXY], collapse="")
+            if(hasName(input, "unitDst") && hasName(input, "unitXY")) {
+                paste0(unitsDstInv[input$unitDst], "2",
+                       unitsXYInv[input$unitXY], collapse="")
+            } else {
+                NULL
+            }
         })
         
         #####---------------------------------------------------------------------------

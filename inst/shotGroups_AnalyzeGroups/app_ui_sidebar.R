@@ -1,49 +1,47 @@
-bs4DashSidebar(
+dashboardSidebar(
     skin="light",
     status="primary",
-    brandColor="primary",
     # elevation=1,
-    bs4SidebarMenu(
-        id="sidebar",
-        bs4SidebarMenuItem(
+    sidebarMenu(
+        menuItem(
             "Data",
             tabName="tab_data",
-            icon="table"
+            icon=icon("table", lib="font-awesome")
         ),
-        bs4SidebarMenuItem(
+        menuItem(
             "Group characteristics",
-            icon="chart-bar",
+            icon=icon("chart-bar", lib="font-awesome"),
             startExpanded = TRUE,
-            bs4SidebarMenuSubItem(
+            menuSubItem(
                 text = "Shape",
                 tabName="tab_group_shape",
-                icon = "circle-thin"
+                icon = icon("circle-thin", lib="font-awesome")
             ),
-            bs4SidebarMenuSubItem(
+            menuSubItem(
                 text = "Precision",
                 tabName="tab_group_precision",
-                icon = "circle-thin"
+                icon = icon("circle-thin", lib="font-awesome")
             ),
-            bs4SidebarMenuSubItem(
+            menuSubItem(
                 text = "Accuracy",
                 tabName="tab_group_accuracy",
-                icon = "circle-thin"
+                icon = icon("circle-thin", lib="font-awesome")
             ),
-            bs4SidebarMenuSubItem(
+            menuSubItem(
                 text = "Compare groups",
                 tabName="tab_group_compare",
-                icon = "circle-thin"
+                icon = icon("circle-thin", lib="font-awesome")
             )
         ),
-        bs4SidebarMenuItem(
+        menuItem(
             "Target plot",
             tabName="tab_target_plot",
-            icon="bullseye"
+            icon=icon("bullseye", lib="font-awesome")
         ),
-        bs4SidebarMenuItem(
+        menuItem(
             "About",
             tabName="tab_about",
-            icon="lightbulb"
+            icon=icon("lightbulb", lib="font-awesome")
         ),
         tagList(br(), p("Current data:")),
         uiOutput("fileInfoShort")

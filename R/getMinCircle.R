@@ -1,3 +1,35 @@
+## getMinCirc() requires no collinear points on convex hull
+## https://stackoverflow.com/q/64866942/484139
+
+## identify collinear points from convex hull
+## assumes that points in xy are already oredered
+idCollinear <-
+function(xy) {
+    if(!is.matrix(xy))  { stop("xy must be a matrix") }
+    if(!is.numeric(xy)) { stop("xy must be numeric") }
+    if(nrow(xy) < 3L)   { stop("xy must have at least 3 points") }
+    if(ncol(xy) != 2L)  { stop("xy must have at two columns") }
+    
+    n    <- nrow(xy)
+    idx  <- seq_len(n)
+    post <- (idx %% n) + 1              # next point in S
+    prev <- idx[order(post)]            # previous point in S
+    
+    del <- integer(0)
+    ## check all sets of 3 points if they lie in 1D sub-space
+    for(i in idx) {
+        pts <- rbind(xy[prev[i], ],
+                     xy[i, ],
+                     xy[post[i], ])
+        pts_rank <- qr(scale(pts, center=TRUE, scale=FALSE))$rank
+        if(pts_rank < 2L) {
+            del[length(del) + 1] <- i
+        }
+    }
+    
+    del
+}
+
 ## circle defined by three points
 getCircleFrom3 <-
 function(xy) {
@@ -129,6 +161,16 @@ function(xy) {
     H    <- chull(xy)      # convex hull indices (vertices ordered clockwise)
     hPts <- xy[H, ]        # points that make up the convex hull
 
+    del <- idCollinear(hPts)
+    if(length(del) >= 1L) {
+        H    <- H[-del]
+        hPts <- hPts[-del, ]
+        
+        if(length(H) < 2L) {
+            stop("less than 2 points left after removing collinear points")
+        }
+    }
+    
     ## min circle may touch convex hull in only two points
     ## if so, it is centered between the hull points with max distance
     maxPD   <- getMaxPairDist(hPts)
@@ -155,7 +197,9 @@ function(xy) {
         mIdx <- getMaxRad(xy, S)         # idx for maximum radius
 
         ## triangle where mIdx is vertex B in ABC
-        Smax <- rbind(xy[S[prev[mIdx]], ], xy[S[mIdx], ], xy[S[post[mIdx]], ])
+        Smax <- rbind(xy[S[prev[mIdx]], ],
+                      xy[S[mIdx], ],
+                      xy[S[post[mIdx]], ])
 
         ## if there's only two hull vertices, we're done
         if(n <= 2L) { break }

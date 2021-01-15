@@ -15,45 +15,37 @@ source("global.R", encoding="UTF8")
 ## app code
 #####---------------------------------------------------------------------------
 
-shiny::shinyApp(
+shinyApp(
     #####-----------------------------------------------------------------------
     ## UI
     #####-----------------------------------------------------------------------
-    ui=bs4DashPage(
+    ui=dashboardPage(
         # theme = "custom.css",
-        withMathJax(),
+        # withMathJax(),
         title="Angular - absolute size conversion using shotGroups",
-        sidebar_mini=TRUE,
-        sidebar_collapsed=FALSE,
         sidebar=source("app_ui_sidebar.R", encoding="UTF8")$value,
-        navbar=bs4DashNavbar(skin="light",
-                             border=FALSE,
-                             fixed=TRUE,
-                             sidebarIcon="bars",
-                             # controlbarIcon="th",
-                             leftUi=tagList(
-                                 tags$code(tags$h3("Angular <-> absolute size conversion using 'shotGroups'"))
-                             )
+        header=dashboardHeader(
+            tags$code(tags$h3("Angular <-> absolute size conversion using 'shotGroups'"))
         ),
-        body=bs4DashBody(
-            bs4TabItems(
-                bs4TabItem(
+        body=dashboardBody(
+            tabItems(
+                tabItem(
                     tabName="tab_math",
                     source("app_ui_tab_math.R", local=TRUE, encoding="UTF8")$value
                 ),
-                bs4TabItem(
+                tabItem(
                     tabName="tab_angular",
                     source("app_ui_tab_angular.R", local=TRUE, encoding="UTF8")$value
                 ),
-                bs4TabItem(
+                tabItem(
                     tabName="tab_absolute",
                     source("app_ui_tab_absolute.R", local=TRUE, encoding="UTF8")$value
                 ),
-                bs4TabItem(
+                tabItem(
                     tabName="tab_distance",
                     source("app_ui_tab_distance.R", local=TRUE, encoding="UTF8")$value
                 ),
-                bs4TabItem(
+                tabItem(
                     tabName="tab_about",
                     source("app_ui_tab_about.R", local=TRUE, encoding="UTF8")$value
                 )

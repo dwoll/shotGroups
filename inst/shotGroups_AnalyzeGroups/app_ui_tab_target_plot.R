@@ -1,7 +1,6 @@
 fluidPage(
     fluidRow(
-        bs4Box(
-            title="Settings for target plot",
+        box(title="Settings for target plot",
             width=4,
             uiOutput("trgtGroups"),
             checkboxInput("trgtCenter",    "Center groups", FALSE),
@@ -26,8 +25,7 @@ fluidPage(
             checkboxInput("trgtValueID",   "Show calculated values", TRUE),
             uiOutput("trgtCaliberSel")
         ),
-        bs4Box(
-            title="Target plot",
+        box(title="Target plot",
             width=8,
             p("For details, see the documentation for",
               a("drawGroup()",

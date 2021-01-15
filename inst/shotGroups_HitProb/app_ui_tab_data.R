@@ -1,7 +1,6 @@
 fluidPage(
     fluidRow(
-        bs4Box(
-            title="Enter data",
+        box(title="Enter data",
             width=4,
             radioButtons("datIn", "",
                          list("Use built-in data"=1,
@@ -25,8 +24,7 @@ fluidPage(
                              textAreaInput("datPaste", label=NULL, rows=10, cols=30, resize="both")),
             actionButton("applyData", "Apply")
         ),
-        bs4Box(
-            title="Distance to target",
+        box(title="Distance to target",
             width=8,
             uiOutput("unitDstXY"),
             h3("Information from imported file(s)"),

@@ -1,29 +1,32 @@
-bs4DashSidebar(
+dashboardSidebar(
+    id="sidebar",
     skin="light",
+    fixed=TRUE,
+    minified=TRUE,
+    collapsed=FALSE,
     status="primary",
-    brandColor="primary",
+    # brandColor="primary",
     # elevation=1,
-    bs4SidebarMenu(
-        id="sidebar",
-        bs4SidebarMenuItem(
+    sidebarMenu(
+        menuItem(
             tagList("Range stats", icon("arrow-right", lib="font-awesome"), "Rayleigh \\(\\sigma\\)"),
             tabName="tab_sigma",
-            icon="circle-thin"
+            icon=icon("circle-thin", lib="font-awesome")
         ),
-        bs4SidebarMenuItem(
+        menuItem(
             "Efficiency: # of groups",
             tabName="tab_n_groups",
-            icon="circle-thin"
+            icon=icon("circle-thin", lib="font-awesome")
         ),
-        bs4SidebarMenuItem(
+        menuItem(
             "Efficiency: CI width",
             tabName="tab_ci_width",
-            icon="circle-thin"
+            icon=icon("circle-thin", lib="font-awesome")
         ),
-        bs4SidebarMenuItem(
+        menuItem(
             "About",
             tabName="tab_about",
-            icon="lightbulb"
+            icon=icon("lightbulb", lib="font-awesome")
         )
     )
 )

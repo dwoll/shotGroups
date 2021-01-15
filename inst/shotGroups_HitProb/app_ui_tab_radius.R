@@ -1,7 +1,6 @@
 fluidPage(
     fluidRow(
-        bs4Box(
-            title="Settings",
+        box(title="Settings",
             width=4,
             uiOutput("hitpGroups1"),
             sliderInput("hitpLevel", label=h5("Hit probability"),
@@ -12,8 +11,7 @@ fluidPage(
             checkboxInput("hitpAcc", label="CEP w/ accuracy", FALSE),
             checkboxInput("hitpDoRob1", label="Robust estimate", FALSE)
         ),
-        bs4Box(
-            title="Circular Error Probable",
+        box(title="Circular Error Probable",
             width=8,
             p("For details, see the documentation for",
               a("getCEP()",

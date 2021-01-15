@@ -1,7 +1,6 @@
 fluidPage(
     fluidRow(
-        bs4Box(
-            title="Settings for group precision",
+        box(title="Settings for group precision",
             width=4,
             uiOutput("spreadGroups"),
             sliderInput("spreadCIlevel", label=h5("Confidence interval width"),
@@ -14,8 +13,7 @@ fluidPage(
                                choices=CItypes, selected=NULL),
             checkboxInput("spreadCenter", "Center groups", FALSE)
         ),
-        bs4Box(
-            title="Group precision",
+        box(title="Group precision",
             width=8,
             p("For details, see the documentation for",
               a("groupSpread()",

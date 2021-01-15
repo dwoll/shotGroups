@@ -1,7 +1,6 @@
 fluidPage(
     fluidRow(
-        bs4Box(
-            title="Settings",
+        box(title="Settings",
             width=4,
             textInput("angszeAbs3", h5("Absolute size"),
                       value=c("1 2 3")),
@@ -14,8 +13,7 @@ fluidPage(
             selectizeInput("angszeUnitDstOut3", h5("Unit distance"),
                            choices=unitsAbs, multiple=TRUE, selected=c(1, 4))
         ),
-        bs4Box(
-            title="Calculate distance from absolute and angular size",
+        box(title="Calculate distance from absolute and angular size",
             width=8,
             verbatimTextOutput("angAbs2Dist"),
             h6("Math"),

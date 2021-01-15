@@ -1,34 +1,40 @@
-bs4DashSidebar(
+dashboardSidebar(
+    id="sidebar",
     skin="light",
+    fixed=TRUE,
+    minified=TRUE,
+    collapsed=FALSE,
     status="primary",
-    brandColor="primary",
     # elevation=1,
-    bs4SidebarMenu(
-        id="sidebar",
-        bs4SidebarMenuItem(
+    sidebarMenu(
+        # id="current_tab",
+        flat = FALSE,
+        compact = FALSE,
+        childIndent = TRUE,
+        menuItem(
             "Background math",
             tabName="tab_math",
-            icon="square-root-alt"
+            icon=icon("square-root-alt", lib="font-awesome")
         ),
-        bs4SidebarMenuItem(
+        menuItem(
             tagList("Absolute", icon("arrow-right", lib="font-awesome"), "angular"),
             tabName="tab_angular",
-            icon="circle-thin"
+            icon=icon("circle-thin", lib="font-awesome")
         ),
-        bs4SidebarMenuItem(
+        menuItem(
             tagList("Angular", icon("arrow-right", lib="font-awesome"), "absolute"),
             tabName="tab_absolute",
-            icon="circle-thin"
+            icon=icon("circle-thin", lib="font-awesome")
         ),
-        bs4SidebarMenuItem(
+        menuItem(
             tagList("Abs+ang", icon("arrow-right", lib="font-awesome"), "distance"),
             tabName="tab_distance",
-            icon="circle-thin"
+            icon=icon("circle-thin", lib="font-awesome")
         ),
-        bs4SidebarMenuItem(
+        menuItem(
             "About",
             tabName="tab_about",
-            icon="lightbulb"
+            icon=icon("lightbulb", lib="font-awesome")
         )
     )
 )

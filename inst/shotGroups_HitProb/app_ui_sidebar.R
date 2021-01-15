@@ -1,29 +1,32 @@
-bs4DashSidebar(
+dashboardSidebar(
+    id="sidebar",
     skin="light",
+    fixed=TRUE,
+    minified=TRUE,
+    collapsed=FALSE,
     status="primary",
-    brandColor="primary",
+    # brandColor="primary",
     # elevation=1,
-    bs4SidebarMenu(
-        id="sidebar",
-        bs4SidebarMenuItem(
+    sidebarMenu(
+        menuItem(
             "Data",
             tabName="tab_data",
-            icon="table"
+            icon=icon("table", lib="font-awesome")
         ),
-        bs4SidebarMenuItem(
+        menuItem(
             tagList("Hit probability", icon("arrow-right", lib="font-awesome"), "radius"),
             tabName="tab_radius",
-            icon="circle-thin"
+            icon=icon("circle-thin", lib="font-awesome")
         ),
-        bs4SidebarMenuItem(
+        menuItem(
             tagList("Radius", icon("arrow-right", lib="font-awesome"), "hit probability"),
             tabName="tab_hit_probability",
-            icon="circle-thin"
+            icon=icon("circle-thin", lib="font-awesome")
         ),
-        bs4SidebarMenuItem(
+        menuItem(
             "About",
             tabName="tab_about",
-            icon="lightbulb"
+            icon=icon("lightbulb", lib="font-awesome")
         ),
         tagList(br(), p("Current data:")),
         uiOutput("fileInfoShort")

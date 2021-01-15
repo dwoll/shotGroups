@@ -1,7 +1,6 @@
 # TODO
 
  * bs4Dash shiny app: active distance to target should depend on current group selection
- * some SMT backup files still not working?
  * http://CRAN.R-project.org/package=momentchi2
 
 ## Short / medium term

@@ -18,9 +18,22 @@ function(xy) {
 
     ## rotating calipers algorithm using the convex hull
     H    <- chull(xy)                    # hull indices, vertices ordered clockwise
-    n    <- length(H)                    # number of hull vertices
     hull <- xy[H, ]                      # hull vertices
 
+    ## algorithm works even with collinear points on convex hull
+    ## - other than getMinCirc()
+    # del <- idCollinear(hull)
+    # if(length(del) >= 1L) {
+    #     H    <- H[-del]
+    #     hull <- hull[-del, ]
+    #     
+    #     if(length(H) < 2L) {
+    #         stop("less than 2 points left after removing collinear points")
+    #     }
+    # }
+    
+    n <- length(H)                       # number of hull vertices
+    
     ## unit basis vectors for all subspaces spanned by the hull edges
     hDir  <- diff(rbind(hull, hull[1,])) # account for circular hull vertices
     hLens <- sqrt(rowSums(hDir^2))       # length of basis vectors

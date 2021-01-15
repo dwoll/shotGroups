@@ -1,7 +1,6 @@
 fluidPage(
     fluidRow(
-        bs4Box(
-            title="Settings",
+        box(title="Settings",
             width=4,
             uiOutput("hitpGroups2"),
             numericInput("hitpR", h5("Radius for circular region"),
@@ -13,8 +12,7 @@ fluidPage(
             checkboxInput("hitpCenter2", "Center groups", FALSE),
             checkboxInput("hitpDoRob2", label="Robust estimate", FALSE)
         ),
-        bs4Box(
-            title="Hit probability",
+        box(title="Hit probability",
             width=8,
             p("For details, see the documentation for",
               a("getCEP()",

@@ -1,7 +1,6 @@
 fluidPage(
     fluidRow(
-        bs4Box(
-            title="Settings for group accuracy",
+        box(title="Settings for group accuracy",
             width=4,
             uiOutput("locGroups"),
             sliderInput("locLevel", label=h5("Confidence interval width"),
@@ -9,8 +8,7 @@ fluidPage(
             checkboxGroupInput("locCItype", label=h5("Bootstrap CI type"),
                                choices=CItypes, selected=NULL)
         ),
-        bs4Box(
-            title="Group accuracy",
+        box(title="Group accuracy",
             width=8,
             p("For details, see the documentation for",
               a("groupLocation()",

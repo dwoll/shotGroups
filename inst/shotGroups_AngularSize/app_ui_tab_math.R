@@ -1,7 +1,6 @@
 fluidPage(
     fluidRow(
-        bs4Box(
-            title="Background math",
+        box(title="Background math",
             width=12,
             img(src="AnglesCircle.png", width=150),
             p("Angle \\(\\varphi\\) (in degree) with corresponding arc length

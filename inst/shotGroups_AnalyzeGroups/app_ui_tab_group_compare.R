@@ -1,7 +1,6 @@
 fluidPage(
     fluidRow(
-        bs4Box(
-            title="Settings for group comparisons",
+        box(title="Settings for group comparisons",
             width=4,
             uiOutput("compGroups"),
             sliderInput("compareCIlevel", label=h5("Confidence interval width"),
@@ -13,8 +12,7 @@ fluidPage(
             checkboxInput("cmpXYTL", "XY-origin top-left", TRUE),
             checkboxInput("cmpCenter", "Center groups", FALSE)
         ),
-        bs4Box(
-            title="Compare groups",
+        box(title="Compare groups",
             width=8,
             p("For details, see the documentation for",
               a("compareGroups()",

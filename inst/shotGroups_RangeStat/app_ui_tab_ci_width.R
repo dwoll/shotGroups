@@ -1,12 +1,11 @@
 fluidPage(
     fluidRow(
-        bs4Box(
-            title="Settings",
+        box(title="Settings",
             width=4,
             radioButtons("effStatType2", label=h5("Range statistic"),
                          rangeStatSig, selected="1"),
-            #numericInput("effN2", h5("Shots per group"),
-            #             min=0, max=100, step=1, value=5),
+            # numericInput("effN2", h5("Shots per group"),
+            #              min=0, max=100, step=1, value=5),
             textInput("effN2", h5("Shots per group"),
                       value=c("3 5 10 20")),
             numericInput("effNGroups2", h5("Number of groups"),
@@ -14,8 +13,7 @@ fluidPage(
             sliderInput("effCILevel2", label=h5("CI level"),
                         min=0, max=1, value=0.9, step=0.05)
         ),
-        bs4Box(
-            title="Efficiency: CI width",
+        box(title="Efficiency: CI width",
             width=8,
             h6("Background information"),
             p("Assuming a circular bivariate normal shot distribution, this

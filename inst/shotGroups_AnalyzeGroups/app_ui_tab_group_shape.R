@@ -1,7 +1,6 @@
 fluidPage(
     fluidRow(
-        bs4Box(
-            title="Settings for group shape",
+        box(title="Settings for group shape",
             width=4,
             uiOutput("shapeGroups"),
             sliderInput("shapeBW", label=h5("2D kernel bandwith"),
@@ -11,8 +10,7 @@ fluidPage(
                               "PCA"=2)),
             checkboxInput("shapeCenter", "Center groups", FALSE)
         ),
-        bs4Box(
-            title="Group shape",
+        box(title="Group shape",
             width=8,
             p("For details, see the documentation for",
               a("groupShape()",

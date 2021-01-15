@@ -1,7 +1,6 @@
 fluidPage(
     fluidRow(
-        bs4Box(
-            title="Settings",
+        box(title="Settings",
             width=4,
             radioButtons("effStatType1", label=h5("Measured group statistic"),
                          rangeStatSig, selected="1"),
@@ -12,8 +11,7 @@ fluidPage(
             sliderInput("effCIWidth1", label=h5("CI width (=2*E)"),
                         min=0, max=1, value=0.2, step=0.05)
         ),
-        bs4Box(
-            title="Efficiency: Number of groups",
+        box(title="Efficiency: Number of groups",
             width=8,
             h6("Background information"),
             p("Assuming a circular bivariate normal shot distribution, this

@@ -1,7 +1,6 @@
 fluidPage(
     fluidRow(
-        bs4Box(
-            title="Settings",
+        box(title="Settings",
             width=4,
             numericInput("dstTrgt1", h5("Distance to target"),
                          min=0, step=1, value=100),
@@ -15,8 +14,7 @@ fluidPage(
             selectizeInput("angszeUnitAngOut1", h5("Unit angular size"),
                            choices=unitsAng, multiple=TRUE, selected=1:6)
         ),
-        bs4Box(
-            title="Convert absolute size to angular diameter",
+        box(title="Convert absolute size to angular diameter",
             width=8,
             verbatimTextOutput("abs2Ang"),
             h6("Math"),

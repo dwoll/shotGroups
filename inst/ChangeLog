@@ -1,10 +1,13 @@
-$Date: 2019-11-28 19:18:29 +0000 (Sat, 28 Nov 2020) $
+$Date: 2021-01-15 19:18:29 +0000 (Fri, 15 Jan 2021) $
 
 SHOTGROUPS RELEASE VERSIONS at https://cran.r-project.org/
 
-Version 0.8 (November 28, 2020)
+Version 0.8 (January 15, 2021)
     * runGUI()
       - all shiny apps are now dashboards based on package bs4Dash
+    * getMinCirc()
+      - fix for data with collinear points on output from chull()
+        thanks: Esme_ from Stack Overflow
     * readDataSMT()
       - fix handling newer files
     * readDataShotMarker()

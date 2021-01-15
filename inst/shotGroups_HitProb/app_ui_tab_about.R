@@ -1,14 +1,12 @@
 fluidPage(
     fluidRow(
-        bs4Box(
-            # inputId = "card_about_1",
-            # height = "600px",
+        box(# height = "600px",
             title = "About",
             width = 6,
-            # status = NULL, 
+            # status = NULL,
             # closable = FALSE,
-            # maximizable = FALSE, 
-            # collapsible = TRUE,
+            # maximizable = FALSE,
+            collapsible=FALSE,
             p("The", a("shotGroups", href="http://CRAN.R-project.org/package=shotGroups"),
               "package for", a("R", href="http://www.r-project.org/"),
               "provides functions to read in, plot,
@@ -34,7 +32,7 @@ fluidPage(
                 href="http://github.com/dwoll/shotGroups/"), br(),
               a("Source code shiny app",
                 href="https://github.com/dwoll/shotGroups/tree/master/inst/shotGroups_HitProb")),
-            
+
             h6("More shotGroups web applications"),
             p("Comprehensive shot group analysis:",
               a("http://shiny.imbei.uni-mainz.de:3838/shotGroups_AnalyzeGroups",
@@ -45,16 +43,15 @@ fluidPage(
                 href="http://shiny.imbei.uni-mainz.de:3838/shotGroups_AngularSize/"), br(),
               "Estimate Rayleigh sigma from range statistics:",
               a("http://shiny.imbei.uni-mainz.de:3838/shotGroups_RangeStat/",
-                href="http://shiny.imbei.uni-mainz.de:3838/shotGroups_RangeStat/")),
+                href="http://shiny.imbei.uni-mainz.de:3838/shotGroups_RangeStat/"))
         ),
-        bs4Box(
-            title="References",
+        box(title="References",
             width=6,
+            collapsible=FALSE,
             p("This web application is built with R, shiny, and bs4Dash.
               The shotGroups package
               uses functionality provided by the R packages boot, coin, CompQuadForm,
               energy, mvoutlier, and robustbase:"),
-            
             p("Canty, A., & Ripley, B. D. (2020). boot: Bootstrap R (S-Plus) Functions.", br(),
               a("http://CRAN.R-project.org/package=boot",
                 href="http://CRAN.R-project.org/package=boot")),

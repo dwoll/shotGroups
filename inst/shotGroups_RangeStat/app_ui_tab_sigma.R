@@ -1,7 +1,6 @@
 fluidPage(
     fluidRow(
-        bs4Box(
-            title="Settings",
+        box(title="Settings",
             width=4,
             radioButtons("rangeStatType1", label=h5("Range statistic"),
                          rangeStat, selected="1"),
@@ -25,8 +24,7 @@ fluidPage(
             selectInput("unitXY1", h5("Measurement unit coordinates"),
                         choices=unitsXY, selected=3)
         ),
-        bs4Box(
-            title=tagList("Range statistics", icon("arrow-right", lib="font-awesome"), "Rayleigh \\(\\sigma\\)"),
+        box(title=tagList("Range statistics", icon("arrow-right", lib="font-awesome"), "Rayleigh \\(\\sigma\\)"),
             width=8,
             h6("Background information"),
             p("Assuming a circular bivariate normal shot distribution, this

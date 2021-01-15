@@ -1,14 +1,12 @@
 fluidPage(
     fluidRow(
-        bs4Box(
-            # inputId = "card_about_1",
-            # height = "600px",
+        box(# height = "600px",
             title = "About",
             width = 6,
             # status = NULL, 
             # closable = FALSE,
             # maximizable = FALSE, 
-            # collapsible = TRUE,
+            collapsible = FALSE,
             p("The", a("shotGroups", href="http://CRAN.R-project.org/package=shotGroups"),
               "package for", a("R", href="http://www.r-project.org/"),
               "provides functions to read in, plot,
@@ -48,9 +46,9 @@ fluidPage(
               a("http://shiny.imbei.uni-mainz.de:3838/shotGroups_RangeStat/",
                 href="http://shiny.imbei.uni-mainz.de:3838/shotGroups_RangeStat/"))
         ),
-        bs4Box(
-            title="References",
+        box(title="References",
             width=6,
+            collapsible = FALSE,
             p("This web application is built with R, shiny, and bs4Dash.
               The shotGroups package
               uses functionality provided by the R packages boot, coin, CompQuadForm,
