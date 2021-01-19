@@ -43,7 +43,7 @@ For very large signal-to-noise ratios (nu/sigma), a normal approximation is used
 Nuttall, AH. (1975). Some integrals involving the Q-M function.
 IEEE Transactions on Information Theory, 21 (1), 95-96
 
-\url{http://reference.wolfram.com/language/ref/RiceDistribution.html}
+\url{https://reference.wolfram.com/language/ref/RiceDistribution.html}
 }
 \seealso{
 \code{\link[shotGroups]{Rayleigh}},

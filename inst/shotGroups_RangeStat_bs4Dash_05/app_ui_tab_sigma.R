@@ -11,8 +11,8 @@ fluidPage(
                          min=2, max=100, step=1, value=5),
             numericInput("rangeStatNGroups", h5("Number of groups"),
                          min=1, max=10, step=1, value=1),
-            radioButtons("rangeStatSigmaCEP", label=h5("Estimate \\(\\sigma\\) or CEP?"),
-                         c("Rayleigh \\(\\sigma\\)"="1", "Rayleigh CEP"="2"), selected="1"),
+            radioButtons("rangeStatSigmaCEP", label=h5("Estimate \U03C3 or CEP?"),
+                         c("Rayleigh sigma"="1", "Rayleigh CEP"="2"), selected="1"),
             conditionalPanel(condition="(input.rangeStatSigmaCEP == '2')",
                              sliderInput("rangeStatCEPLevel", label=h5("CEP level"),
                                          min=0, max=1, value=0.5, step=0.05)),
@@ -26,11 +26,11 @@ fluidPage(
                         choices=unitsXY, selected=3)
         ),
         bs4Box(
-            title=tagList("Range statistics", icon("arrow-right", lib="font-awesome"), "Rayleigh \\(\\sigma\\)"),
+            title=tagList("Range statistics", icon("arrow-right", lib="font-awesome"), "Rayleigh \U03C3"),
             width=8,
             h6("Background information"),
             p("Assuming a circular bivariate normal shot distribution, this
-                      panel estimates the Rayleigh \\(\\sigma\\) parameter from
+                      panel estimates the Rayleigh \U03C3 parameter from
                       measured range statistics in a given number of shots per
                       group, averaged over a given number of groups.", br(),
               "Distance to target, and information on the measurement

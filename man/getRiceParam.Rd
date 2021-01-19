@@ -26,7 +26,7 @@ A list with the estimates for nu, sigma, RSD, and MR including the confidence in
 \item{RSD}{The RSD estimate.}
 }
 \references{
-\url{http://reference.wolfram.com/language/ref/RiceDistribution.html}
+\url{https://reference.wolfram.com/language/ref/RiceDistribution.html}
 
 Li, Q., Zhang, J., & Dai, S. (2009). On estimating the non-centrality parameter of a chi-squared distribution. Statistics and Probability Letters 79, 98-114.
 }

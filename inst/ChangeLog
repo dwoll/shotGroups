@@ -6,7 +6,7 @@ Version 0.8 (January 15, 2021)
     * runGUI()
       - all shiny apps are now dashboards based on package bs4Dash
     * getMinCirc()
-      - fix for data with collinear points on output from chull()
+      - fix for data where chull() returns collinear points
         thanks: Esme_ from Stack Overflow
     * readDataSMT()
       - fix handling newer files

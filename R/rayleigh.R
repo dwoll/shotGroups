@@ -1,7 +1,7 @@
 #####---------------------------------------------------------------------------
 ## c4(n) correction factor for taking the square root of the variance of a
 ## normally distributed random variable with n observations -> E(s) = c4*sigma
-## http://en.wikipedia.org/wiki/Unbiased_estimation_of_standard_deviation
+## https://en.wikipedia.org/wiki/Unbiased_estimation_of_standard_deviation
 ## http://ballistipedia.com/index.php?title=Measuring_Precision#Estimating_.CF.83
 ## always <= 1
 c4 <-
@@ -87,7 +87,7 @@ function(xy, level=0.95, mu, doRob=FALSE) {
 
     ## mean and sd for the chi distribution
     if(p == 1L) {                        # half normal with theta = sqrt(pi/2)
-        ## http://mathworld.wolfram.com/Half-NormalDistribution.html
+        ## https://mathworld.wolfram.com/Half-NormalDistribution.html
         MU <- sqrt(2/pi)
         SD <- sqrt((pi-2)/pi)
     } else if(p == 2L) {                 # Rayleigh distribution

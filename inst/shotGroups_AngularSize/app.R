@@ -21,13 +21,13 @@ shinyApp(
     #####-----------------------------------------------------------------------
     ui=dashboardPage(
         # theme = "custom.css",
-        # withMathJax(),
         title="Angular - absolute size conversion using shotGroups",
         sidebar=source("app_ui_sidebar.R", encoding="UTF8")$value,
         header=dashboardHeader(
             tags$code(tags$h3("Angular <-> absolute size conversion using 'shotGroups'"))
         ),
         body=dashboardBody(
+            withMathJax(),
             tabItems(
                 tabItem(
                     tabName="tab_math",

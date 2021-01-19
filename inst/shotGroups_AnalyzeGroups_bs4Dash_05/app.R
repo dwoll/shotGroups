@@ -169,7 +169,7 @@ shiny::shinyApp(
             isolate({
                 x <- if(input$datIn == "1") {
                     paste0("<p>For details on this data set (measurement units etc.), see ",
-                           "<a href='http://www.rdocumentation.org/packages/shotGroups/functions/",
+                           "<a href='https://www.rdocumentation.org/packages/shotGroups/functions/",
                            dataBuiltIn[input$builtInData], "'>", dataBuiltIn[input$builtInData],
                            "</a></p>Name: ", dataBuiltIn[input$builtInData], "<br />")
                 } else if(input$datIn == "2") {

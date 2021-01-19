@@ -8,7 +8,7 @@ library(shiny)
 rangeStat    <- c("Extreme spread"="1", "Figure of Merit"="2", "Bounding Box Diagonal"="3")
 rangeStatInv <- c("1"="ES", "2"="FOM", "3"="D")
 
-rangeStatSig    <- c("Rayleigh \\(\\sigma\\)"="1", "Extreme spread"="2",
+rangeStatSig    <- c("Rayleigh sigma"="1", "Extreme spread"="2",
                      "Figure of Merit"="3", "Bounding Box Diagonal"="4")
 rangeStatSigInv <- c("1"="Rayleigh", "2"="ES", "3"="FOM", "4"="D")
 

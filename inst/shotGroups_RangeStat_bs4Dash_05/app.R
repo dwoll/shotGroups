@@ -21,7 +21,6 @@ shiny::shinyApp(
     #####-----------------------------------------------------------------------
     ui=bs4DashPage(
         # theme = "custom.css",
-        withMathJax(),
         title="Estimate Rayleigh sigma from range statistics using shotGroups",
         sidebar_mini=TRUE,
         sidebar_collapsed=FALSE,
@@ -32,7 +31,7 @@ shiny::shinyApp(
                              sidebarIcon="bars",
                              # controlbarIcon="th",
                              leftUi=tagList(
-                                 tags$code(tags$h3("Estimate Rayleigh sigma from range statistics using 'shotGroups'"))
+                                 tags$code(tags$h3("Estimate Rayleigh \U03C3 from range statistics using 'shotGroups'"))
                              )
         ),
         body=bs4DashBody(

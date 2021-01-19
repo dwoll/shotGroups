@@ -20,7 +20,7 @@ fluidPage(
             h6("Background information"),
             p("Assuming a circular bivariate normal shot distribution, this
                       panel calculates the width of the confidence interval (CI)
-                      for the Rayleigh \\(\\sigma\\) parameter, given the number of
+                      for the Rayleigh \U03C3 parameter, given the number of
                       shots per group, the number of groups, the desired coverage
                       (level) for the CI, and the type of measured group statistic.", br(),
               "The CI width is 2*E, where E is the width as a fraction of

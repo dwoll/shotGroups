@@ -16,10 +16,10 @@ fluidPage(
             width=8,
             p("For details, see the documentation for",
               a("getCEP()",
-                href="http://www.rdocumentation.org/packages/shotGroups/functions/getCEP"),
+                href="https://www.rdocumentation.org/packages/shotGroups/functions/getCEP"),
               "and the",
               a("shotGroups vignette",
-                href="http://cran.rstudio.com/web/packages/shotGroups/vignettes/shotGroups.pdf"),
+                href="https://cran.rstudio.com/web/packages/shotGroups/vignettes/shotGroups.pdf"),
               "sections 3.2.1, 3.2.2"),
             downloadButton("saveHitProb", "Save results as text file"),
             verbatimTextOutput("CEPHitProb"),
@@ -29,7 +29,7 @@ fluidPage(
                         choices=unitsDst, selected="2"),
             p("For details, see the",
               a("shotGroups vignette",
-                href="http://cran.rstudio.com/web/packages/shotGroups/vignettes/shotGroups.pdf"),
+                href="https://cran.rstudio.com/web/packages/shotGroups/vignettes/shotGroups.pdf"),
               "section 3.2.3."),
             verbatimTextOutput("extraHitProb")
         )

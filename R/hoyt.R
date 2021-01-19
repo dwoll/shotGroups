@@ -107,7 +107,7 @@ function(qpar, omega) {
 
 #####---------------------------------------------------------------------------
 ## pdf Hoyt distribution
-## http://reference.wolfram.com/language/ref/HoytDistribution.html
+## https://reference.wolfram.com/language/ref/HoytDistribution.html
 dHoyt <-
 function(x, qpar, omega) {
     is.na(x)     <- is.nan(x)           # replace NaN with NA

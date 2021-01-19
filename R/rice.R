@@ -1,6 +1,6 @@
 #####---------------------------------------------------------------------------
 ## Rice distribution
-## http://reference.wolfram.com/language/ref/RiceDistribution.html
+## https://reference.wolfram.com/language/ref/RiceDistribution.html
 ## uncorrelated bivariate normal distribution with equal variances
 ## rewritten in polar coordinates
 ## pdf, cdf, and inverse cdf of the distribution of the radius around an

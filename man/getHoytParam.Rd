@@ -32,7 +32,7 @@ A list with the following components:
 Hoyt, R. S. (1947). Probability functions for the modulus and angle of the normal complex variate.
 Bell System Technical Journal, 26(2), 318-359.
 
-\url{http://reference.wolfram.com/language/ref/HoytDistribution.html}
+\url{https://reference.wolfram.com/language/ref/HoytDistribution.html}
 }
 \seealso{
 \code{\link[shotGroups]{Hoyt}}

@@ -6,7 +6,7 @@ bs4DashSidebar(
     bs4SidebarMenu(
         id="sidebar",
         bs4SidebarMenuItem(
-            tagList("Range stats", icon("arrow-right", lib="font-awesome"), "Rayleigh \\(\\sigma\\)"),
+            tagList("Range stats", icon("arrow-right", lib="font-awesome"), "Rayleigh \U03C3"),
             tabName="tab_sigma",
             icon="circle-thin"
         ),

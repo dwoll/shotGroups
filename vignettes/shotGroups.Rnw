@@ -78,7 +78,7 @@ options(replace.assign=TRUE, width=75, digits=4, useFancyQuotes=FALSE, show.sign
 \label{sec:introduction}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-The \texttt{shotGroups} package adds functionality to the open source statistical environment \textsf{R} \cite{RDevelopmentCoreTeam2008c}.\footnote{For an introduction to \textsf{R}, see \citeA{Dalgaard2008} or Quick-\textsf{R} (\url{http://www.statmethods.net/}).} It provides functions to read in, plot, statistically describe, analyze, and compare shooting data with respect to group shape, precision, and accuracy.
+The \texttt{shotGroups} package adds functionality to the open source statistical environment \textsf{R} \cite{RDevelopmentCoreTeam2008c}.\footnote{For an introduction to \textsf{R}, see \citeA{Dalgaard2008} or Quick-\textsf{R} (\url{https://www.statmethods.net/}).} It provides functions to read in, plot, statistically describe, analyze, and compare shooting data with respect to group shape, precision, and accuracy.
 
 \begin{itemize}
 \item The functionality includes graphical methods, descriptive statistics, and inference tests using standard, but also non-parametric and robust statistical techniques (section \ref{sec:analysisSteps}).
@@ -930,7 +930,7 @@ The \texttt{shotGroups} package includes a number of empirical data sets with sh
 \item \texttt{DF300BLKhl}: Three groups of shooting a Noveske AR-15 rifle in 300BLK at 100\,yd with handloaded ammunition (60 observations, see footnote \ref{ftn:DF300BLK})
 \item \texttt{DFcciHV}: Two groups of shooting a PWS T3 rifle in .22LR at 100\,yd (40 observations, see footnote \ref{ftn:DF300BLK})
 \item \texttt{DFcm}: Several groups of shooting a 9x19mm pistol at 25\,m (487 observations)
-\item \texttt{DFtalon}: Several groups of shooting a Talon SS air rifle at 10\,m (180 observations)\footnote{\label{ftn:DFtalon}Thanks: Charles \& Paul McMillan \url{http://statshooting.com/}}
+\item \texttt{DFtalon}: Several groups of shooting a Talon SS air rifle at 10\,m (180 observations)\footnote{\label{ftn:DFtalon}Thanks: Charles \& Paul McMillan}
 \item \texttt{DFsavage}: Several groups of shooting a Savage 12 FT/R rifle in .308 Win at distances from 100 to 300\,m (180 observations, see footnote \ref{ftn:DFtalon})
 \item \texttt{DFscar17}: One group of shooting an FN SCAR 17 rifle in .308 Win at 100\,yd (10 observations, see footnote \ref{ftn:DF300BLK})
 \end{itemize}

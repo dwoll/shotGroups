@@ -2,8 +2,7 @@ source("helper.R")
 
 shinyUI(fluidPage(
     #theme="bootstrap.css",
-    withMathJax(),
-    titlePanel("Estimate Rayleigh \\(\\sigma\\) parameter from range statistics"),
+    titlePanel("Estimate Rayleigh \U03C3 parameter from range statistics"),
     sidebarLayout(
         #####-------------------------------------------------------------------
         ## sidebar
@@ -20,8 +19,8 @@ shinyUI(fluidPage(
                              min=2, max=100, step=1, value=5),
                 numericInput("rangeStatNGroups", h5("Number of groups"),
                              min=1, max=10, step=1, value=1),
-                radioButtons("rangeStatSigmaCEP", label=h5("Estimate \\(\\sigma\\) or CEP?"),
-                             c("Rayleigh \\(\\sigma\\)"="1", "Rayleigh CEP"="2"), selected="1"),
+                radioButtons("rangeStatSigmaCEP", label=h5("Estimate \U03C3 or CEP?"),
+                             c("Rayleigh sigma"="1", "Rayleigh CEP"="2"), selected="1"),
                 conditionalPanel(condition="(input.rangeStatSigmaCEP == '2')",
                                  sliderInput("rangeStatCEPLevel", label=h5("CEP level"),
                                  min=0, max=1, value=0.5, step=0.05)),
@@ -78,10 +77,10 @@ shinyUI(fluidPage(
             tabsetPanel(
                 #####-----------------------------------------------------------
                 ## Range statistics -> Rayleigh sigma
-                tabPanel(div("Range statistics", icon("arrow-right", lib="glyphicon"),"Rayleigh \\(\\sigma\\)"),
+                tabPanel(div("Range statistics", icon("arrow-right", lib="glyphicon"),"Rayleigh \U03C3"),
                     h6("Background information"),
                     p("Assuming a circular bivariate normal shot distribution, this
-                      panel estimates the Rayleigh \\(\\sigma\\) parameter from
+                      panel estimates the Rayleigh \U03C3 parameter from
                       measured range statistics in a given number of shots per
                       group, averaged over a given number of groups.", br(),
                       "Distance to target, and information on the measurement
@@ -105,7 +104,7 @@ shinyUI(fluidPage(
                     p("Assuming a circular bivariate normal shot distribution, this
                       panel calculates the number of groups required to achieve
                       the desired coverage (level) for the confidence interval (CI)
-                      for the Rayleigh \\(\\sigma\\) parameter, given the number
+                      for the Rayleigh \U03C3 parameter, given the number
                       of shots per group, the desired CI width, and the type of
                       measured group statistic.", br(),
                       "The CI width is 2*E, where E is
@@ -135,7 +134,7 @@ shinyUI(fluidPage(
                     h6("Background information"),
                     p("Assuming a circular bivariate normal shot distribution, this
                       panel calculates the width of the confidence interval (CI)
-                      for the Rayleigh \\(\\sigma\\) parameter, given the number of
+                      for the Rayleigh \U03C3 parameter, given the number of
                       shots per group, the number of groups, the desired coverage
                       (level) for the CI, and the type of measured group statistic.", br(),
                       "The CI width is 2*E, where E is the width as a fraction of
@@ -159,32 +158,32 @@ shinyUI(fluidPage(
                 ## about
                 tabPanel("About",
                     h6("About shotGroups"),
-                    p("The", a("shotGroups", href="http://CRAN.R-project.org/package=shotGroups"),
-                      "package for", a("R", href="http://www.r-project.org/"),
+                    p("The", a("shotGroups", href="https://cran.R-project.org/package=shotGroups"),
+                      "package for", a("R", href="https://www.r-project.org/"),
                       "provides functions to read in, plot,
                       statistically describe, analyze, and compare shooting data with respect
                       to group shape, precision, and accuracy. This includes graphical methods,
                       descriptive statistics, and inference tests using standard, but also
                       non-parametric and robust statistical methods. The data can be imported
                       from files produced by",
-                      a("OnTarget PC and OnTarget TDS", href="http://ontargetshooting.com/tds/"), ", ",
+                      a("OnTarget PC and OnTarget TDS", href="https://ontargetshooting.com/tds/"), ", ",
                       a("TARAN", href="http://taran.ptosis.ch/"), ", ",
                       a("ShotMarker e-target", href="https://www.autotrickler.com/shotmarker.html"), ", ",
                       a("Silver Mountain e-target", href="https://www.silvermountaintargets.com/"), ", ",
                       "or from custom data files in text format with a similar structure.
                       For further explanations and an example walkthrough, see the",
                       a("package vignette",
-                        href="http://cran.rstudio.com/web/packages/shotGroups/vignettes/shotGroups.pdf"),
+                        href="https://cran.rstudio.com/web/packages/shotGroups/vignettes/shotGroups.pdf"),
                       "."),
                     p("shotGroups and this web application are written by:", br(),
                       "Daniel", HTML("Wollschl&auml;ger"),
                       a("<dwoll@kuci.org>", href="mailto:dwoll@kuci.org"), br(),
                       "Source code shotGroups:",
-                      a("http://github.com/dwoll/shotGroups/",
-                        href="http://github.com/dwoll/shotGroups/"), br(),
+                      a("https://github.com/dwoll/shotGroups/",
+                        href="https://github.com/dwoll/shotGroups/"), br(),
                       "Source code for this Shiny app:",
-                      a("http://github.com/dwoll/shotGroupsRangeStat/",
-                        href="http://github.com/dwoll/shotGroupsRangeStat/")),
+                      a("https://github.com/dwoll/shotGroupsRangeStat/",
+                        href="https://github.com/dwoll/shotGroupsRangeStat/")),
 
                     h6("More shotGroups web applications"),
                     p("Comprehensive shot group analysis:",

@@ -54,7 +54,7 @@ IEEE Transactions on Information Theory, 21 (1), 95-96
 Paris, JF. 2009. Nakagami-q (Hoyt) distribution function with applications.
 Electronics Letters, 45(4). 210-211. Erratum: doi:10.1049/el.2009.0828
 
-\url{http://reference.wolfram.com/language/ref/HoytDistribution.html}
+\url{https://reference.wolfram.com/language/ref/HoytDistribution.html}
 }
 \seealso{
 \code{\link[shotGroups]{getHoytParam}},

@@ -34,7 +34,7 @@ The parameter \code{scale} may be determined with \code{\link[shotGroups]{getRay
 See \code{\link[shotGroups]{Maxwell}} for the distribution of radial error around the true center of uncorrelated trivariate normal variables with equal variances. See \code{\link[shotGroups]{Hoyt}} for the distribution of radial error around the true center of correlated bivariate normal variables with unequal variances. See \code{\link[shotGroups]{Rice}} for the distribution of radial error around an offset center for uncorrelated bivariate normal variables with equal variances. See \code{\link[shotGroups]{mvnEll}} for the distribution of radial error around an offset center for correlated normal variables with unequal variances.
 }
 \references{
-\url{http://reference.wolfram.com/language/ref/RayleighDistribution.html}
+\url{https://reference.wolfram.com/language/ref/RayleighDistribution.html}
 }
 \seealso{
 \code{\link[shotGroups]{getRayParam}},

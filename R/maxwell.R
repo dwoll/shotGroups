@@ -1,5 +1,5 @@
 ## Maxwell-Boltzmann distribution
-## http://de.scribd.com/doc/23073705/Maxwell-Distribution-Rev3
+## https://de.scribd.com/document/23073705/Maxwell-Distribution-Rev3
 
 #####---------------------------------------------------------------------------
 ## Maxwell-Boltzmann distribution

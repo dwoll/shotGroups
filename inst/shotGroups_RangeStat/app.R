@@ -21,11 +21,10 @@ shinyApp(
     #####-----------------------------------------------------------------------
     ui=dashboardPage(
         # theme = "custom.css",
-        withMathJax(),
         title="Estimate Rayleigh sigma from range statistics using shotGroups",
         sidebar=source("app_ui_sidebar.R", encoding="UTF8")$value,
         header=dashboardHeader(
-            tags$code(tags$h3("Estimate Rayleigh sigma from range statistics using 'shotGroups'"))
+            tags$code(tags$h3("Estimate Rayleigh \U03C3 from range statistics using 'shotGroups'"))
         ),
         body=dashboardBody(
             bs4TabItems(

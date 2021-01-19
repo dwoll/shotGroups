@@ -1,7 +1,8 @@
 # TODO
 
  * bs4Dash shiny app: active distance to target should depend on current group selection
- * http://CRAN.R-project.org/package=momentchi2
+ * https://CRAN.R-project.org/package=momentchi2
+ * check handle.dtic.mil URLs in references
 
 ## Short / medium term
 ### Misc
