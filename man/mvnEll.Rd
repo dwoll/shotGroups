@@ -8,12 +8,15 @@
 Probability of an offset ellipsoid for a correlated multivariate normal distribution. Offset circle probabilities are a special case.
 }
 \usage{
-pmvnEll(r=1, sigma = diag(2), mu, e, x0, lower.tail = TRUE)
+pmvnEll(r=1, sigma = diag(2), mu, e, x0, lower.tail = TRUE,
+        method_cdf = c('integrate', 'saddlepoint'))
+        
 qmvnEll(p,   sigma = diag(2), mu, e, x0, lower.tail = TRUE,
-        loUp=NULL)
+        loUp=NULL, method_cdf = c('integrate', 'saddlepoint'))
 
 rmvnEll(n,   sigma = diag(2), mu, e, x0,
-        method = c('eigen', 'chol', 'cdf'), loUp=NULL)
+        method = c('eigen', 'chol', 'cdf'), loUp=NULL,
+        method_cdf = c('integrate', 'saddlepoint'))
 }
 \arguments{
   \item{r}{vector of radii for the offset ellipse defined by \code{e}.}
@@ -26,6 +29,7 @@ rmvnEll(n,   sigma = diag(2), mu, e, x0,
   \item{method}{string indicating which method to use for generating random deviates. See details.}
   \item{loUp}{search interval for numerical root finding. Either a vector with the lower and upper interval boundary, a list of such vectors, or an (n x 2)-matrix. See details.}
   \item{lower.tail}{logical. If \code{TRUE} (default), probabilities are \eqn{P[X \le x]} otherwise, \eqn{P[X > x]}.}
+  \item{method_cdf}{string indicating which method to use for calculating the sum of non-central chi^2 variables. See details.}
 }
 \value{
 \code{pmvnEll} integrates the multivariate normal distribution over an arbitrary ellipsoid and thus gives the cumulative distribution function. \code{qmvnEll} gives the quantile function, \code{rmvnEll} generates random deviates.
@@ -33,7 +37,7 @@ rmvnEll(n,   sigma = diag(2), mu, e, x0,
 The functions are vectorized in \code{r} and \code{p} but not in the remaining parameters.
 }
 \details{
-\code{pmvnEll} is implemented by first transforming the integration region to the unit disc/sphere, then decorrelating the normal distribution through rotation, and finally applying \code{\link[CompQuadForm]{farebrother}} to calculate the quadratic form.
+\code{pmvnEll} is implemented by first transforming the integration region to the unit disc/sphere, then decorrelating the normal distribution through rotation. Finally, the quadratic form (sum of non-central chi^2 variables) is calculated depending on \code{method_cdf}. For \code{method_cdf='integrate'}, numerical integrationusing \code{\link[CompQuadForm]{farebrother}} is chosen, for \code{method_cdf='saddlepoint'}, Kuonen's (1999) saddlepoint approximation. Note that the equation for the cumulant generating function K has a missing zeta in the numerator of the second term in Kuonen (1999), see Imhof (1961) instead. Lower tail probabilities are calculated as '1 - upper tail probability', so loss of accuracy is likely when the true upper tail probability is very small (<1e-9).
 
 \code{qmvnEll} is implemented through numerical root finding of \code{pmvnEll}. If no search interval for \code{\link[stats]{uniroot}} is provided, the quantiles of an approximating non-central chi^2 distribution are used to determine the search intervals.
 
@@ -49,7 +53,12 @@ DiDonato, A. R., & Jarnagin, M. P. (1961b). Integration of the general bivariate
 
 Duchesne, P., & Lafaye de Micheaux, P. (2010). Computing the distribution of quadratic forms:
 Further comparisons between the Liu-Tang-Zhang approximation and exact methods.
-Computational Statistics and Data Analysis, 54 , 858-862.
+Computational Statistics and Data Analysis, 54, 858-862.
+
+Imhof, J. P. (1961). Computing the distribution of quadratic forms in normal variables. Biometrika, 48, 419-426.
+
+Kuonen D. (1999). Saddlepoint Approximations for Distributions of Quadratic Forms
+## in Normal Variables. Biometrika, 86, 929-935.
 }
 \seealso{
 \code{\link[shotGroups]{Hoyt}},

@@ -9,7 +9,7 @@
 Package: \tab shotGroups\cr
 Type: \tab Package\cr
 Version: \tab 0.8\cr
-Date: \tab 2020-11-28\cr
+Date: \tab 2021-01-19\cr
 Depends: \tab R (>= 3.4.0)\cr
 Imports: \tab boot, coin, CompQuadForm (>= 1.4.2), graphics, grDevices, KernSmooth, robustbase, stats, tools, utils\cr
 Suggests: \tab knitr, energy, mvoutlier, shiny, jsonlite, interp, MBA, bs4Dash\cr

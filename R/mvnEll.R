@@ -5,9 +5,15 @@
 ## e characterizes the integration ellipsoid: (x-x0)' e (x-x0) < r^2 -> e = S^{-1}
 ## cdf
 pmvnEll <-
-function(r=1, sigma=diag(2), mu, e, x0, lower.tail=TRUE) {
-    sigma <- as.matrix(sigma)
-    e     <- as.matrix(e)
+function(r=1, sigma=diag(2), mu, e, x0, lower.tail=TRUE,
+         method_cdf=c("integrate", "saddlepoint")) {
+    method_cdf <- match.arg(method_cdf)
+    if(method_cdf == "integrate" && !(requireNamespace("CompQuadForm", quietly=TRUE))) {
+        stop("Please install package 'CompQuadForm' for integration, or use saddlepoint approximation")
+    }
+    
+    sigma  <- as.matrix(sigma)
+    e      <- as.matrix(e)
     if(missing(mu)) { mu <- numeric(ncol(sigma)) }
     if(missing(x0)) { x0 <- numeric(ncol(sigma)) }
     if(missing(e))  { e  <- diag(ncol(sigma)) }
@@ -45,9 +51,15 @@ function(r=1, sigma=diag(2), mu, e, x0, lower.tail=TRUE) {
 
     ## non-centrality parameters
     ncp <- xmu2^2 / S1eig$values
-    cqf <- vapply(r[keep], function(x) {
-        CompQuadForm::farebrother(x^2, lambda=S1eig$values, delta=ncp)$Qq
-    }, numeric(1))
+    cqf <- if(method_cdf == "integrate") {
+        vapply(r[keep], function(x) {
+            CompQuadForm::farebrother(x^2, lambda=S1eig$values, delta=ncp)$Qq
+        }, numeric(1))
+    } else if(method_cdf == "saddlepoint") {
+        vapply(r[keep], function(x) {
+            saddlepoint(x^2, lambda=S1eig$values, delta=ncp)
+        }, numeric(1))
+    } else { stop("Wrong method_cdf") }
 
     ## NA, NaN, -Inf, Inf (-Inf, Inf will be changed hereafter)
     pp[!is.finite(r)] <- NA_real_
@@ -70,7 +82,8 @@ function(r=1, sigma=diag(2), mu, e, x0, lower.tail=TRUE) {
 
 ## quantile function
 qmvnEll <-
-function(p, sigma=diag(2), mu, e, x0, lower.tail=TRUE, loUp=NULL) {
+function(p, sigma=diag(2), mu, e, x0, lower.tail=TRUE, loUp=NULL,
+         method_cdf=c("integrate", "saddlepoint")) {
     sigma <- as.matrix(sigma)
     e     <- as.matrix(e)
     if(missing(mu)) { mu <- numeric(ncol(sigma)) }
@@ -79,6 +92,8 @@ function(p, sigma=diag(2), mu, e, x0, lower.tail=TRUE, loUp=NULL) {
     if(!isTRUE(all.equal(sigma, t(sigma)))) { stop("sigma must be symmetric") }
     if(!isTRUE(all.equal(e, t(e))))         { stop("e must be symmetric") }
 
+    method_cdf <- match.arg(method_cdf)
+    
     ## checks on mu, sigma, e are done in getGrubbsParam(), pmvnEll()
     ## initialize quantiles to NA
     qq   <- rep(NA_real_, length(p))
@@ -110,7 +125,8 @@ function(p, sigma=diag(2), mu, e, x0, lower.tail=TRUE, loUp=NULL) {
     }
 
     cdf <- function(r, p, x0, e, mu, sigma, lower.tail) {
-        pmvnEll(r=r, sigma=sigma, mu=mu, e=e, x0=x0, lower.tail=lower.tail) - p
+        pmvnEll(r=r, sigma=sigma, mu=mu, e=e, x0=x0, lower.tail=lower.tail,
+                method_cdf=method_cdf) - p
     }
 
     getQ <- function(p, x0, e, mu, sigma, loUp, lower.tail) {
@@ -128,7 +144,8 @@ function(p, sigma=diag(2), mu, e, x0, lower.tail=TRUE, loUp=NULL) {
 
 ## random variates
 rmvnEll <-
-function(n, sigma=diag(2), mu, e, x0, method=c("eigen", "chol", "cdf"), loUp=NULL) {
+function(n, sigma=diag(2), mu, e, x0, method=c("eigen", "chol", "cdf"),
+         loUp=NULL, method_cdf=c("integrate", "saddlepoint")) {
     sigma <- as.matrix(sigma)
     e     <- as.matrix(e)
     if(missing(mu)) { mu <- numeric(ncol(sigma)) }
@@ -137,7 +154,8 @@ function(n, sigma=diag(2), mu, e, x0, method=c("eigen", "chol", "cdf"), loUp=NUL
     if(!isTRUE(all.equal(sigma, t(sigma)))) { stop("sigma must be symmetric") }
     if(!isTRUE(all.equal(e, t(e))))         { stop("e must be symmetric") }
 
-    method <- match.arg(method)
+    method     <- match.arg(method)
+    method_cdf <- match.arg(method_cdf)
 
     ## checks on mu, sigma, e are done in getGrubbsParam(), pmvnEll()
     ## if n is a vector, its length determines number of random variates
@@ -168,7 +186,7 @@ function(n, sigma=diag(2), mu, e, x0, method=c("eigen", "chol", "cdf"), loUp=NUL
         ## root finding of pmvnEll() given uniform random probabilities:
         ## find x such that F(x) - U = 0
         cdf <- function(x, u, sigma, mu, e, x0) {
-            pmvnEll(x, sigma=sigma, mu=mu, e=e, x0=x0) - u
+            pmvnEll(x, sigma=sigma, mu=mu, e=e, x0=x0, method_cdf=method_cdf) - u
         }
 
         ## find quantile via uniroot() with error handling

@@ -1,22 +1,22 @@
-## getMinCirc() requires no collinear points on convex hull
+## getMinCirc() requires convex hull without collinear points
 ## https://stackoverflow.com/q/64866942/484139
 
-## identify collinear points from convex hull
+## identify collinear points on convex hull
 ## assumes that points in xy are already oredered
 idCollinear <-
 function(xy) {
     if(!is.matrix(xy))  { stop("xy must be a matrix") }
     if(!is.numeric(xy)) { stop("xy must be numeric") }
     if(nrow(xy) < 3L)   { stop("xy must have at least 3 points") }
-    if(ncol(xy) != 2L)  { stop("xy must have at two columns") }
-    
+    if(ncol(xy) != 2L)  { stop("xy must have 2 columns") }
+
     n    <- nrow(xy)
     idx  <- seq_len(n)
     post <- (idx %% n) + 1              # next point in S
     prev <- idx[order(post)]            # previous point in S
-    
+
     del <- integer(0)
-    ## check all sets of 3 points if they lie in 1D sub-space
+    ## check all sets of 3 consecutive points if they lie in 1D sub-space
     for(i in idx) {
         pts <- rbind(xy[prev[i], ],
                      xy[i, ],
@@ -26,7 +26,7 @@ function(xy) {
             del[length(del) + 1] <- i
         }
     }
-    
+
     del
 }
 
@@ -161,16 +161,17 @@ function(xy) {
     H    <- chull(xy)      # convex hull indices (vertices ordered clockwise)
     hPts <- xy[H, ]        # points that make up the convex hull
 
+    ## remove collinear points on convex hull, if any
     del <- idCollinear(hPts)
     if(length(del) >= 1L) {
         H    <- H[-del]
         hPts <- hPts[-del, ]
-        
+
         if(length(H) < 2L) {
-            stop("less than 2 points left after removing collinear points")
+            stop("less than 2 points left after removing collinear points on convex hull")
         }
     }
-    
+
     ## min circle may touch convex hull in only two points
     ## if so, it is centered between the hull points with max distance
     maxPD   <- getMaxPairDist(hPts)

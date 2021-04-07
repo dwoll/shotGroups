@@ -1,8 +1,14 @@
-$Date: 2021-01-15 19:18:29 +0000 (Fri, 15 Jan 2021) $
+$Date: 2021-04-06 19:18:29 +0000 (Tue, 06 Apr 2021) $
 
 SHOTGROUPS RELEASE VERSIONS at https://cran.r-project.org/
 
-Version 0.8 (January 15, 2021)
+Version 0.8.1 (April 06, 2021)
+    * pmvnEll()
+      - implement Kuonen's (1999) saddlepoint approximation for
+        quadratic forms of normal random variables as
+        an alternative to numerical integration.
+
+Version 0.8 (January 19, 2021)
     * runGUI()
       - all shiny apps are now dashboards based on package bs4Dash
     * getMinCirc()
