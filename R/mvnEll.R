@@ -51,7 +51,11 @@ function(r=1, sigma=diag(2), mu, e, x0, lower.tail=TRUE,
 
     ## non-centrality parameters
     ncp <- xmu2^2 / S1eig$values
-    cqf <- if(method_cdf == "integrate") {
+    
+    ## catch 1D case
+    cqf <- if(length(S1eig$values) == 1L) {
+        pchisq(r[keep]^2/S1eig$values, df=1, ncp=ncp, lower.tail=FALSE)
+    } else if(method_cdf == "integrate") {
         vapply(r[keep], function(x) {
             CompQuadForm::farebrother(x^2, lambda=S1eig$values, delta=ncp)$Qq
         }, numeric(1))

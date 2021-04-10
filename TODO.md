@@ -1,22 +1,20 @@
 # TODO
 
  * bs4Dash shiny app: active distance to target should depend on current group selection
- * check handle.dtic.mil URLs in references
- * implement Patnaik, Pearson, Liu in pmvnell()
 
 ## Short / medium term
 ### Misc
 
- * Switch to `rrcov::CovMrcd()` from `robustbase::covMcd()`?
- * Gammon 2017 Shot Group Statistics p25 ex16
  * `readData()` function that uses `file=Sys.glob("*pat1/*.csv")` and option `type` to select input file type
- * Rayleigh order stats estimators from lstange/mcgs
 
 ### Statistics
 
+ * Gammon 2017 Shot Group Statistics p25 ex16
  * `polyCub::polyCub()` for integration of other multivariate distribution functions over elliptical domain like in `pmvnEll()`
+ * `polyCub::polyCub()` for integration of multivariate normal distribution over polygons like in `pmvnEll()`
  * Zhang & An 2012 CEP estimator - general case and Rice case
  * CEP CIs: parametric, delta method with (parametric) bootstrap calibration
+ * Rayleigh order stats estimators from lstange/mcgs
 
 ### Sugar
 
