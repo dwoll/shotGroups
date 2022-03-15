@@ -20,7 +20,11 @@ A list containing the center and radius of the circle.
 \item{rad}{a numerical value giving the radius of the circle.}
 }
 \references{
+Computational Geometry Algorithms Library. 2021. CGAL Chapter 65: Bounding Volumes. \url{https://doc.cgal.org/Manual/latest/doc_html/cgal_manual/Bounding_volumes/Chapter_main.html}
+Fischer, K.; Gaertner, B.; Kutz, M. 2003. Fast smallest-enclosing-ball computation in high dimensions. In: Proceedings of the 11th  European Symposium on Algorithms (ESA), 630-641. \url{https://github.com/hbf/miniball}
+Gaertner, B. 2021. Miniball: Smallest Enclosing Balls of Points. \url{https://people.inf.ethz.ch/gaertner/subdir/software/miniball.html}
 Skyum, S. 1991. A simple algorithm for computing the smallest enclosing circle. Information Processing Letters 37(3), 121-125.
+Welzl, E. 1991. Smallest enclosing disks (balls and ellipsoids). In: Maurer H. (eds), New Results and New Trends in Computer Science 555, 359-370. doi 10.1007/BFb0038202.
 }
 \seealso{
 \code{\link[shotGroups]{drawCircle}},

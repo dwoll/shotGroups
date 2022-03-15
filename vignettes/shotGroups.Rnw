@@ -339,8 +339,8 @@ The following functions can be used to calculate so-called range statistics. The
 
 \begin{itemize}
 \item \texttt{getBoundingBox()}: Calculates the vertices, length of diagonal, and figure of merit (FoM) of the axis-aligned bounding box. This is the smallest rectangle that contains all points (bullet hole centers), and has edges parallel to the $x$- and $y$-axis.
-\item \texttt{getMinBBox()}: Calculates the vertices, length of diagonal, and figure of merit (FoM) of the minimum-area bounding box. This is the smallest, possibly oriented rectangle that contains all points (bullet hole centers). Uses the rotating calipers algorithm \cite{Toussaint1983}.
-\item \texttt{getMinCircle()}: Calculates center and radius of the minimum enclosing circle. This is the smallest circle that contains all points (bullet hole centers). Uses the Skyum algorithm \cite{Skyum1991}.
+\item \texttt{getMinBBox()}: Calculates the vertices, length of diagonal, and figure of merit (FoM) of the minimum-area bounding box. This is the smallest, possibly oriented rectangle that contains all points (bullet hole centers). Uses an approach similar to the rotating calipers algorithm \cite{Toussaint1983}.
+\item \texttt{getMinCircle()}: Calculates center and radius of the minimum enclosing circle. This is the smallest circle that contains all points (bullet hole centers). Uses the Skyum algorithm \cite{Skyum1991}. Note that faster and likely more numerically stable algorithms exist, also for generalizing the problem to higher dimensions \cite{Fischer2003,CGAL2021,Gartner2022}.
 \item \texttt{getMaxPairDist()}: Calculates the maximum of all pairwise distances between points -- also called extreme spread, or group size.
 \item \texttt{getDistToCtr()}: Calculates the distances of a set of points to their center. The mean or median can then be taken as a precision measure. The mean distance to group center is not a range statistic as it includes information from all shots.
 \end{itemize}
@@ -489,7 +489,7 @@ The following list is not intended to be complete. Beware that the quality of th
 \begin{itemize}
 \item Articles that develop a CEP estimator or the modification of one -- e.\,g., RAND-234 \cite{RAND1952}, modified RAND-234 \cite{Pesapane1977}, \citeA{Grubbs1964a}, Rayleigh \cite{Culpepper1978,Saxena2005,Singh1992}, \citeA{Ethridge1983}, \citeA{Bell1973}, \citeA{Nicholson1974}, \citeA{Siouris1993}, \citeA{Krempasky2003}, \citeA{Ignani2010}, correlated bivariate normal \cite{DiDonato1961a,Evans1985,Winkler2012}, and Bayes \cite{Spall1992}.
 \item Some articles focus on the confidence intervals for CEP \cite{DiDonato2007,Sathe1991,Taub1983b,Thomas1973a,Thomas1974,Zhang2012}.
-\item Articles or Master's theses comparing the characteristics of CEP estimators in different scenarios \cite{Blischke1966,Elder1986,Kamat1962,McMillan2008,Moranda1959,Moranda1960,Nelson1988,Puhek1992,Tongue1993,Taub1983a,Wang2013a,Wang2013b,Wang2014,Williams1997}.
+\item Articles, technical reports or Master's theses comparing the characteristics of CEP estimators in different scenarios \cite{Blischke1966,Elder1986,Kamat1962,McMillan2008,Moranda1959,Moranda1960,Nelson1988,Puhek1992,Tongue1993,Taub1983a,Wang2013a,Wang2013b,Wang2014,Williams1997,Carlson2021}.
 \item Publications studying the correlated bivariate normal distribution with mean $0$ re-written in polar coordinates radius and angle \cite{Chew1962,Greenwalt1962,Harter1960,Hoover1984,Hoyt1947,Weingarten1961}. The distribution of the radius is known as the Hoyt \citeyear{Hoyt1947} distribution. The closed form expression for its cumulative distribution function has only recently been identified as the symmetric difference between two first-order Marcum $Q$-functions \cite{Marcum1950,Paris2009a,Paris2009b}. The latter are special cases of the non-central $\chi^{2}$-distribution \cite{Nuttall1975}. A nearly correct closed-form solution for the 50\% quantile is given by \citeA{Krempasky2003}. \citeA{Childs1975} and \citeA{Ignani2010} provide polynomial approximations for the 50\%, 90\%, 95\%, and 99\% quantile. The statistical literature on coverage problems in the multivariate normal distribution is reviewed in \citeA{Guenther1964}. From the perspective of radio engineering, \citeA{Beckmann1962, Beckmann1964} works out the relationship between the Rayleigh, Rice and Hoyt distribution and their generalization.
 \item \citeA{Cadwell1964,DiDonato1961a,DiDonato1961b,DiDonato1962a,DiDonato1962b,Evans1985,Gilliland1962,Gilliland1974,Moranda1960} as well as \citeA{Ager2004,Bell1973,Evans1985,Shultz1963} develop methods to use the correlated bivariate normal distribution for CEP estimation when systematic accuracy bias must be taken into account. This requires integrating the distribution over a disc that is not centered on the true mean of the shot group but on the point of aim. This so-called \emph{offset circle probability} is the probability of a quadratic form of a normal variable \cite{Duchesne2010}. The exact distribution of quadratic forms is a weighted average of non-central $\chi^{2}$-distributions and difficult to calculate without numerical tools. Therefore, the \citeA{Patnaik1949} two-moment central $\chi^{2}$-approximation or the Pearson \cite{Imhof1961,Pearson1959} three-moment central $\chi^{2}$-approximation are often used. \citeA{Liu2009} proposed a four-moment non-central $\chi^{2}$-approximation.
 \item A number of articles present algorithms for the efficient numerical calculation of the Hoyt cumulative distribution function (cdf), as well as for its inverse, the quantile function \cite{DiDonato2004,DiDonato2007,Gillis1991,Govindarajulu1986,Pyati1993,Rogers1993,Shnidman1995}. Algorithms to efficiently and precisely calculate the distribution of general quadratic forms of normal random variables include numerical integration \citeA{Davies1980,Farebrother1984,Farebrother1990,Imhof1961,Sheil1977} and the saddlepoint approximation \cite{Kuonen1999}. A comparison and implementation can be found in \citeA{Duchesne2010}. Other comparisons include \citeA{Bodenham2016} and \citeA{Chen2019}.
@@ -569,6 +569,8 @@ pmvnEll(1.5, sigma=4, mu=0, e=1, x0=0)
 ## 2D - Rayleigh distribution
 pRayleigh(1.5, scale=2)
 pmvnEll(1.5, sigma=diag(rep(4, 2)), mu=rep(0, 2), e=diag(2), x0=rep(0, 2))
+pmvnEll(1.5, sigma=diag(rep(4, 2)), mu=rep(0, 2), e=diag(2), x0=rep(0, 2),
+        method_cdf="saddlepoint")
 
 ## 3D - Maxwell-Boltzmann distribution
 pMaxwell(1.5, sigma=2)
@@ -792,7 +794,7 @@ The angular size of an object with absolute size $s$ is its angular diameter at 
 \label{fig:anglesCenter}
 \end{figure}
 
-The \texttt{shotGroups} package includes functions \texttt{getMOA()} and \texttt{fromMOA()} to convert from absolute object size to the angular diameter in degree, MOA, SMOA, radian, mrad, NATO mil and vice versa. The functions need the distance to target $d$, object sizes $s$ and measurement units for $d$ and $s$. The option \texttt{type} controls which angular measure is returned:
+The \texttt{shotGroups} package includes functions \texttt{getMOA()} and \texttt{fromMOA()} to convert from absolute object size to the angular diameter in degree, MOA, SMOA, radian, mrad, NATO mil, and vice versa. The functions need the distance to target $d$, object sizes $s$ and measurement units for $d$ and $s$. The option \texttt{type} controls which angular measure is returned:
 
 \begin{itemize}
 \item \texttt{type="deg"}: Convert to/from angle in degree, where the circle is divided into 360 degrees.

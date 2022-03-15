@@ -1,5 +1,6 @@
 # TODO
 
+ * Welzl, Emo. Smallest enclosing disks (balls and ellipsoids). Springer Berlin Heidelberg, 1991
  * bs4Dash shiny app: active distance to target should depend on current group selection
 
 ## Short / medium term

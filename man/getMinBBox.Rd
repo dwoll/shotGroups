@@ -24,7 +24,8 @@ A list with the following information about the minimum-area bounding box:
 \item{angle}{orientation of the box' longer edge pointing up as returned by \code{\link{atan2}}, but in degree.}
 }
 \references{
-Toussaint, G. T. (1983). Solving geometric problems with the rotating calipers. In Proceedings of the 1983 IEEE MELECON. Athens, Greece: IEEE Computer Society.
+Computational Geometry Algorithms Library. 2021. CGAL Chapter 65: Bounding Volumes. \url{https://doc.cgal.org/Manual/latest/doc_html/cgal_manual/Bounding_volumes/Chapter_main.html}
+Toussaint, G. T. 1983. Solving geometric problems with the rotating calipers. In: Proceedings of the 1983 IEEE MELECON. Athens, Greece: IEEE Computer Society.
 }
 \seealso{
 \code{\link[shotGroups]{drawBox2}},

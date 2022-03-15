@@ -1,14 +1,14 @@
 Package: shotGroups
 Type: Package
 Title: Analyze Shot Group Data
-Version: 0.8.1
-Date: 2021-04-10
+Version: 0.8.1.0.999
+Date: 2021-09-10
 Author: Daniel Wollschlaeger
 Maintainer: Daniel Wollschlaeger <dwoll@kuci.org>
 Depends: R (>= 3.4.0)
 Imports: boot, coin, CompQuadForm (>= 1.4.2), graphics, grDevices,
          KernSmooth, robustbase, stats, tools, utils
-Suggests: knitr, energy, mvoutlier, shiny, jsonlite, interp, MBA, bs4Dash
+Suggests: knitr, markdown, energy, mvoutlier, shiny, jsonlite, interp, MBA, bs4Dash
 LazyData: yes
 VignetteBuilder: knitr
 Description: Analyzes shooting data with respect to group shape,
