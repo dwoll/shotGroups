@@ -60,8 +60,8 @@ function(x, stat="ES", n=5, nGroups=1, CIlevel=0.95, collapse=TRUE,
             ES_V    <- shotGroups::DFdistr$ES_V[idx]
             ESSQ_M  <- shotGroups::DFdistr$ESSQ_M[idx]
             ESSQ_V  <- shotGroups::DFdistr$ESSQ_V[idx]
-            ES_SKEW <- shotGroups::DFdistr$ES_SKEW[idx]
-            ES_KURT <- shotGroups::DFdistr$ES_KURT[idx]
+            # ES_SKEW <- shotGroups::DFdistr$ES_SKEW[idx]
+            # ES_KURT <- shotGroups::DFdistr$ES_KURT[idx]
         }
     } else {
         ## spline interpolation for sigma estimate - M is monotonically increasing in n
@@ -79,12 +79,13 @@ function(x, stat="ES", n=5, nGroups=1, CIlevel=0.95, collapse=TRUE,
             ES_V    <- splinefun(haveN, shotGroups::DFdistr$ES_V[idxGroup],    method="fmm")(n)
             ESSQ_M  <- splinefun(haveN, shotGroups::DFdistr$ESSQ_M[idxGroup],  method="monoH.FC")(n)
             ESSQ_V  <- splinefun(haveN, shotGroups::DFdistr$ESSQ_V[idxGroup],  method="fmm")(n)
-            #ES_SKEW <- splinefun(haveN, shotGroups::DFdistr$ES_SKEW[idxGroup], method="fmm")(n)
-            #ES_KURT <- splinefun(haveN, shotGroups::DFdistr$ES_KURT[idxGroup], method="fmm")(n)
+            # ES_SKEW <- splinefun(haveN, shotGroups::DFdistr$ES_SKEW[idxGroup], method="fmm")(n)
+            # ES_KURT <- splinefun(haveN, shotGroups::DFdistr$ES_KURT[idxGroup], method="fmm")(n)
         }
     }
 
     ## Rayleigh sigma estimate
+    ## M is for the sigma=1 case, range statistics are proportional to sigma
     sigma <- x/M
 
     ## need extreme spread for sigma CI

@@ -25,7 +25,7 @@ export(analyzeGroup,
        getRangeStat,
        getKuchnost,
        getBoundingBox, getConfEll, getDistToCtr,
-       getMaxPairDist, getMinBBox, getMinCircle, getXYmat,
+       getMaxPairDist, getMinBBox, getMinCircle, getMinEllipse, getXYmat,
        groupLocation, groupShape, groupSpread,
        readDataMisc, readDataOT1, readDataOT2, readDataSMT, readDataShotMarker,
        runGUI,
@@ -64,6 +64,8 @@ S3method(getMinBBox, data.frame)
 S3method(getMinBBox, default)
 S3method(getMinCircle, data.frame)
 S3method(getMinCircle, default)
+S3method(getMinEllipse, data.frame)
+S3method(getMinEllipse, default)
 S3method(getRangeStat, data.frame)
 S3method(getRangeStat, default)
 S3method(getRayParam, data.frame)

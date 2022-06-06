@@ -3,10 +3,10 @@
 \docType{data}
 \title{Lookup table for distribution of range statistics and Rayleigh sigma}
 \description{
-Lookup table for the distribution of range statistics and Rayleigh sigma from a Monte Carlo simulation of circular bivariate normal shot groups with 0 mean and variance 1 in both directions. Includes the first four moments and several quantiles of the distribution of extreme spread, figure of merit, bounding box diagonal, and Rayleigh sigma for each combination of number of shots per group and number of groups, repeated 2000000 times.}
+Lookup table for the distribution of range statistics and Rayleigh sigma from a Monte Carlo simulation of circular bivariate normal shot groups with 0 mean and variance 1 in both directions. Includes the first four moments and several quantiles of the distribution of extreme spread, figure of merit, bounding box diagonal, and Rayleigh sigma for each combination of number of shots per group and number of groups, repeated 10 million times.}
 \usage{data(DFdistr)}
 \format{
-  A data frame with 590 observations on the following 73 variables.
+  A data frame with 590 observations on the following 77 variables.
   \describe{
   \item{n}{number of shots in each group. One of 2, 3, ..., 49, 50, 45, ..., 95, 100.}
   \item{nGroups}{number of groups with individual simulated range statistics that were averaged over to yield the final value. One of 1, 2, ..., 9, 10.}
@@ -17,8 +17,8 @@ Lookup table for the distribution of range statistics and Rayleigh sigma from a 
   \item{ES_CV}{Extreme spread coefficient of variation over all Monte Carlo simulations}
   \item{ESSQ_M}{Squard extreme spread mean over all Monte Carlo simulations}
   \item{ESSQ_V}{Squared extreme spread variance over all Monte Carlo simulations}
-  \item{ES_SKEW}{Extreme spread skewness over all Monte Carlo simulations}
-  \item{ES_KURT}{Extreme spread kurtosis over all Monte Carlo simulations}
+  \item{ES_SKEW}{Extreme spread skewness over all Monte Carlo simulations (smoothed)}
+  \item{ES_KURT}{Extreme spread kurtosis over all Monte Carlo simulations (smoothed)}
   \item{ES_MED}{Extreme spread median (50\% quantile) over all Monte Carlo simulations}
   \item{ES_Q005}{Extreme spread 0.5\% quantile over all Monte Carlo simulations}
   \item{ES_Q025}{Extreme spread 2.5\% quantile over all Monte Carlo simulations}
@@ -35,8 +35,8 @@ Lookup table for the distribution of range statistics and Rayleigh sigma from a 
   \item{FoM_V}{Figure of merit variance over all Monte Carlo simulations}
   \item{FoM_SD}{Figure of merit standard deviation over all Monte Carlo simulations}
   \item{FoM_CV}{Figure of merit coefficient of variation over all Monte Carlo simulations}
-  \item{FoM_SKEW}{Figure of merit skewness over all Monte Carlo simulations}
-  \item{FoM_KURT}{Figure of merit kurtosis over all Monte Carlo simulations}
+  \item{FoM_SKEW}{Figure of merit skewness over all Monte Carlo simulations (smoothed)}
+  \item{FoM_KURT}{Figure of merit kurtosis over all Monte Carlo simulations (smoothed)}
   \item{FoM_MED}{Figure of merit median (50\% quantile) over all Monte Carlo simulations}
   \item{FoM_Q005}{Figure of merit 0.5\% quantile over all Monte Carlo simulations}
   \item{FoM_Q025}{Figure of merit 2.5\% quantile over all Monte Carlo simulations}
@@ -53,8 +53,8 @@ Lookup table for the distribution of range statistics and Rayleigh sigma from a 
   \item{D_V}{Bounding box diagonal variance over all Monte Carlo simulations}
   \item{D_SD}{Bounding box diagonal standard deviation over all Monte Carlo simulations}
   \item{D_CV}{Bounding box diagonal coefficient of variation over all Monte Carlo simulations}
-  \item{D_SKEW}{Bounding box diagonal skewness over all Monte Carlo simulations}
-  \item{D_KURT}{Bounding box diagonal kurtosis over all Monte Carlo simulations}
+  \item{D_SKEW}{Bounding box diagonal skewness over all Monte Carlo simulations (smoothed)}
+  \item{D_KURT}{Bounding box diagonal kurtosis over all Monte Carlo simulations (smoothed)}
   \item{D_MED}{Bounding box diagonal median (50\% quantile) over all Monte Carlo simulations}
   \item{D_Q005}{Bounding box diagonal 0.5\% quantile over all Monte Carlo simulations}
   \item{D_Q025}{Bounding box diagonal 2.5\% quantile over all Monte Carlo simulations}
@@ -71,8 +71,8 @@ Lookup table for the distribution of range statistics and Rayleigh sigma from a 
   \item{RS_V}{Rayleigh sigma variance over all Monte Carlo simulations}
   \item{RS_SD}{Rayleigh sigma standard deviation over all Monte Carlo simulations}
   \item{RS_CV}{Rayleigh sigma coefficient of variation over all Monte Carlo simulations}
-  \item{RS_SKEW}{Rayleigh sigma skewness over all Monte Carlo simulations}
-  \item{RS_KURT}{Rayleigh sigma kurtosis over all Monte Carlo simulations}
+  \item{RS_SKEW}{Rayleigh sigma skewness over all Monte Carlo simulations (smoothed)}
+  \item{RS_KURT}{Rayleigh sigma kurtosis over all Monte Carlo simulations (smoothed)}
   \item{RS_MED}{Rayleigh sigma median (50\% quantile) over all Monte Carlo simulations}
   \item{RS_Q005}{Rayleigh sigma 0.5\% quantile over all Monte Carlo simulations}
   \item{RS_Q025}{Rayleigh sigma 2.5\% quantile over all Monte Carlo simulations}
@@ -88,7 +88,9 @@ Lookup table for the distribution of range statistics and Rayleigh sigma from a 
  }
 }
 \details{
-The Monte Carlo distribution used 2000000 repetitions in each scenario. One scenario was a combination of the \code{n} shots in each group, and the \code{nGroups} groups over which individual range statistics were averaged. Values for \code{n} were 2, 3, ..., 49, 50, 45, ..., 95, 100. Values for \code{nGroups} were 1, 2, ... 9, 10.
+The Monte Carlo distribution used 10 million repetitions in each scenario. One scenario was a combination of the \code{n} shots in each group, and the \code{nGroups} groups over which individual range statistics were averaged. Values for \code{n} were 2, 3, ..., 49, 50, 45, ..., 95, 100. Values for \code{nGroups} were 1, 2, ... 9, 10.
+
+Skewness and kurtosis were smoothed using separate linear spline fits for each number of groups except for kurtosis of Rayleigh sigma which was fitted using the density of the gamma distribution. 
 
 Used in \code{\link[shotGroups]{range2sigma}} to estimate Rayleigh parameter sigma from range statistics, and in \code{\link[shotGroups]{efficiency}} to estimate the number of groups and total shots required to estimate the confidence interval (CI) for Rayleigh sigma with a given coverage probability (CI level) and width.
 

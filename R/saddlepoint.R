@@ -1,10 +1,10 @@
 #####---------------------------------------------------------------------------
-## saddlepoint approximation for the sum of non-central chi^2 variables
+## Saddlepoint approximation for the sum of non-central chi^2 variables
 ## Kuonen D. Saddlepoint Approximations for Distributions of Quadratic Forms
 ## in Normal Variables. Biometrika 1999; 86(4): 929-935.
 ## https://www.jstor.org/stable/2673596
 ## https://infoscience.epfl.ch/record/84834/files/860929.pdf
-## however, equations for K, K', K'' are incorrect as zeta is missing from
+## However, equations for K, K', K'' are incorrect as zeta is missing from
 ## the numerator of second term in cumulant generating function K
 ## see Imhof(1961) equation 2.3 https://doi.org/10.1093/biomet/48.3-4.419
 ## code adapted from Han Chen <Han.Chen.2 at uth.tmc.edu>

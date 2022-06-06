@@ -2,6 +2,15 @@ $Date: 2021-04-10 19:37:29 +0000 (Sat, 10 Apr 2021) $
 
 SHOTGROUPS RELEASE VERSIONS at https://cran.r-project.org/
 
+Version 0.8.1.0.999 (May 26, 2022)
+    * DFdistr
+      - increase simulation to 10 million runs per condition
+    * getMinCircle(), getMinBBox(), Vignette
+      - documentation update on algorithms for bounding volumes
+    * getMinEllipse()
+      - new function to calculate minimum bounding ellipse
+        for 2D-data or minimum bounding ellipsoid for 3D-data
+
 Version 0.8.1 (April 10, 2021)
     * pmvnEll()
       - implement Kuonen's (1999) saddlepoint approximation for

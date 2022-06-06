@@ -30,7 +30,7 @@ Example of a data frame from one file with one group of bullet holes.}
 \details{
 53 groups with 10 shots each of .22LR shot at Eley test center on Oct 2 2016 using a Stiller 2500X action at a distance of 50m. The measurement unit for coordinates is mm, for distance m. \cr
 This data frame is like those returned by \code{\link[shotGroups]{readDataOT1}}, \code{\link[shotGroups]{readDataOT2}}, or \code{\link[shotGroups]{readDataMisc}} with option \code{combine=TRUE}. \cr
-Data courtesy of Larry Landercasper, 2017. Analyzed by Albert Highe: \url{http://www.rimfireaccuracy.com/Forums/showthread.php/10397-Fun-with-Probabilities}
+Data courtesy of Larry Landercasper, 2017. Analyzed by Albert Highe.
 }
 \seealso{
 \code{\link[shotGroups]{combineData}},

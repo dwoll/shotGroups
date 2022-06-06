@@ -16,7 +16,7 @@
             fg = par('fg'), bg = NA, colCtr = NA, lty = par('lty'),
             lwd = par('lwd'), pch = par('pch'), cex = par('cex'))}
 \arguments{
-  \item{x}{either a numerical 2-vector giving the (x,y)-coordinates of the center or a list with the components \code{ctr}, \code{cov} and \code{magFac} as returned by \code{\link[shotGroups]{getConfEll}}.}
+  \item{x}{either a numerical 2-vector giving the (x,y)-coordinates of the center or a list with the components \code{ctr}, \code{cov} and \code{magFac} as returned by \code{\link[shotGroups]{getConfEll}} or \code{\link[shotGroups]{getMinEllipse}}.}
   \item{shape}{a numerical symmetric (2 x 2)-matrix whose eigen-structure determines the ellipse's shape.}
   \item{radius}{a numerical value giving the ellipse's magnification factor.}
   \item{nv}{number of vertices in the approximating polygon.}
@@ -32,7 +32,8 @@
 \details{This function is mainly a wrapper for \code{\link[graphics]{polygon}}.}
 \seealso{
 \code{\link[graphics]{polygon}},
-\code{\link[shotGroups]{getConfEll}}
+\code{\link[shotGroups]{getConfEll}},
+\code{\link[shotGroups]{getMinEllipse}}
 }
 \examples{
 ## error ellipse for a set of points
