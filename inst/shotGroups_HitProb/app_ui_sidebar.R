@@ -11,22 +11,26 @@ dashboardSidebar(
         menuItem(
             "Data",
             tabName="tab_data",
-            icon=icon("table", lib="font-awesome")
+            icon = tags$i(class = "far fa-circle")
+            # icon = icon("circle-thin", lib="font-awesome")
         ),
         menuItem(
             tagList("Hit probability", icon("arrow-right", lib="font-awesome"), "radius"),
             tabName="tab_radius",
-            icon=icon("circle-thin", lib="font-awesome")
+            icon = tags$i(class = "far fa-circle")
+            # icon = icon("circle-thin", lib="font-awesome")
         ),
         menuItem(
             tagList("Radius", icon("arrow-right", lib="font-awesome"), "hit probability"),
             tabName="tab_hit_probability",
-            icon=icon("circle-thin", lib="font-awesome")
+            icon = tags$i(class = "far fa-circle")
+            # icon = icon("circle-thin", lib="font-awesome")
         ),
         menuItem(
             "About",
             tabName="tab_about",
-            icon=icon("lightbulb", lib="font-awesome")
+            icon = tags$i(class = "far fa-circle")
+            # icon = icon("circle-thin", lib="font-awesome")
         ),
         tagList(br(), p("Current data:")),
         uiOutput("fileInfoShort")

@@ -19,17 +19,20 @@ dashboardSidebar(
         menuItem(
             tagList("Absolute", icon("arrow-right", lib="font-awesome"), "angular"),
             tabName="tab_angular",
-            icon=icon("circle-thin", lib="font-awesome")
+            icon = tags$i(class = "far fa-circle")
+            # icon = icon("circle-thin", lib="font-awesome")
         ),
         menuItem(
             tagList("Angular", icon("arrow-right", lib="font-awesome"), "absolute"),
             tabName="tab_absolute",
-            icon=icon("circle-thin", lib="font-awesome")
+            icon = tags$i(class = "far fa-circle")
+            # icon = icon("circle-thin", lib="font-awesome")
         ),
         menuItem(
             tagList("Abs+ang", icon("arrow-right", lib="font-awesome"), "distance"),
             tabName="tab_distance",
-            icon=icon("circle-thin", lib="font-awesome")
+            icon = tags$i(class = "far fa-circle")
+            # icon = icon("circle-thin", lib="font-awesome")
         ),
         menuItem(
             "About",
