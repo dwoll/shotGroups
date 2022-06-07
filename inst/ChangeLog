@@ -9,7 +9,8 @@ Version 0.8.1.0.999 (May 26, 2022)
       - documentation update on algorithms for bounding volumes
     * getMinEllipse()
       - new function to calculate minimum bounding ellipse
-        for 2D-data or minimum bounding ellipsoid for 3D-data
+    * groupSpread(), drawGroup(), runGUI()
+      - report / show minimum bounding ellipse
 
 Version 0.8.1 (April 10, 2021)
     * pmvnEll()
