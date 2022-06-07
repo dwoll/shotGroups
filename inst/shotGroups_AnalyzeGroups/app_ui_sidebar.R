@@ -15,22 +15,26 @@ dashboardSidebar(
             menuSubItem(
                 text = "Shape",
                 tabName="tab_group_shape",
-                icon = icon("circle-thin", lib="font-awesome")
+                icon = tags$i(class = "far fa-circle")
+                # icon = icon("circle-thin", lib="font-awesome")
             ),
             menuSubItem(
                 text = "Precision",
                 tabName="tab_group_precision",
-                icon = icon("circle-thin", lib="font-awesome")
+                icon = tags$i(class = "far fa-circle")
+                # icon = icon("circle-thin", lib="font-awesome")
             ),
             menuSubItem(
                 text = "Accuracy",
                 tabName="tab_group_accuracy",
-                icon = icon("circle-thin", lib="font-awesome")
+                icon = tags$i(class = "far fa-circle")
+                # icon = icon("circle-thin", lib="font-awesome")
             ),
             menuSubItem(
                 text = "Compare groups",
                 tabName="tab_group_compare",
-                icon = icon("circle-thin", lib="font-awesome")
+                icon = tags$i(class = "far fa-circle")
+                # icon = icon("circle-thin", lib="font-awesome")
             )
         ),
         menuItem(

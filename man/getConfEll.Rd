@@ -31,7 +31,7 @@ A list with the confidence ellipse measures.
 \item{covRob}{robust estimate of covariance matrix.}
 \item{size}{a numerical matrix with the lengths of the semi-axes of the ellipse (in original measurement units, MOA, SMOA, milliradian).}
 \item{sizeRob}{a numerical matrix with the lengths of the semi-axes of the ellipse based on a robust estimate for the covariance matrix of shot coordinates (in original measurement units, MOA, SMOA, milliradian).}
-\item{shape}{a numerical vector with the aspect ratio of the ellipse (square root of condition index \code{\link{kappa}}), its flattening (1 - inverse aspect ratio) as well as the trace and determinant of the covariance matrix.}
+\item{shape}{a numerical vector with the angle, the aspect ratio of the ellipse (square root of condition index \code{\link{kappa}}), its flattening (1 - inverse aspect ratio) as well as the trace and determinant of the covariance matrix.}
 \item{shapeRob}{a numerical vector with the aspect ratio and the flattening of the ellipse as well as the trace and determinant based on a robust estimate for the covariance matrix of shot coordinates.}
 \item{magFac}{magnification factor used to turn the error ellipse into the confidence ellipse as determined by the F(p, n-1)-distribution.}
 }

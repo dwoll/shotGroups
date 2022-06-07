@@ -1,6 +1,7 @@
 drawGroup <-
 function(xy, center=FALSE,
          xyTopLeft=TRUE, bb=FALSE, bbMin=FALSE, bbDiag=FALSE, minCirc=FALSE,
+         minEll=FALSE,
          maxSpread=FALSE, meanDist=FALSE, confEll=FALSE, CEP=FALSE, ringID=FALSE,
          valueID=TRUE,
          doRob=FALSE, level=0.95, scaled=TRUE, caliber=9,
@@ -11,6 +12,7 @@ function(xy, center=FALSE,
 drawGroup.data.frame <-
 function(xy, center=FALSE,
          xyTopLeft=TRUE, bb=FALSE, bbMin=FALSE, bbDiag=FALSE, minCirc=FALSE,
+         minEll=FALSE,
          maxSpread=FALSE, meanDist=FALSE, confEll=FALSE, CEP=FALSE, ringID=FALSE,
          valueID=TRUE,
          doRob=FALSE, level=0.95, scaled=TRUE, caliber=9,
@@ -41,7 +43,8 @@ function(xy, center=FALSE,
     center    <- FALSE                   # centering was done in getXYmat()
 
     drawGroup(xy=xy, center=center, xyTopLeft=xyTopLeft, bb=bb, bbMin=bbMin,
-              bbDiag=bbDiag, minCirc=minCirc, maxSpread=maxSpread,
+              bbDiag=bbDiag, minCirc=minCirc, minEll=minEll,
+              maxSpread=maxSpread,
               meanDist=meanDist, confEll=confEll, CEP=CEP, ringID=ringID,
               valueID=valueID,
               doRob=doRob, level=level, scaled=scaled, caliber=caliber,
@@ -52,6 +55,7 @@ function(xy, center=FALSE,
 drawGroup.default <-
 function(xy, center=FALSE,
          xyTopLeft=TRUE, bb=FALSE, bbMin=FALSE, bbDiag=FALSE, minCirc=FALSE,
+         minEll=FALSE,
          maxSpread=FALSE, meanDist=FALSE, confEll=FALSE, CEP=FALSE, ringID=FALSE,
          valueID=TRUE,
          doRob=FALSE, level=0.95, scaled=TRUE, caliber=9,
@@ -228,6 +232,19 @@ function(xy, center=FALSE,
                                   mCirc$ctr[2] - mCirc$rad)
     }
 
+    if(minEll) {                         # minimum enclosing ellipse
+        mEll <- getMinEllipse(xyNew)
+        res$minEll <- mEll
+        
+        ## for axis limits
+        axisLimsX <- c(axisLimsX,
+                       mEll$ctr[1] + mEll$size[1],
+                       mEll$ctr[1] - mEll$size[1])
+        axisLimsY <- c(axisLimsY,
+                       mEll$ctr[2] + mEll$size[1],
+                       mEll$ctr[2] - mEll$size[1])
+    }
+    
     if(maxSpread) {                      # maximum group spread
         maxPD <- getMaxPairDist(xyNew)
         res$maxPairDist <- maxPD$d
@@ -297,6 +314,7 @@ function(xy, center=FALSE,
             bbDiag=rgb( 77, 175,  74, maxColorValue=255),
          bbMinDiag=rgb(152,  78, 163, maxColorValue=255),
            minCirc=rgb(255, 127,   0, maxColorValue=255),
+            minEll=rgb(255, 162,  81, maxColorValue=255),
          maxSpread=rgb(255, 255,  51, maxColorValue=255),
           meanDist=rgb(166,  86,  40, maxColorValue=255),
            confEll=rgb(247, 129, 191, maxColorValue=255),
@@ -308,6 +326,7 @@ function(xy, center=FALSE,
             bbDiag=rgb(178, 223, 138, maxColorValue=255),
          bbMinDiag=rgb( 51, 160,  44, maxColorValue=255),
            minCirc=rgb(251, 154, 153, maxColorValue=255),
+            minEll=rgb(249,  92,  92, maxColorValue=255),
          maxSpread=rgb(227,  26,  28, maxColorValue=255),
           meanDist=rgb(253, 191, 111, maxColorValue=255),
            confEll=rgb(255, 127,   0, maxColorValue=255),
@@ -521,6 +540,39 @@ function(xy, center=FALSE,
             txtPos_Y  <- mCirc$ctr[2] + txtPos_XY[2, 1]
             text(x=txtPos_X, y=txtPos_Y, labels=round(mCirc$rad, 2),
                  srt=180*ang/pi, col=cols["minCirc"], adj=c(0.5, 0.5))
+        }
+    }
+    
+    if(minEll) {                         # minimum enclosing ellipse
+        drawEllipse(mEll, fg=cols["minEll"], lwd=2)
+        legText <- c(legText, "min ellipse")
+        legCol  <- c(legCol, cols["minEll"])
+        legLty  <- c(legLty, 1)
+        legLwd  <- c(legLwd, 2)
+        legPch  <- c(legPch, NA)
+        
+        if(valueID) {
+            txtPos_X_top <- 0
+            txtPos_Y_top <- mEll$size[1] + strheight("1234")
+            ang    <- -mEll$shape["angle"] * (pi/180)
+            rotMat <- matrix(c(cos(ang), sin(ang), -sin(ang), cos(ang)), nrow=2)
+            txtPos_XY <- rotMat %*% matrix(c(txtPos_X_top, txtPos_Y_top), nrow=2)
+            txtPos_X  <- mEll$ctr[1] + txtPos_XY[1, 1]
+            txtPos_Y  <- mEll$ctr[2] + txtPos_XY[2, 1]
+            text(x=txtPos_X, y=txtPos_Y,
+                 labels=round(mEll$size[1], 2),
+                 srt=180*ang/pi, col=cols["minEll"], adj=c(0.5, 0.5))
+            
+            txtPos_X_top <- 0
+            txtPos_Y_top <- mEll$size[2] + strheight("1234")
+            ang    <- -(mEll$shape["angle"]+90) * (pi/180)
+            rotMat <- matrix(c(cos(ang), sin(ang), -sin(ang), cos(ang)), nrow=2)
+            txtPos_XY <- rotMat %*% matrix(c(txtPos_X_top, txtPos_Y_top), nrow=2)
+            txtPos_X  <- mEll$ctr[1] + txtPos_XY[1, 1]
+            txtPos_Y  <- mEll$ctr[2] + txtPos_XY[2, 1]
+            text(x=txtPos_X, y=txtPos_Y,
+                 labels=round(mEll$size[2], 2),
+                 srt=180*ang/pi, col=cols["minEll"], adj=c(0.5, 0.5))
         }
     }
 

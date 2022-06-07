@@ -259,6 +259,12 @@ function(xy, center=FALSE, plots=TRUE, CEPlevel=0.5, CIlevel=0.95,
                               minCirc$ctr[2] - minCirc$rad)
 
     #####-----------------------------------------------------------------------
+    ## radii of minimum enclosing ellipse
+    minEll <- getMinEllipse(xy)          # minimum enclosing circle
+    res$minEll <- t(rbind(semi_major=makeMOA(minEll$size[1], dst=dstTarget, conversion=conversion),
+                          semi_minor=makeMOA(minEll$size[2], dst=dstTarget, conversion=conversion)))
+    
+    #####-----------------------------------------------------------------------
     ## confidence ellipse measures
     confEll     <- getConfEll(xy, CEPlevel, dstTarget=dstTarget,
                               conversion=conversion, doRob=haveRob)
@@ -411,7 +417,7 @@ function(xy, which=1L, center=FALSE, CEPlevel=0.5, CIlevel=0.95,
     if(!is.numeric(CIlevel))  { stop("CIlevel must be numeric") }
     if(CIlevel <= 0)          { stop("CIlevel must be > 0") }
 
-    which <- match.arg(as.character(which), choices=1:3)
+    which <- match.arg(as.character(which), choices=1:4)
 
     ## check if CEP / CI level is given in percent
     if(CIlevel >= 1) {
@@ -527,6 +533,18 @@ function(xy, which=1L, center=FALSE, CEPlevel=0.5, CIlevel=0.95,
     axesCollY <- c(axesCollY, confEll$ctr[2] + confEll$size["unit", "semi-major"],
                               confEll$ctr[2] - confEll$size["unit", "semi-major"])
 
+    #####-----------------------------------------------------------------------
+    ## minimum enclosing ellipse measures
+    minEll <- getMinEllipse(xy)
+
+    ## for axis limits
+    axesCollX <- c(axesCollX,
+                   minEll$ctr[1] + minEll$size[1],
+                   minEll$ctr[1] - minEll$size[1])
+    axesCollY <- c(axesCollY,
+                   minEll$ctr[2] + minEll$size[1],
+                   minEll$ctr[2] - minEll$size[1])
+    
     if(haveRob) {
         res$confEllRob <- confEll$sizeRob
 
@@ -619,24 +637,57 @@ function(xy, which=1L, center=FALSE, CEPlevel=0.5, CIlevel=0.95,
         abline(v=0, h=0, col="lightgray")                            # add point of aim
         points(ctr[1], ctr[2], col="gray40", pch=4, lwd=4, cex=2.5)  # add group center
 
-        ## add bounding box, minimum bounding box, minimum enclosing circle,
-        ## and maximum group spread
+        ## add bounding box, minimum bounding box, and maximum group spread
         drawBox(bb, fg="magenta", lwd=2)
         drawBox2(bbMin, fg="red", lwd=2)
-        drawCircle(minCirc, fg="blue", lwd=2)
         segments(x0=xy[maxPD$idx[1], 1], y0=xy[maxPD$idx[1], 2],
                  x1=xy[maxPD$idx[2], 1], y1=xy[maxPD$idx[2], 2],
-                 col="green3", lwd=2)
+                 col="blue", lwd=2)
 
         ## add legend
-        legend(x="bottomleft", legend=c("group center", "bounding box",
-               "minimum bounding box",
-               "minimum enclosing circle", "maximum group spread"),
-               col=c("gray40", "magenta", "red", "blue", "green3"),
-               pch=c(4, NA, NA, NA, NA), lty=c(NA, 1, 1, 1, 1), lwd=2,
+        legend(x="bottomleft",
+               legend=c("group center",
+                        "bounding box",
+                        "minimum bounding box",
+                        "maximum group spread"),
+               col=c("gray40", "magenta", "red", "blue"),
+               pch=c(4, NA, NA, NA),
+               lty=c(NA, 1, 1, 1),
+               lwd=2,
                bg=rgb(1, 1, 1, 0.7))
     }                                    # if(plots)
 
+    if(which == 4L) {
+        #####-------------------------------------------------------------------
+        ## diagram: 2D-scatter plot for the (x,y)-distribution
+        plot(Y ~ X, asp=1, xlim=xLims, ylim=yLims, pch=20,
+             main="Group (x,y)-coordinates",
+             sub=paste("distance:", dstTargetPlot, unitDst),
+             xlab=paste0("X [", unitXY, "]"), ylab=paste0("Y [", unitXY, "]"))
+        abline(v=0, h=0, col="lightgray")                            # add point of aim
+        points(ctr[1], ctr[2], col="gray40", pch=4, lwd=4, cex=2.5)  # add group center
+        
+        ## add minimum enclosing circle, minimum enclosing ellipse,
+        ## and maximum group spread
+        drawCircle(minCirc, fg="magenta", lwd=2)
+        drawEllipse(minEll, fg="red", lwd=2)
+        segments(x0=xy[maxPD$idx[1], 1], y0=xy[maxPD$idx[1], 2],
+                 x1=xy[maxPD$idx[2], 1], y1=xy[maxPD$idx[2], 2],
+                 col="blue", lwd=2)
+        
+        ## add legend
+        legend(x="bottomleft",
+               legend=c("group center",
+                        "minimum enclosing circle",
+                        "minimum enclosing ellipse",
+                        "maximum group spread"),
+               col=c("gray40", "magenta", "red", "blue"),
+               pch=c(4, NA, NA, NA),
+               lty=c(NA, 1, 1, 1),
+               lwd=2,
+               bg=rgb(1, 1, 1, 0.7))
+    }                                    # if(plots)
+    
     #####-----------------------------------------------------------------------
     ## return all the collected numerical results and tests
     return(invisible(NULL))

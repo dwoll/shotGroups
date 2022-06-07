@@ -52,10 +52,34 @@ function(xy, tol=0.001, max_iter=1000) {
     if(count >= max_iter) { warning("Maximum number of iterations reached") }
     
     U   <- diag(u)
-    A   <- (1/p) * solve((t(hPts) %*% U %*% hPts) - ((t(hPts) %*% u) %*% t(t(hPts) %*% u)))
-    ctr <- t(hPts) %*% u
-    v0  <- if(p == 2) { pi } else { (4/3)*pi } # volume unit hypersphere: (pi^(p/2) / gamma(p/2 + 1)) * 1^p
-    vol <- v0 * sqrt(det(solve(A)))
+    E   <- (1/p) * solve((t(hPts) %*% U %*% hPts) - ((t(hPts) %*% u) %*% t(t(hPts) %*% u)))
+    ctr <- c(t(hPts) %*% u)
     
-    list(ctr=c(ctr), shape=A, cov=solve(A), area=vol, magFac=1)
+    S    <- solve(E)
+    Seig <- eigen(S)
+    e    <- Seig$vectors[ , 1]
+    eUp  <- e * sign(e[2])                  # rotate upwards 180 deg if necessary
+    lens <- sqrt(Seig$values)
+    deg  <- atan2(eUp[2], eUp[1])*180 / pi  # angle in degrees
+
+    ## radii confidence ellipse
+    size <- lens
+    # size <- makeMOA(lens, dst=dstTarget, conversion=conversion)
+    # colnames(size) <- if(p == 2L) {
+    #     c("semi-major", "semi-minor")
+    # } else {
+    #     paste("semi-axis", seq_len(p), sep="-")
+    # }
+
+    ## ellipse characteristics -> radii = sqrt of eigenvalues
+    ## aspect ratio of ellipse = sqrt of kappa condition index
+    aspRat <- sqrt(kappa(S, exact=TRUE))
+    flat   <- 1 - (1/aspRat)             # flattening
+    detS   <- det(S)
+    trS    <- sum(diag(S))
+    v0     <- if(p == 2) { pi } else { (4/3)*pi } # volume unit hypersphere: (pi^(p/2) / gamma(p/2 + 1)) * 1^p
+    vol    <- v0 * sqrt(detS) # area / volume
+    shape  <- c(angle=deg, aspectRatio=aspRat, flattening=flat, trace=trS, det=detS)
+    
+    list(ctr=ctr, E=E, cov=S, area=vol, shape=shape, size=size)
 }

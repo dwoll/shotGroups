@@ -6,21 +6,24 @@
 \description{Draws a group with scaled bullet holes on a target background. Spread measures can be selected individually.}
 \usage{drawGroup(xy, center = FALSE, xyTopLeft = TRUE,
           bb = FALSE, bbMin = FALSE, bbDiag = FALSE,
-          minCirc = FALSE, maxSpread = FALSE, meanDist = FALSE, confEll = FALSE,
+          minCirc = FALSE, minEll = FALSE, maxSpread = FALSE,
+          meanDist = FALSE, confEll = FALSE,
           CEP = FALSE, ringID = FALSE, valueID = TRUE, doRob = FALSE,
           level = 0.95, scaled = TRUE, caliber = 9, dstTarget, conversion,
           unit = 'unit', alpha = 0.5, target)
 
 \method{drawGroup}{data.frame}(xy, center = FALSE, xyTopLeft = TRUE,
           bb = FALSE, bbMin = FALSE, bbDiag = FALSE,
-          minCirc = FALSE, maxSpread = FALSE, meanDist = FALSE, confEll = FALSE,
+          minCirc = FALSE, minEll = FALSE,
+          maxSpread = FALSE, meanDist = FALSE, confEll = FALSE,
           CEP = FALSE, ringID = FALSE, valueID = TRUE, doRob = FALSE,
           level = 0.95, scaled = TRUE, caliber = 9, dstTarget, conversion,
           unit = 'unit', alpha = 0.5, target)
 
 \method{drawGroup}{default}(xy, center = FALSE, xyTopLeft = TRUE,
           bb = FALSE, bbMin = FALSE, bbDiag = FALSE,
-          minCirc = FALSE, maxSpread = FALSE, meanDist = FALSE, confEll = FALSE,
+          minCirc = FALSE, minEll = FALSE,
+          maxSpread = FALSE, meanDist = FALSE, confEll = FALSE,
           CEP = FALSE, ringID = FALSE, valueID = TRUE, doRob = FALSE,
           level = 0.95, scaled = TRUE, caliber = 9, dstTarget, conversion,
           unit = 'unit', alpha = 0.5, target)}
@@ -32,6 +35,7 @@
   \item{bbMin}{logical: draw minimum-area bounding box?}
   \item{bbDiag}{logical: draw bounding box diagonal?}
   \item{minCirc}{logical: draw minimum enclosing circle?}
+  \item{minEll}{logical: draw minimum enclosing ellipse?}
   \item{maxSpread}{logical: draw maximum spread?}
   \item{meanDist}{logical: draw circle with mean distance to group center?}
   \item{confEll}{logical: draw confidence ellipse with coverage \code{level}?}
@@ -57,6 +61,7 @@ Invisibly returns a list with the following components, all converted to \code{u
   \item{bbDiag}{length of diagonal of bounding box.}
   \item{bbMinDiag}{length of diagonal of minimum-area bounding box.}
   \item{minCirc}{minimum enclosing circle as returned by \code{\link[shotGroups]{getMinCircle}}.}
+  \item{minEll}{minimum enclosing ellipse as returned by \code{\link[shotGroups]{getMinEllipse}}.}
   \item{maxPairDist}{maximum pairwise distance between points (center-to-center, = maximum spread).}
   \item{meanDist}{mean distance to group center.}
   \item{confEll}{confidence ellipse with coverage \code{level} as returned by \code{\link[shotGroups]{getConfEll}} (robust with \code{doRob=TRUE}).}
@@ -68,6 +73,7 @@ Invisibly returns a list with the following components, all converted to \code{u
 \code{\link[shotGroups]{getBoundingBox}},
 \code{\link[shotGroups]{getMinBBox}},
 \code{\link[shotGroups]{getMinCircle}},
+\code{\link[shotGroups]{getMinEllipse}},
 \code{\link[shotGroups]{getMaxPairDist}},
 \code{\link[shotGroups]{getDistToCtr}},
 \code{\link[shotGroups]{getConfEll}},

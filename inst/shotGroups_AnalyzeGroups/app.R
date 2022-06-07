@@ -1055,6 +1055,7 @@ shinyApp(
                           bbMin=input$trgtBBmin,
                           bbDiag=input$trgtBBdiag,
                           minCirc=input$trgtMinCirc,
+                          minEll=input$trgtMinEll,
                           maxSpread=input$trgtMaxSpread,
                           meanDist=input$trgtMeanDist,
                           confEll=input$trgtConfEll,

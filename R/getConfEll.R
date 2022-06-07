@@ -66,10 +66,16 @@ function(xy, level=0.5, dstTarget, conversion,
     ## group center and covariance matrix
     ctr    <- colMeans(xy)               # group center
     covXY  <- cov(xy)                    # covariance matrix (x,y)-coords
-    ellRad <- sqrt(eigen(covXY)$values)  # radii error ellipse
+    Seig   <- eigen(covXY)
+    ellRad <- sqrt(Seig$values)          # radii error ellipse
     trXY   <- sum(diag(covXY))           # trace of covariance matrix
     detXY  <- det(covXY)                 # determinant
 
+    e    <- Seig$vectors[ , 1]
+    eUp  <- e * sign(e[2])                  # rotate upwards 180 deg if necessary
+    lens <- sqrt(Seig$values)
+    deg  <- atan2(eUp[2], eUp[1])*180 / pi  # angle in degrees
+    
     ## magnification factor to turn error ellipse into confidence ellipse
     N   <- nrow(xy)                      # number of observations
     dfn <- ncol(xy)                      # numerator df
@@ -88,7 +94,7 @@ function(xy, level=0.5, dstTarget, conversion,
     ## aspect ratio of ellipse = sqrt of kappa condition index
     aspRat <- sqrt(kappa(covXY, exact=TRUE))
     flat   <- 1 - (1/aspRat)             # flattening
-    shape  <- c(aspectRatio=aspRat, flattening=flat, trace=trXY, det=detXY)
+    shape  <- c(angle=deg, aspectRatio=aspRat, flattening=flat, trace=trXY, det=detXY)
 
     haveRob <- if(nrow(xy) < 4L) {
         if(doRob) { warning("We need >= 4 points for robust estimations") }
@@ -101,16 +107,23 @@ function(xy, level=0.5, dstTarget, conversion,
         rob       <- robustbase::covMcd(xy)
         ctrRob    <- rob$center
         covXYrob  <- rob$cov
-        ellRadRob <- sqrt(eigen(covXYrob)$values)  # radii error ellipse
+        Srobeig   <- eigen(covXYrob)
+        ellRadRob <- sqrt(Srobeig$values)          # radii error ellipse
         trXYrob   <- sum(diag(covXYrob))           # trace of covariance matrix
         detXYrob  <- det(covXYrob)                 # determinant
         ## radii robust confidence ellipse
         sizeRob <- makeMOA(mag*ellRadRob, dst=dstTarget, conversion=conversion)
         colnames(sizeRob) <- colnames(size)
 
+        e    <- Srobeig$vectors[ , 1]
+        eUp  <- e * sign(e[2])                  # rotate upwards 180 deg if necessary
+        lens <- sqrt(Srobeig$values)
+        deg  <- atan2(eUp[2], eUp[1])*180 / pi  # angle in degrees
+        
         aspRatRob <- sqrt(kappa(covXYrob, exact=TRUE))   # aspect ratio
         flatRob   <- 1 - (1/aspRatRob)   # flattening
-        shapeRob  <- c(aspectRatio=aspRatRob, flattening=flatRob, trace=trXYrob, det=detXYrob)
+        shapeRob  <- c(angle=deg, aspectRatio=aspRatRob, flattening=flatRob,
+                       trace=trXYrob, det=detXYrob)
     } else {
         ## set robust estimates to NULL if not available
         sizeRob  <- NULL

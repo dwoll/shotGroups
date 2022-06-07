@@ -55,6 +55,7 @@ A list with the results from the numerical analyses and statistical tests.
 \item{groupRect}{width and height of bounding box with diagonal and figure of merit FoM (average side length, in original measurement units, MOA, SMOA, milliradian).}
 \item{groupRectMin}{width and height of minimum-area bounding box with diagonal and figure of merit FoM (average side length, in original measurement units, MOA, SMOA, milliradian).}
 \item{minCircleRad}{radius for the minimum enclosing circle (in original measurement units, MOA, SMOA, milliradian).}
+\item{minEll}{length of semi-major and semi-minor axis of the minimum enclosing ellipse (in original measurement units, MOA, SMOA, milliradian).}
 \item{confEll}{length of semi-major and semi-minor axis of the confidence ellipse (in original measurement units, MOA, SMOA, milliradian).}
 \item{confEllRob}{length of semi-major and semi-minor axis of the confidence ellipse based on a robust estimate for the covariance matrix (in original measurement units, MOA, SMOA, milliradian).}
 \item{confEllShape}{aspect ratio of the confidence ellipse (square root of condition index \code{\link{kappa}}), its flattening (1 - inverse aspect ratio) as well as the trace and determinant of the covariance matrix.}

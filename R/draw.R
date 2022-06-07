@@ -90,8 +90,15 @@ drawEllipse.list <-
 function(x, shape, radius, nv=100, axes=FALSE,
         fg=par("fg"), bg=NA, colCtr=NA,
         lty=par("lty"), lwd=par("lwd"), pch=par("pch"), cex=par("cex")) {
-    if(missing(shape))  { shape  <- x$cov }
-    if(missing(radius)) { radius <- x$magFac }
+    if(missing(shape))  { shape <- x$cov }
+    if(missing(radius)) {
+        radius <- if(!is.null(x$magFac)) {
+            x$magFac
+        } else {
+            1
+        }
+    }
+
     x <- x$ctr
     NextMethod("drawEllipse", shape=shape, radius=radius)
 }

@@ -3,7 +3,7 @@
 #####---------------------------------------------------------------------------
 
 nShapePlots   <- 7
-nSpreadPlots  <- 3
+nSpreadPlots  <- 4
 nComparePlots <- 4
 
 #####---------------------------------------------------------------------------
@@ -53,17 +53,19 @@ spreadOut <- c("sd X, Y"="1", "sd X CI"="2", "sd Y CI"="3", "sd X, Y robust"="4"
                "cov XY"="5",
                "cov XY robust"="6", "dist to center"="7", "sigma CI"="8", "RSD CI"="9",
                "MR CI"="10", "max spread"="11", "group rect"="12",
-               "min group rect"="13", "min circle"="14", "conf ellipse"="15",
-               "conf ellipse robust"="16", "conf ellipse shape"="17",
-               "conf ellipse shape robust"="18",
-               "CEP"="19")
+               "min group rect"="13", "min circle"="14", "min ellipse"="15",
+               "conf ellipse"="16",
+               "conf ellipse robust"="17", "conf ellipse shape"="18",
+               "conf ellipse shape robust"="19",
+               "CEP"="20")
 
 spreadOutInv <- c("1"="sdXY", "2"="sdXci", "3"="sdYci", "4"="sdXYrob",
                   "5"="covXY", "6"="covXYrob", "7"="distToCtr", "8"="sigmaCI",
                   "9"="RSDci", "10"="MRci", "11"="maxPairDist", "12"="groupRect",
-                  "13"="groupRectMin", "14"="minCircleRad", "15"="confEll",
-                  "16"="confEllRob", "17"="confEllShape", "18"="confEllShapeRob",
-                  "19"="CEP")
+                  "13"="groupRectMin", "14"="minCircleRad", "15"="minEll",
+                  "16"="confEll",
+                  "17"="confEllRob", "18"="confEllShape", "19"="confEllShapeRob",
+                  "20"="CEP")
 
 locationOut <- c("center"="1", "center robust"="2", "distance POA"="3" ,
                  "distance POA robust"="4",

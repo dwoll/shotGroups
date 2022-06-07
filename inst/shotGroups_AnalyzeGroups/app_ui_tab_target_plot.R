@@ -9,6 +9,7 @@ fluidPage(
             checkboxInput("trgtBBmin",     "Min-area bounding box", FALSE),
             checkboxInput("trgtBBdiag",    "Bounding-box diagonal", TRUE),
             checkboxInput("trgtMinCirc",   "Minimum-area circle", FALSE),
+            checkboxInput("trgtMinEll",    "Minimum-area ellipse", FALSE),
             checkboxInput("trgtMaxSpread", "Maximum spread", TRUE),
             checkboxInput("trgtMeanDist",  "Mean dist to center", FALSE),
             checkboxInput("trgtConfEll",   "Confidence ellipse", FALSE),
@@ -32,7 +33,7 @@ fluidPage(
                 href="https://www.rdocumentation.org/packages/shotGroups/functions/drawGroup"),
               "and the",
               a("shotGroups vignette",
-                href="https://cran.rstudio.com/web/packages/shotGroups/vignettes/shotGroups.pdf"),
+                href="https://cloud.r-project.org/web/packages/shotGroups/vignettes/shotGroups.pdf"),
               "section 3.3"),
             downloadButton("saveTargetPDF", "Save diagram as pdf"),
             plotOutput("targetPlot", height="600px"),
@@ -42,7 +43,7 @@ fluidPage(
                 href="https://www.rdocumentation.org/packages/shotGroups/functions/simRingCount"),
               "and the",
               a("shotGroups vignette",
-                href="https://cran.rstudio.com/web/packages/shotGroups/vignettes/shotGroups.pdf"),
+                href="https://cloud.r-project.org/web/packages/shotGroups/vignettes/shotGroups.pdf"),
               "section 3.4"),
             verbatimTextOutput("simRingCount")
         )
