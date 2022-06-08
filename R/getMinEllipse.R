@@ -23,38 +23,38 @@ function(xy, tol=0.001, max_iter=1000) {
     
     hPts <- if(ncol(xy) == 2L) {
         H <- chull(xy)     # convex hull indices (vertices ordered clockwise)
-        xy[H, ]            # points that make up the convex hull
+        t(xy[H, ])         # points that make up the convex hull
     } else {
-        xy
+        t(xy)
     }
 
-    p     <- ncol(hPts) # dimension
-    N     <- nrow(hPts)
-    Q     <- rbind(t(hPts), rep(1, N))
-    count <- 1
-    err   <- 1
-    u     <- rep(1/N, N)
+    p    <- nrow(hPts) # dimension
+    N    <- ncol(hPts)
+    Q    <- rbind(hPts, rep(1, N))
+    iter <- 1
+    err  <- 1
+    u    <- rep(1/N, N)
 
     # Khachiyan's algorithm
-    while((err > tol) && (count < max_iter)) {
+    while((err > tol) && (iter < max_iter)) {
         X         <- Q %*% diag(u) %*% t(Q)
-        M         <- diag(t(Q) %*% solve(X) %*% Q)
-        maximum   <- max(M)
-        j         <- which.max(M)
-        step_size <- (maximum - p-1)/((p+1)*(maximum-1))
+        m         <- diag(t(Q) %*% solve(X) %*% Q)
+        maximum   <- max(m)
+        j         <- which.max(m)
+        step_size <- (maximum - p-1) / ((p+1)*(maximum-1))
         new_u     <- (1 - step_size)*u
         new_u[j]  <- new_u[j] + step_size
         err       <- sqrt(sum((new_u-u)^2))
-        count     <- count + 1
+        iter     <- iter + 1
         u         <- new_u
     }
     
-    if(count >= max_iter) { warning("Maximum number of iterations reached") }
+    if(iter >= max_iter) {
+        warning(paste("Maximum number of iterations reached. Error is still:", err))
+    }
     
-    U   <- diag(u)
-    E   <- (1/p) * solve((t(hPts) %*% U %*% hPts) - ((t(hPts) %*% u) %*% t(t(hPts) %*% u)))
-    ctr <- c(t(hPts) %*% u)
-    
+    ctr  <- hPts %*% u
+    E    <- (1/p) * solve((hPts %*% diag(u) %*% t(hPts)) - tcrossprod(ctr))
     S    <- solve(E)
     Seig <- eigen(S)
     e    <- Seig$vectors[ , 1]
@@ -81,5 +81,5 @@ function(xy, tol=0.001, max_iter=1000) {
     vol    <- v0 * sqrt(detS) # area / volume
     shape  <- c(angle=deg, aspectRatio=aspRat, flattening=flat, trace=trS, det=detS)
     
-    list(ctr=ctr, E=E, cov=S, area=vol, shape=shape, size=size)
+    list(ctr=c(ctr), E=E, cov=S, area=vol, shape=shape, size=size)
 }
