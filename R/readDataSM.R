@@ -1,8 +1,42 @@
 #####---------------------------------------------------------------------------
+## check for byte-order-bark
+remove_bom <- function(x, encoding=c("UTF-8", "UTF-16LE", "UTF-16BE")) {
+    encoding <- match.arg(encoding)
+    line1    <- strsplit(x, "")[[1]]
+    
+    if(encoding == "UTF-8") {
+        bom <- rawToChar(as.raw(strtoi(c("EF", "BB", "BF"), base=16L))) # "^ï»¿"
+        if(grepl(bom, paste0(line1[1:3], collapse=""))) {
+            line1[1:3] <- ""
+            x          <- paste0(line1, collapse="")
+        }
+    } else if(encoding == "UTF-16LE") {
+        bom <- rawToChar(as.raw(strtoi(c("FF", "FE"), base=16L))) # "^ÿþ"
+        if(grepl(bom, paste0(line1[1:2], collapse=""))) {
+            line1[1:2] <- ""
+            x          <- paste0(line1, collapse="")
+        }
+    } else if(encoding == "UTF-16BE") {
+        bom <- rawToChar(as.raw(strtoi(c("FE", "FF"), base=16L))) # "^þÿ"
+        if(grepl(bom, paste0(line1[1:2], collapse=""))) {
+            line1[1:2] <- ""
+            x          <- paste0(line1, collapse="")
+        }
+    }
+    
+    x
+}
+
 ## parse character vector from ShotMarker CSV file
 parse_ShotMarkerCSV <- function(x) {
+    ## remove byte-order-mark from first line if present
+    x[1] <- remove_bom(x[1])
+    
     ## session defined by newline + line with non-empty first cell
-    idx_empty      <- !nzchar(x)
+    ## in newer versions, lines with only commas have replaced empty lines
+    idx_empty1     <- !nzchar(x)
+    idx_empty2     <- vapply(strsplit(x, ","), function(y) { all(!nzchar(y)) }, logical(1))
+    idx_empty      <- idx_empty1 | idx_empty2
     idx_have_first <- nzchar(x) & (substr(x, 1, 1) != ",")
     sStart <- which(idx_empty)[(which(idx_empty) + 1) %in% which(idx_have_first)] + 1
     sLen   <- diff(c(sStart, length(x)+1))                # length of sections
