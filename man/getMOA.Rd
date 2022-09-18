@@ -7,7 +7,7 @@
 \arguments{
   \item{x}{a numerical vector of object sizes.}
   \item{dst}{a numerical vector of viewing distances.}
-  \item{conversion}{how to convert the measurement unit for distance to target to that of the (x,y)-coordinates. Either a character vector indicating the conversion like \code{'m2cm'} for meter to centimeter, \code{'yd2in'} for yards to inches, or \code{'ft2cm'} for feet to cm. Imperial (yd, ft, in) and metric units (m, cm, mm) can be freely mixed. Alternatively, a numerical vector giving the multiplication factor for conversion: 100 for m to cm, 36 for yd to in, and 12 for ft to in.}
+  \item{conversion}{how to convert the measurement unit for distance to target to that of the (x,y)-coordinates. Either a character vector indicating the conversion such as \code{'m2cm'} for meter to centimeter, \code{'yd2in'} for yards to inches, or \code{'ft2cm'} for feet to cm. Imperial (yd, ft, in) and metric units (m, cm, mm) can be freely mixed. Alternatively, a numerical vector giving the multiplication factor for conversion: 100 for m to cm, 36 for yd to in, and 12 for ft to in.}
   \item{type}{type of angular diameter: \code{'deg'} for degree, \code{'rad'} for radian, \code{'MOA'} for minute of angle, \code{'SMOA'} for Shooter's MOA, \code{'mrad'} for milliradian, \code{'mil'} for NATO mil. See details.}
 }
 \details{

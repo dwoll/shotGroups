@@ -78,14 +78,23 @@ function(xy, CEPlevel=0.5, dstTarget, conversion,
         warning(c("CEPlevel must be in (0,1) and was set to ", CEPlevel))
     }
 
-    ## check if we can do robust estimation if so required
-    haveRob <- if(nrow(xy) < 4L) {
-        if(doRob) { warning("We need >= 4 points for robust estimations") }
-        FALSE
-    } else {
+    ## can we do robust estimation?
+    Npts           <- nrow(xy)
+    haveRobustbase <- requireNamespace("robustbase", quietly=TRUE)
+    haveRob <- if(haveRobustbase && (Npts >= 4L)) {
         TRUE
-    }                                    # if(nrow(xy) < 4L)
-
+    } else {
+        if(doRob && (Npts < 4L)) {
+            warning("We need >= 4 points for robust estimations")
+        }
+        
+        if(doRob && !haveRobustbase) {
+            warning("Please install package 'robustbase' for robust estimations")
+        }
+        
+        FALSE
+    }
+    
     #####-----------------------------------------------------------------------
     ## some basic calculations used later
     if(doRob && haveRob) {

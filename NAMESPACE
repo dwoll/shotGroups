@@ -5,9 +5,7 @@ import(utils)
 importFrom(tools, file_path_sans_ext, file_ext)
 
 importFrom(boot, boot, boot.ci)
-importFrom(coin, ansari_test, fligner_test, kruskal_test, wilcox_test)
 importFrom(CompQuadForm, farebrother)
-importFrom(robustbase, covMcd)
 importFrom(KernSmooth, bkde2D)
 
 export(analyzeGroup,

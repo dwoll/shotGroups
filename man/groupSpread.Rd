@@ -27,7 +27,7 @@
   \item{conversion}{how to convert the measurement unit for distance to target to that of the (x,y)-coordinates in MOA calculation. Acts as override if variables \code{dist.unit} and \code{point.unit} are already included in \code{xy}. Example \code{'m2cm'}. See \code{\link[shotGroups]{getMOA}}.}
 }
 \details{
-Explanations and formula for many reported precision measures like CEP, sigma, RSD, MR, FoM can be found in the references.\cr
+Explanations and formula for many reported precision measures such as CEP, sigma, RSD, MR, FoM can be found in the references.\cr
 Robust estimate for the covariance matrix of (x,y)-coordinates is from \code{\link[robustbase]{covMcd}} using the MCD algorithm. \cr
 The number of replicates for the reported bootstrap confidence intervals is at least 1499. If the BCa interval is reported, it is at least the number of points. \cr
 In addition to the numerical results listed below, this function produces the following diagrams:

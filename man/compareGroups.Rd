@@ -35,7 +35,7 @@ In addition to the numerical results listed below, this function produces the fo
 \item a stripchart showing the distances to group center per group together with the estimated Rayleigh mean radius and its confidence interval
 }
 
-If package \code{shiny} is installed, an interactive web app for this functionality can be run with \code{runGUI("analyze")}.
+If package \code{shiny} is installed, an interactive web app for this functionality can be run with \code{runGUI("analyze")}. If package \code{coin} is installed, permutation tests are run instead of asymptotic tests (Fligner, Ansari-Bradley, Wilcoxon, Kruskal).
 }
 \value{
 A list with the results from numerical comparisons and statistical tests.
@@ -72,6 +72,10 @@ A list with the results from numerical comparisons and statistical tests.
 \code{\link[shotGroups]{getRayParam}},
 \code{\link[shotGroups]{drawEllipse}},
 \code{\link[stats]{anova.mlm}},
+\code{\link[stats]{ansari.test}},
+\code{\link[stats]{fligner.test}},
+\code{\link[stats]{wilcox.test}},
+\code{\link[stats]{kruskal.test}},
 \code{\link[coin]{ansari_test}},
 \code{\link[coin]{fligner_test}},
 \code{\link[coin]{wilcox_test}},

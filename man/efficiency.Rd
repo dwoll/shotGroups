@@ -1,7 +1,7 @@
 \name{efficiency}
 \alias{efficiency}
 \title{Estimate number of required groups for given CI level and width}
-\description{Estimates the approximate number of required groups for a given number of shots per group, confidence interval (CI) level and CI width - when using the Rayleigh sigma estimator based on (x,y)-coordinates, or a range statistic like extreme spread, figure of merit, or the bounding box diagonal. The function may also be used to obtain the estimated CI width when the number of shots per group and the number of groups is given. This functions assumes a circular bivariate normal shot distribution with 0 mean.}
+\description{Estimates the approximate number of required groups for a given number of shots per group, confidence interval (CI) level and CI width - when using the Rayleigh sigma estimator based on (x,y)-coordinates, or a range statistic such as extreme spread, figure of merit, or the bounding box diagonal. The function may also be used to obtain the estimated CI width when the number of shots per group and the number of groups is given. This functions assumes a circular bivariate normal shot distribution with 0 mean.}
 \usage{efficiency(n, nGroups, CIlevel=0.95, CIwidth,
            stat=c("Rayleigh", "ES", "FoM", "D"))}
 \arguments{

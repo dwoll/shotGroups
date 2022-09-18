@@ -64,23 +64,23 @@ function(xy, level=0.5, dstTarget, conversion,
     }
     
     ## group center and covariance matrix
-    ctr    <- colMeans(xy)               # group center
-    covXY  <- cov(xy)                    # covariance matrix (x,y)-coords
+    ctr    <- colMeans(xy)                # group center
+    covXY  <- cov(xy)                     # covariance matrix (x,y)-coords
     Seig   <- eigen(covXY)
-    ellRad <- sqrt(Seig$values)          # radii error ellipse
-    trXY   <- sum(diag(covXY))           # trace of covariance matrix
-    detXY  <- det(covXY)                 # determinant
+    ellRad <- sqrt(Seig$values)           # radii error ellipse
+    trXY   <- sum(diag(covXY))            # trace of covariance matrix
+    detXY  <- det(covXY)                  # determinant
 
     e    <- Seig$vectors[ , 1]
-    eUp  <- e * sign(e[2])                  # rotate upwards 180 deg if necessary
+    eUp  <- e * sign(e[2])                # rotate upwards 180 deg if necessary
     lens <- sqrt(Seig$values)
     deg  <- atan2(eUp[2], eUp[1])*180 / pi  # angle in degrees
     
     ## magnification factor to turn error ellipse into confidence ellipse
-    N   <- nrow(xy)                      # number of observations
-    dfn <- ncol(xy)                      # numerator df
-    dfd <- N-1                           # denominator df
-    mag <- sqrt(dfn*qf(level, dfn, dfd)) # magnification factor = t-value
+    Npts <- nrow(xy)                      # number of observations
+    dfn  <- ncol(xy)                      # numerator df
+    dfd  <- Npts-1                        # denominator df
+    mag  <- sqrt(dfn*qf(level, dfn, dfd)) # magnification factor = t-value
     
     ## radii confidence ellipse
     size <- makeMOA(mag*ellRad, dst=dstTarget, conversion=conversion)
@@ -96,13 +96,22 @@ function(xy, level=0.5, dstTarget, conversion,
     flat   <- 1 - (1/aspRat)             # flattening
     shape  <- c(angle=deg, aspectRatio=aspRat, flattening=flat, trace=trXY, det=detXY)
 
-    haveRob <- if(nrow(xy) < 4L) {
-        if(doRob) { warning("We need >= 4 points for robust estimations") }
-        FALSE
-    } else {
+    ## can we do robust estimation?
+    haveRobustbase <- requireNamespace("robustbase", quietly=TRUE)
+    haveRob <- if(haveRobustbase && (Npts >= 4L)) {
         TRUE
-    }                                    # if(nrow(xy) < 4L)
-
+    } else {
+        if(doRob && (Npts < 4L)) {
+            warning("We need >= 4 points for robust estimations")
+        }
+        
+        if(doRob && !haveRobustbase) {
+            warning("Please install package 'robustbase' for robust estimations")
+        }
+        
+        FALSE
+    }
+    
     if(doRob && haveRob) {               # same for robust estimation
         rob       <- robustbase::covMcd(xy)
         ctrRob    <- rob$center

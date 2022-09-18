@@ -18,7 +18,8 @@ function(DF,
     CEPtype <- match.arg(CEPtype,
                          choices=c("CorrNormal", "GrubbsPearson", "GrubbsLiu",
                                    "GrubbsPatnaik", "Rayleigh", "Krempasky",
-                                   "Ignani", "RMSE", "Ethridge", "RAND", "Valstar"), several.ok=FALSE)
+                                   "Ignani", "RMSE", "Ethridge", "RAND", "Valstar"),
+                         several.ok=FALSE)
 
     ## check if CEP / CI level is given in percent
     if(CEPlevel >= 1) {
@@ -291,19 +292,32 @@ function(DF,
                                          labels=levels(DF$series)))
 
     if(nS == 2L) {                       # compare two groups
-        res$AnsariX  <- coin::ansari_test(x ~ series, alternative=ABalt,
-                                          data=DF, distribution="exact")
-        res$AnsariY  <- coin::ansari_test(y ~ series, alternative=ABalt,
-                                          data=DF, distribution="exact")
-        res$Wilcoxon <- coin::wilcox_test(dstCtr ~ series, alternative=Walt,
-                                          data=dstCtrDF, distribution="exact")
+        if(requireNamespace("coin", quietly=TRUE)) {
+            res$AnsariX  <- coin::ansari_test(x ~ series, alternative=ABalt,
+                                              data=DF, distribution="exact")
+            res$AnsariY  <- coin::ansari_test(y ~ series, alternative=ABalt,
+                                              data=DF, distribution="exact")
+            res$Wilcoxon <- coin::wilcox_test(dstCtr ~ series, alternative=Walt,
+                                              data=dstCtrDF, distribution="exact")
+        } else {
+            res$AnsariX  <- ansari.test(x ~ series,      alternative=ABalt, data=DF)
+            res$AnsariY  <- ansari.test(y ~ series,      alternative=ABalt, data=DF)
+            res$Wilcoxon <- wilcox.test(dstCtr ~ series, alternative=Walt,  data=dstCtrDF)
+        }
     } else {                             # compare more than two groups
-        res$FlignerX <- coin::fligner_test(x ~ series, data=DF,
-                                           distribution=coin::approximate(nresample=9999))  # x
-        res$FlignerY <- coin::fligner_test(y ~ series, data=DF,
-                                           distribution=coin::approximate(nresample=9999))  # y
-        res$Kruskal  <- coin::kruskal_test(dstCtr ~ series,    # dist to center
-                                           data=dstCtrDF, distribution=coin::approximate(nresample=9999))
+        if(requireNamespace("coin", quietly=TRUE)) {
+            res$FlignerX <- coin::fligner_test(x ~ series, data=DF,
+                                               distribution=coin::approximate(nresample=9999))  # x
+            res$FlignerY <- coin::fligner_test(y ~ series, data=DF,
+                                               distribution=coin::approximate(nresample=9999))  # y
+            res$Kruskal  <- coin::kruskal_test(dstCtr ~ series,    # dist to center
+                                               data=dstCtrDF,
+                                               distribution=coin::approximate(nresample=9999))
+        } else {
+            res$FlignerX <- fligner.test(x ~ series,      data=DF)  # x
+            res$FlignerY <- fligner.test(y ~ series,      data=DF)  # y
+            res$Kruskal  <- kruskal.test(dstCtr ~ series, data=dstCtrDF)
+        }
     }
 
     if(plots) {

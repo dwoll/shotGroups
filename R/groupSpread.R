@@ -44,17 +44,19 @@ function(xy, center=FALSE, plots=TRUE, CEPlevel=0.5, CIlevel=0.95,
         warning("Centering only works for data frames, ignored here")
     }
 
-    bootCI <- match.arg(bootCI, choices=c("none", "norm", "basic", "perc", "bca"), several.ok=TRUE)
+    bootCI <- match.arg(bootCI,
+                        choices=c("none", "norm", "basic", "perc", "bca"),
+                        several.ok=TRUE)
 
     ## check if CEP / CI level is given in percent
     if(CEPlevel >= 1) {
         while(CEPlevel >= 1) { CEPlevel <- CEPlevel / 100 }
-        warning(c("CEPlevel must be in (0,1) and was set to ", CEPlevel))
+        warning(paste0("CEPlevel must be in (0,1) and was set to ", CEPlevel))
     }
 
     if(CIlevel >= 1) {
         while(CIlevel >= 1) { CIlevel <- CIlevel / 100 }
-        warning(c("CIlevel must be in (0,1) and was set to ", CIlevel))
+        warning(paste0("CIlevel must be in (0,1) and was set to ", CIlevel))
     }
 
     dstTarget <- if(missing(dstTarget)    ||
@@ -80,12 +82,21 @@ function(xy, center=FALSE, plots=TRUE, CEPlevel=0.5, CIlevel=0.95,
     Npts <- nrow(xy)                     # number of observations
     res  <- vector("list", 0)            # empty list to later collect the results
 
-    haveRob <- if(Npts < 4L) {           # can we do robust estimation?
-        warning("We need >= 4 points for robust estimations")
-        FALSE
-    } else {
+    ## can we do robust estimation?
+    haveRobustbase <- requireNamespace("robustbase", quietly=TRUE)
+    haveRob <- if(haveRobustbase && (Npts >= 4L)) {
         TRUE
-    }                                    # if(haveRob)
+    } else {
+        if(Npts < 4L) {
+            warning("We need >= 4 points for robust estimations")
+        }
+        
+        if(!haveRobustbase) {
+            warning("Please install package 'robustbase' for robust estimations")
+        }
+        
+        FALSE
+    }
 
     ## to determine axis limits later, collect all results in a vector
     axesCollX <- numeric(0)
@@ -453,12 +464,22 @@ function(xy, which=1L, center=FALSE, CEPlevel=0.5, CIlevel=0.95,
     Npts <- nrow(xy)                     # number of observations
     res  <- vector("list", 0)            # empty list to later collect the results
 
-    haveRob <- TRUE                      # can we do robust estimation?
-    if(Npts < 4L) {
-        warning("We need >= 4 points for robust estimations")
-        haveRob <- FALSE
-    }                                    # if(Npts < 4L)
-
+    ## can we do robust estimation?
+    haveRobustbase <- requireNamespace("robustbase", quietly=TRUE)
+    haveRob <- if(haveRobustbase && (Npts >= 4L)) {
+        TRUE
+    } else {
+        if(Npts < 4L) {
+            warning("We need >= 4 points for robust estimations")
+        }
+        
+        if(!haveRobustbase) {
+            warning("Please install package 'robustbase' for robust estimations")
+        }
+        
+        FALSE
+    }
+    
     ## to determine axis limits later, collect all results in a vector
     axesCollX <- numeric(0)
     axesCollY <- numeric(0)

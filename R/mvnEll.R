@@ -1,19 +1,20 @@
 #####---------------------------------------------------------------------------
-## multivariate normal offset ellipse/circle probabilities
+## multivariate normal offset ellipse/circle (ellipsoid/sphere) probabilities
 #####---------------------------------------------------------------------------
 
-## e characterizes the integration ellipsoid: (x-x0)' e (x-x0) < r^2 -> e = S^{-1}
+## e, x0 characterize the integration ellipsoid:
+## (x-x0)' e (x-x0) < r^2 -> e = S^{-1}
 ## cdf
 pmvnEll <-
 function(r=1, sigma=diag(2), mu, e, x0, lower.tail=TRUE,
          method_cdf=c("integrate", "saddlepoint")) {
     method_cdf <- match.arg(method_cdf)
-    if(method_cdf == "integrate" && !(requireNamespace("CompQuadForm", quietly=TRUE))) {
+    if((method_cdf == "integrate") && !requireNamespace("CompQuadForm", quietly=TRUE)) {
         stop("Please install package 'CompQuadForm' for integration, or use saddlepoint approximation")
     }
     
-    sigma  <- as.matrix(sigma)
-    e      <- as.matrix(e)
+    sigma <- as.matrix(sigma)
+    e     <- as.matrix(e)
     if(missing(mu)) { mu <- numeric(ncol(sigma)) }
     if(missing(x0)) { x0 <- numeric(ncol(sigma)) }
     if(missing(e))  { e  <- diag(ncol(sigma)) }
@@ -102,7 +103,7 @@ function(p, sigma=diag(2), mu, e, x0, lower.tail=TRUE, loUp=NULL,
     ## initialize quantiles to NA
     qq   <- rep(NA_real_, length(p))
     keep <- which((p >= 0) & (p < 1))
-    if(length(keep) < 1) { return(qq) }
+    if(length(keep) < 1L) { return(qq) }
 
     ## determine search interval(s) for uniroot()
     if(is.null(loUp)) {                  # no search interval given

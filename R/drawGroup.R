@@ -113,16 +113,22 @@ function(xy, center=FALSE,
     }
 
     ## check if we can do robust estimation if so required
-    N <- nrow(xy)
-    if(N < 4L) {
-        haveRob <- FALSE
-        if(doRob) {
+    Npts <- nrow(xy)
+    haveRobustbase <- requireNamespace("robustbase", quietly=TRUE)
+    haveRob <- if(haveRobustbase && (Npts >= 4L)) {
+        TRUE
+    } else {
+        if(doRob && (Npts < 4L)) {
             warning("We need >= 4 points for robust estimations")
         }
-    } else {
-        haveRob <- TRUE
-    }                                    # if(nrow(xy) < 4L)
-
+        
+        if(doRob && !haveRobustbase) {
+            warning("Please install package 'robustbase' for robust estimations")
+        }
+        
+        FALSE
+    }
+    
     res <- vector("list", 0)             # empty list to later collect the results
 
     #####-----------------------------------------------------------------------
@@ -381,7 +387,7 @@ function(xy, center=FALSE,
     ## draw bullet holes to scale
     if(scaled && !is.na(calSize)) {
         symbols(Y ~ X, asp=1, main="(x,y)-coordinates", add=TRUE,
-                circles=rep(calSize, N), inches=FALSE,
+                circles=rep(calSize, Npts), inches=FALSE,
                 fg=rgb(0.3, 0.3, 0.3, alpha), bg=pointCol)
     } else {
         points(Y ~ X, pch=20, col=pointCol)

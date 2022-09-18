@@ -67,13 +67,22 @@ function(xy, level=0.95, plots=TRUE, bootCI="none",
     Npts <- nrow(xy)                     # number of observations
     res  <- vector("list", 0)            # empty list to later collect the results
 
-    haveRob <- if(Npts < 4L) {           # can we do robust estimation?
-        warning("We need >= 4 points for robust estimations")
-        haveRob <- FALSE
-    } else {
+    ## can we do robust estimation?
+    haveRobustbase <- requireNamespace("robustbase", quietly=TRUE)
+    haveRob <- if(haveRobustbase && (Npts >= 4L)) {
         TRUE
-    }                                    # if(nrow(xy) < 4L)
-
+    } else {
+        if(Npts < 4L) {
+            warning("We need >= 4 points for robust estimations")
+        }
+        
+        if(!haveRobustbase) {
+            warning("Please install package 'robustbase' for robust estimations")
+        }
+        
+        FALSE
+    }
+    
     #####-----------------------------------------------------------------------
     ## location measures
     res$ctr <- colMeans(xy)              # center of joint (x,y)-distribution

@@ -65,17 +65,26 @@ function(xy, center=FALSE, plots=TRUE, bandW=0.5, outlier=c("mcd", "pca"),
     res    <- vector("list", 0)          # empty list to later collect the results
     devNew <- getDevice()                # platform-dependent window open
 
-    haveMVoutlier <- requireNamespace("mvoutlier", quietly=TRUE)
-    haveEnergy    <- requireNamespace("energy",    quietly=TRUE)
-
-    haveRob <- if(Npts < 4L) {
-        warning(c("We need >= 4 points for robust estimations,\n",
-                  "outlier analysis, and chi^2 plot for multivariate normality"))
-        FALSE                           # can we do robust estimation?
-    }  else {
+    haveMVoutlier  <- requireNamespace("mvoutlier",  quietly=TRUE)
+    haveEnergy     <- requireNamespace("energy",     quietly=TRUE)
+    haveRobustbase <- requireNamespace("robustbase", quietly=TRUE)
+    
+    ## can we do robust estimation?
+    haveRob <- if(haveRobustbase && (Npts >= 4L)) {
         TRUE
-    }                                   # if(Npts < 4L)
-
+    } else {
+        if(Npts < 4L) {
+            warning("We need >= 4 points for robust estimations,\n",
+                    "outlier analysis, and chi^2 plot for multivariate normality")
+        }
+        
+        if(!haveRobustbase) {
+            warning("Please install package 'robustbase' for robust estimations")
+        }
+        
+        FALSE
+    }
+    
     #####-----------------------------------------------------------------------
     ## correlation matrix of (x,y)-coords
     res$corXY <- cor(xy)
@@ -327,14 +336,26 @@ function(xy, which=1L, center=FALSE, bandW=0.5, outlier=c("mcd", "pca"),
     Npts <- nrow(xy)                     # number of points
     res  <- vector("list", 0)            # empty list to later collect the results
 
-    haveMVoutlier <- requireNamespace("mvoutlier", quietly=TRUE)
-
-    haveRob <- TRUE                      # can we do robust estimation?
-    if(Npts < 4L) {
-        warning(c("We need >= 4 points for robust estimations,\n",
-                  "outlier analysis, and chi^2 plot for multivariate normality"))
-        haveRob <- FALSE
+    haveMVoutlier  <- requireNamespace("mvoutlier",  quietly=TRUE)
+    haveRobustbase <- requireNamespace("robustbase", quietly=TRUE)
+    
+    ## can we do robust estimation?
+    haveRob <- if(haveRobustbase && (Npts >= 4L)) {
+        TRUE
     } else {
+        if(Npts < 4L) {
+            warning("We need >= 4 points for robust estimations,\n",
+                    "outlier analysis, and chi^2 plot for multivariate normality")
+        }
+        
+        if(!haveRobustbase) {
+            warning("Please install package 'robustbase' for robust estimations")
+        }
+        
+        FALSE
+    }
+    
+    if(haveRob) {
         rob      <- robustbase::covMcd(xy, cor=TRUE)
         ctrRob   <- rob$center       # robust estimate: group center,
         covXYrob <- rob$cov          # group covariance matrix

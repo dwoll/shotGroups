@@ -5,19 +5,19 @@ remove_bom <- function(x, encoding=c("UTF-8", "UTF-16LE", "UTF-16BE")) {
     line1    <- strsplit(x, "")[[1]]
     
     if(encoding == "UTF-8") {
-        bom <- rawToChar(as.raw(strtoi(c("EF", "BB", "BF"), base=16L))) # "^ï»¿"
+        bom <- rawToChar(as.raw(strtoi(c("EF", "BB", "BF"), base=16L)))
         if(grepl(bom, paste0(line1[1:3], collapse=""))) {
             line1[1:3] <- ""
             x          <- paste0(line1, collapse="")
         }
     } else if(encoding == "UTF-16LE") {
-        bom <- rawToChar(as.raw(strtoi(c("FF", "FE"), base=16L))) # "^ÿþ"
+        bom <- rawToChar(as.raw(strtoi(c("FF", "FE"), base=16L)))
         if(grepl(bom, paste0(line1[1:2], collapse=""))) {
             line1[1:2] <- ""
             x          <- paste0(line1, collapse="")
         }
     } else if(encoding == "UTF-16BE") {
-        bom <- rawToChar(as.raw(strtoi(c("FE", "FF"), base=16L))) # "^þÿ"
+        bom <- rawToChar(as.raw(strtoi(c("FE", "FF"), base=16L)))
         if(grepl(bom, paste0(line1[1:2], collapse=""))) {
             line1[1:2] <- ""
             x          <- paste0(line1, collapse="")
@@ -33,7 +33,7 @@ parse_ShotMarkerCSV <- function(x) {
     x[1] <- remove_bom(x[1])
     
     ## session defined by newline + line with non-empty first cell
-    ## in newer versions, lines with only commas have replaced empty lines
+    ## in some versions, lines with only commas may have replaced empty lines
     idx_empty1     <- !nzchar(x)
     idx_empty2     <- vapply(strsplit(x, ","), function(y) { all(!nzchar(y)) }, logical(1))
     idx_empty      <- idx_empty1 | idx_empty2

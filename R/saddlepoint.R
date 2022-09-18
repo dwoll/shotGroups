@@ -5,7 +5,7 @@
 ## https://www.jstor.org/stable/2673596
 ## https://infoscience.epfl.ch/record/84834/files/860929.pdf
 ## However, equations for K, K', K'' are incorrect as zeta is missing from
-## the numerator of second term in cumulant generating function K
+## the numerator of the second term in the cumulant generating function K
 ## see Imhof(1961) equation 2.3 https://doi.org/10.1093/biomet/48.3-4.419
 ## code adapted from Han Chen <Han.Chen.2 at uth.tmc.edu>
 ## https://cran.r-project.org/package=GMMAT
