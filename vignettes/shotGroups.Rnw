@@ -84,7 +84,7 @@ The \texttt{shotGroups} package adds functionality to the open source statistica
 \item The functionality includes graphical methods, descriptive statistics, and inference tests using standard, but also non-parametric and robust statistical techniques (section \ref{sec:analysisSteps}).
 \item The package includes limited support for the analysis of three-dimensional data (sections \ref{sec:CEP}, \ref{sec:CEPinv}).
 \item Inference from range statistics like extreme spread is also supported (section \ref{sec:rangeStat}).
-\item The data can be imported from files produced by OnTarget PC and OnTarget TDS \cite{Block2014}, Silver Mountain e-target \cite{SilverMountain2018}, ShotMarker e-target \cite{MacDonald2018}, Taran \cite{Trofimov2015}, or from custom data files in text format with a similar structure.
+\item The data can be imported from files produced by OnTarget PC and OnTarget TDS \cite{Block2014}, Silver Mountain e-target \cite{SilverMountain2018}, ShotMarker e-target \cite{MacDonald2018}, SIUS e-target, Taran \cite{Trofimov2015}, or from custom data files in text format with a similar structure.
 \end{itemize}
 
 Use \verb+help(package="shotGroups")+ for a list of all functions and links to the detailed help pages with information on options, usage and output.
@@ -123,12 +123,13 @@ Analyzing shot groups usually takes the following steps:
 To import data into R, it should be saved as a text file with the following format:
 \begin{itemize}
 \item The file should have one row for each shot, and one column for each coordinate as well as for any other variable such as distance to target, point-of-aim coordinates.
-\item Columns should be separated by commas, tabs or other whitespace. This type of text file can be exported from OnTarget PC/TDS, Silver Mountain e-target, ShotMarker e-target, Taran, or from a spreadsheet application like Excel or Calc.
+\item Columns should be separated by commas, tabs or other whitespace. This type of text file can be exported from OnTarget PC/TDS, Silver Mountain e-target, ShotMarker e-target, SIUS e-target, Taran, or from a spreadsheet application like Excel or Calc.
 \item The file needs a header in the first line giving the variable names, and should contain at least the coordinates of points of impact, either with variable names \texttt{Point.X}, \texttt{Point.Y} or just \texttt{X}, \texttt{Y}.
 \item For several analysis functions, the following additional variables are useful: \texttt{Group} (group number), \texttt{Distance} (distance to target), and \texttt{Aim.X}, \texttt{Aim.Y} (point of aim). If these variables are missing, default values are assumed with a warning.
 \item If you have output files from OnTarget PC/TDS, you can read multiple files with \texttt{readDataOT1()} (for OnTarget PC v1.*, tested with v1.10), or with \texttt{readDataOT2()} (for OnTarget PC v2.* - tested with v2.28, and OnTarget TDS - tested with v3.71, v3.89, v6.09).
 \item If you have output files from the Silver Mountain e-target system, you can read multiple files with \texttt{readDataSMT()}.
 \item If you have CSV output files or .tar backup files from the ShotMarker e-target system, you can read multiple files with \texttt{readDataShotMarker()}.
+\item If you have CSV output files from the SIUS e-target system, you can read multiple files with \texttt{readDataSIUS()}.
 \item If you have other whitespace or comma-separated text files with the structure outlined above (e.\,g.\ from Taran), you can read multiple files with \texttt{readDataMisc()}. For three-dimensional data, this function also recognizes variables \texttt{Point.Z} or \texttt{Z} and \texttt{Aim.Z}.
 \item If your data is saved in some other text file format, consult the help for \texttt{read.table()} or the \textsf{R} import/export manual \cite{RDevelopmentCoreTeam2008b}.
 \end{itemize}
@@ -266,7 +267,7 @@ groupLocation(DFtalon, dstTarget=10, conversion="m2mm",
 
 \texttt{compareGroups()}: Compare two or more groups with regard to their precision and accuracy using empirical measures and statistical tests.
 
-\texttt{compareGroups()} requires that the data includes a variable \texttt{series} that identifies shot groups. OnTarget PC/TDS' variable \texttt{group} identifies groups just within one file, \texttt{series} should number groups also across different original files. When you read in data with \texttt{readDataOT1()}, \texttt{series} is added automatically (same for \texttt{readDataOT2()}, \texttt{readDataSMT()}, \texttt{readDataShotMarker()}, and \texttt{readDataMisc()}). For data from just one file, you can otherwise copy variable \texttt{group} to \texttt{series} in a data frame called \texttt{shots} with
+\texttt{compareGroups()} requires that the data includes a variable \texttt{series} that identifies shot groups. OnTarget PC/TDS' variable \texttt{group} identifies groups just within one file, \texttt{series} should number groups also across different original files. When you read in data with \texttt{readDataOT1()}, \texttt{series} is added automatically (same for \texttt{readDataOT2()}, \texttt{readDataSMT()}, \texttt{readDataShotMarker()}, \texttt{readDataSIUS()}, and \texttt{readDataMisc()}). For data from just one file, you can otherwise copy variable \texttt{group} to \texttt{series} in a data frame called \texttt{shots} with
 
 <<cCmpGr, eval=FALSE>>=
 shots$series <- shots$group
