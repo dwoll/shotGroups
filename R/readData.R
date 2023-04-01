@@ -434,3 +434,115 @@ function(fPath=".", fNames, fPat, combine=TRUE) {
         return(DFs)
     }
 }
+
+readDataSIUS <-
+function(fPath=".", fNames, fPat, combine=TRUE, dstTarget, conversion) {
+    files <- getFileNames(fPath, fNames, fPat)
+    if(length(files) < 1L) { stop("No files were selected") }
+    
+    missing_dstTarget  <- missing(dstTarget)
+    missing_conversion <- missing(conversion)
+    SIUS_names <- c("start_nr",
+                    "primary_score",
+                    "match_shot",
+                    "firing_lane",
+                    "secondary_score",
+                    "divisions",
+                    "time",
+                    "inside",
+                    "point.x",
+                    "point.y",
+                    "in_time",
+                    "time_since_change",
+                    "sweep_direction",
+                    "demo_mode",
+                    "shoot",
+                    "practice",
+                    "ins_del",
+                    "total_kind",
+                    "group",
+                    "fire_kind",
+                    "log_event",
+                    "log_type",
+                    "time_001s",
+                    "relay",
+                    "weapon",
+                    "position",
+                    "target_id",
+                    "external_number")
+    
+    ## read a single csv file
+    readMe <- function(f) {
+        DF <- read.table(f, header=FALSE, sep=";")
+        DF <- setNames(DF, SIUS_names)
+        DF[["match_shot"]]      <- factor(DF[["match_shot"]],
+                                          levels=c(0, 1, 8),
+                                          labels=c("Sighter", "Match", "Final"))
+        DF[["inside"]]          <- factor(DF[["inside"]],
+                                          levels=0:1,
+                                          labels=c("Outside", "Inside"))
+        DF[["in_time"]]         <- factor(DF[["in_time"]],
+                                          levels=0:1,
+                                          labels=c("Not in time", "In time"))
+        DF[["sweep_direction"]] <- factor(DF[["sweep_direction"]],
+                                          levels=0:1,
+                                          labels=c("Off/left", "Right"))
+        DF[["demo_mode"]]       <- factor(DF[["demo_mode"]],
+                                          levels=0:1,
+                                          labels=c("Off", "On"))
+        DF[["ins_del"]]         <- factor(DF[["ins_del"]],
+                                          levels=1:2,
+                                          labels=c("Insert manually", "Ignore"))
+        DF[["total_kind"]]      <- factor(DF[["total_kind"]],
+                                          levels=c(1, 2, 4),
+                                          labels=c("Group total", "Sub-total", "Grand total"))
+        DF[["fire_kind"]]       <- factor(DF[["fire_kind"]],
+                                          levels=0:2,
+                                          labels=c("Sighter", "Single", "Series"))
+        DF[["log_type"]]        <- factor(DF[["log_type"]],
+                                          levels=c(3, 10, 12),
+                                          labels=c("Own shot", "Cross shot", "Illegal"))
+        DF[["position"]]        <- factor(DF[["position"]],
+                                          levels=1:4,
+                                          labels=c("Prone", "Standing", "Kneeling", "Prone supported"))
+        DF[["file"]] <- basename(tools::file_path_sans_ext(f))  # add filename
+        
+        ## add distance if provided
+        if(!missing_dstTarget) {
+            DF[["distance"]] <- dstTarget
+        }
+        
+        ## infer (x,y)-coord units from conversion
+        if(!missing_conversion) {
+            DF[["distance.unit"]] <- getUnits(conversion, first=TRUE)  # unit for distance
+            DF[["point.unit"]]    <- getUnits(conversion, first=FALSE) # unit for xy-coords
+        }
+        
+        DF
+    }
+    
+    ## read multiple csv files
+    DFs <- lapply(files, readMe)
+    names(DFs) <- paste0("file", seq_along(DFs))  # name them
+    
+    ## build shared set of variable names
+    varNameL <- lapply(DFs, names)           # list of variable names
+    varNames <- Reduce(intersect, varNameL)  # intersection of all var names
+    
+    ## make sure that the data frames all have the correct variables
+    ## remove dots from variable names
+    wants <- c("distance", "group", "aim.x", "aim.y")  # useful
+    has   <- wants %in% varNames
+    
+    if(!all(has)) {
+        warning(c("At least one file is missing variable(s)\n",
+                  paste(wants[!has], collapse=" "),
+                  "\nthat may be required later by analysis functions"))
+    }
+    
+    if(combine) {
+        return(combineData(DFs))
+    } else {
+        return(DFs)
+    }
+}

@@ -1,8 +1,8 @@
 Package: shotGroups
 Type: Package
 Title: Analyze Shot Group Data
-Version: 0.8.2
-Date: 2022-09-17
+Version: 0.8.2.0.999
+Date: 2023-04-01
 Author: Daniel Wollschlaeger
 Maintainer: Daniel Wollschlaeger <dwoll@kuci.org>
 Depends: R (>= 3.5.0)
@@ -18,8 +18,9 @@ Description: Analyzes shooting data with respect to group shape,
         but also non-parametric and robust statistical methods.
         Implements distributions for radial error in bivariate normal
         variables. Works with files exported by 'OnTarget PC/TDS',
-        'Silver Mountain' e-target, 'ShotMarker' e-target, or 'Taran',
-        as well as with custom data files in text format.
-        Supports inference from range statistics such as extreme
-        spread. Includes a set of web-based graphical user interfaces.
+        'Silver Mountain' e-target, 'ShotMarker' e-target, 'SIUS'
+        e-target, or 'Taran', as well as with custom data files in
+        text format. Supports inference from range statistics such as
+        extreme spread. Includes a set of web-based graphical user
+        interfaces.
 License: GPL (>= 2)

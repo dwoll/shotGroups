@@ -91,7 +91,9 @@ shinyApp(
                             readDataSMT(fPath=dirname(fPath),  fNames=basename(fPath))
                         } else if(input$fileType == '4') {   ## ShotMarker e-target
                             readDataShotMarker(fPath=dirname(fPath),  fNames=basename(fPath))
-                        } else if(input$fileType == '5') {   ## other
+                        } else if(input$fileType == '5') {   ## SIUS e-target
+                            readDataSIUS(fPath=dirname(fPath),  fNames=basename(fPath))
+                        } else if(input$fileType == '6') {   ## other
                             readDataMisc(fPath=dirname(fPath), fNames=basename(fPath))
                         }
                     } else {
@@ -109,7 +111,9 @@ shinyApp(
                         readDataSMT(dirname(fPath),  fNames=basename(fPath))
                     } else if(input$fileType == '4') {   ## ShotMarker e-target
                         readDataShotMarker(dirname(fPath),  fNames=basename(fPath))
-                    } else if(input$fileType == '5') {   ## other
+                    } else if(input$fileType == '5') {   ## SIUS e-target
+                        readDataSIUS(fPath=dirname(fPath),  fNames=basename(fPath))
+                    } else if(input$fileType == '6') {   ## other
                         readDataMisc(dirname(fPath), fNames=basename(fPath))
                     }
                 } else {
