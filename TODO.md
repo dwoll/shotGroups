@@ -1,7 +1,6 @@
 # TODO
 
  * move `CompQuadForm` (used in `pmvnEll()`) to Suggests?
- * move `robustbase` to Suggests?
  * bs4Dash shiny app: active distance to target should depend on current group selection
 
 ## Short / medium term
