@@ -84,7 +84,7 @@ The \texttt{shotGroups} package adds functionality to the open source statistica
 \item The functionality includes graphical methods, descriptive statistics, and inference tests using standard, but also non-parametric and robust statistical techniques (section \ref{sec:analysisSteps}).
 \item The package includes limited support for the analysis of three-dimensional data (sections \ref{sec:CEP}, \ref{sec:CEPinv}).
 \item Inference from range statistics like extreme spread is also supported (section \ref{sec:rangeStat}).
-\item The data can be imported from files produced by OnTarget PC and OnTarget TDS \cite{Block2014}, Silver Mountain e-target \cite{SilverMountain2018}, ShotMarker e-target \cite{MacDonald2018}, SIUS e-target, Taran \cite{Trofimov2015}, or from custom data files in text format with a similar structure.
+\item The data can be imported from files produced by OnTarget PC and OnTarget TDS \cite{Block2014}, Silver Mountain e-target \cite{SilverMountain2018}, ShotMarker e-target \cite{MacDonald2018}, SIUS e-target \cite{SIUS2023}, Taran \cite{Trofimov2015}, or from custom data files in text format with a similar structure.
 \end{itemize}
 
 Use \verb+help(package="shotGroups")+ for a list of all functions and links to the detailed help pages with information on options, usage and output.

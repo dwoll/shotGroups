@@ -17,7 +17,7 @@ fluidPage(
                       from files produced by",
               a("OnTarget PC and OnTarget TDS", href="https://ontargetshooting.com/tds/"), ", ",
               a("TARAN", href="http://taran.ptosis.ch/"), ", ",
-              a("ShotMarker e-target", href="https://www.autotrickler.com/shotmarker.html"), ", ",
+              a("ShotMarker e-target", href="https://autotrickler.com/pages/shotmarker"), ", ",
               a("Silver Mountain e-target", href="https://www.silvermountaintargets.com/"), ", ",
               a("SIUS e-target", href="https://www.sius.com/"), ", ",
               "or from custom data files in text format with a similar structure.
@@ -64,7 +64,7 @@ fluidPage(
                        Analysis, 54 (4), 858-862.", br(),
               a("https://CRAN.R-project.org/package=CompQuadForm",
                 href="https://CRAN.R-project.org/package=CompQuadForm")),
-            p("Filzmoser, P., & Gschwandtner, M. (2023). mvoutlier: Multivariate
+            p("Filzmoser, P., & Gschwandtner, M. (2021). mvoutlier: Multivariate
                        outlier detection based on robust methods.", br(),
               a("https://CRAN.R-project.org/package=mvoutlier",
                 href="https://CRAN.R-project.org/package=mvoutlier")),
@@ -81,7 +81,7 @@ fluidPage(
             p("R Core Team (2023). R: A language and environment for statistical computing.
                        R Foundation for Statistical Computing, Vienna, Austria.", br(),
               a("https://www.R-project.org/", br(), href="https://www.R-project.org/")),
-            p("Rizzo, M. L., & Szekely, G. J. (2023). energy: E-statistics
+            p("Rizzo, M. L., & Szekely, G. J. (2022). energy: E-statistics
                       (energy statistics).", br(),
               a("https://CRAN.R-project.org/package=energy",
                 href="https://CRAN.R-project.org/package=energy")),
@@ -89,10 +89,10 @@ fluidPage(
                        Verbeke, T., & Maechler, M. (2023). robustbase: Basic Robust Statistics.", br(),
               a("https://CRAN.R-project.org/package=robustbase",
                 href="https://CRAN.R-project.org/package=robustbase")),
-            p("RStudio Inc. (2023). shiny: Web Application Framework for R.", br(),
+            p("RStudio Inc. (2022). shiny: Web Application Framework for R.", br(),
               a("https://CRAN.R-project.org/package=shiny", href="https://CRAN.R-project.org/package=shiny"), br(),
               a("https://shiny.rstudio.com/", href="https://shiny.rstudio.com/")),
-            p("Wollschlaeger, D. (2023). shotGroups: Analyze shot group data.", br(),
+            p("Wollschlaeger, D. (2022). shotGroups: Analyze shot group data.", br(),
               a("https://CRAN.R-project.org/package=shotGroups",
                 href="https://CRAN.R-project.org/package=shotGroups"), br(),
               a("https://github.com/dwoll/shotGroups/",
