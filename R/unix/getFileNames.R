@@ -1,6 +1,14 @@
 ## under Unix-like OS, we don't have choose.files() and Filters
 getFileNames <-
 function(fPath=".", fNames, fPat) {
+    if(!missing(fPath)) {
+        if(length(fPath) > 1L) {
+            warning("Only 1st element of fPath will be used")
+        }
+        
+        fPath <- fPath[1L]
+    }
+    
     ## do we have file names or a name pattern?
     files <- if(!missing(fNames)) {          # we have file names
         if(is.null(fPath) || is.na(fPath)) { # no path is given

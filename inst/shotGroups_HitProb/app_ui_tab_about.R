@@ -19,6 +19,7 @@ fluidPage(
               a("TARAN", href="http://taran.ptosis.ch/"), ", ",
               a("ShotMarker e-target", href="https://www.autotrickler.com/shotmarker.html"), ", ",
               a("Silver Mountain e-target", href="https://www.silvermountaintargets.com/"), ", ",
+              a("SIUS e-target", href="https://www.sius.com/"), ", ",
               "or from custom data files in text format with a similar structure.
                       For further explanations and an example walkthrough, see the",
               a("package vignette",
@@ -52,7 +53,7 @@ fluidPage(
               The shotGroups package
               uses functionality provided by the R packages boot, coin, CompQuadForm,
               energy, mvoutlier, and robustbase:"),
-            p("Canty, A., & Ripley, B. D. (2020). boot: Bootstrap R (S-Plus) Functions.", br(),
+            p("Canty, A., & Ripley, B. D. (2023). boot: Bootstrap R (S-Plus) Functions.", br(),
               a("https://cran.R-project.org/package=boot",
                 href="https://cran.R-project.org/package=boot")),
             p("Duchesne, P., & Lafaye de Micheaux, P. (2010). Computing the distribution
@@ -61,11 +62,11 @@ fluidPage(
                        Analysis, 54 (4), 858-862.", br(),
               a("https://cran.R-project.org/package=CompQuadForm",
                 href="https://cran.R-project.org/package=CompQuadForm")),
-            p("Filzmoser, P., & Gschwandtner, M. (2018). mvoutlier: Multivariate
+            p("Filzmoser, P., & Gschwandtner, M. (2021). mvoutlier: Multivariate
                        outlier detection based on robust methods.", br(),
               a("https://cran.R-project.org/package=mvoutlier",
                 href="https://cran.R-project.org/package=mvoutlier")),
-            p("Granjon, D. (2019). bs4Dash: A 'Bootstrap 4' Version of 'shinydashboard'.", br(),
+            p("Granjon, D. (2022). bs4Dash: A 'Bootstrap 4' Version of 'shinydashboard'.", br(),
               a("https://CRAN.R-project.org/package=bs4Dash",
                 href="https://CRAN.R-project.org/package=bs4Dash")),
             p("Hothorn, T., Hornik, K., van de Wiel, M. A., & Zeileis, A. (2008).
@@ -75,7 +76,7 @@ fluidPage(
                 href="https://www.jstatsoft.org/v28/i08/"), br(),
               a("https://cran.R-project.org/package=coin",
                 href="https://cran.R-project.org/package=coin")),
-            p("R Core Team (2020). R: A language and environment for statistical computing.
+            p("R Core Team (2023). R: A language and environment for statistical computing.
                        R Foundation for Statistical Computing, Vienna, Austria.", br(),
               a("https://www.r-project.org/", br(), href="https://www.r-project.org/")),
             p("Rizzo, M. L., & Szekely, G. J. (2019). energy: E-statistics
@@ -83,13 +84,13 @@ fluidPage(
               a("https://cran.R-project.org/package=energy",
                 href="https://cran.R-project.org/package=energy")),
             p("Rousseeuw, P. J., Croux, C., Todorov, V., Ruckstuhl, A., Salibian-Barrera, M.,
-                       Verbeke, T., & Maechler, M. (2020). robustbase: Basic Robust Statistics.", br(),
+                       Verbeke, T., & Maechler, M. (2023). robustbase: Basic Robust Statistics.", br(),
               a("https://cran.R-project.org/package=robustbase",
                 href="https://cran.R-project.org/package=robustbase")),
-            p("RStudio Inc. (2020). shiny: Web Application Framework for R.", br(),
+            p("RStudio Inc. (2022). shiny: Web Application Framework for R.", br(),
               a("https://cran.R-project.org/package=shiny", href="https://cran.R-project.org/package=shiny"), br(),
               a("https://shiny.rstudio.com/", href="https://shiny.rstudio.com/")),
-            p("Wollschlaeger, D. (2020). shotGroups: Analyze shot group data.", br(),
+            p("Wollschlaeger, D. (2022). shotGroups: Analyze shot group data.", br(),
               a("https://cran.R-project.org/package=shotGroups",
                 href="https://cran.R-project.org/package=shotGroups"), br(),
               a("https://github.com/dwoll/shotGroups/",

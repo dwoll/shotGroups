@@ -1,14 +1,19 @@
-$Date: 2023-04-01 19:17:29 +0000 (Sat, 01 Apr 2023) $
+$Date: 2024-02-11 21:38:29 +0000 (Sun, 11 Feb 2024) $
 
 SHOTGROUPS RELEASE VERSIONS at https://cran.r-project.org/
 
-Version 0.8.2.0.999 (Apr 01, 2023)
+Version 0.8.2.0.999 (Feb 11, 2024)
     * DESCRIPTION
       - move packages coin, robustbase to Suggests to reduce the
         number of hard dependencies
+    * readData___()
+      - fix bug leading to error when multiple paths are given
     * readDataSIUS()
       - new function to read files exported from SIUS e-target
         thanks: Torben Hinge
+    * readDataArcheryWC()
+      - new function to read files created from archery World Cup
+        thanks: James Park
 
 Version 0.8.2 (Sep 17, 2022)
     * DFdistr

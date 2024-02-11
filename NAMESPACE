@@ -26,7 +26,7 @@ export(analyzeGroup,
        getMaxPairDist, getMinBBox, getMinCircle, getMinEllipse, getXYmat,
        groupLocation, groupShape, groupSpread,
        readDataMisc, readDataOT1, readDataOT2, readDataSMT,
-       readDataShotMarker, readDataSIUS,
+       readDataShotMarker, readDataSIUS, readDataArcheryWC,
        runGUI,
        simRingCount,
        range2sigma, range2CEP, efficiency)

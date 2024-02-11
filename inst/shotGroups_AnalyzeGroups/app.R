@@ -93,7 +93,9 @@ shinyApp(
                             readDataShotMarker(fPath=dirname(fPath),  fNames=basename(fPath))
                         } else if(input$fileType == '5') {   ## SIUS e-target
                             readDataSIUS(fPath=dirname(fPath),  fNames=basename(fPath))
-                        } else if(input$fileType == '6') {   ## other
+                        } else if(input$fileType == '6') {   ## Archery World Cup
+                            readDataArcheryWC(fPath=dirname(fPath),  fNames=basename(fPath))
+                        } else if(input$fileType == '7') {   ## other
                             readDataMisc(fPath=dirname(fPath), fNames=basename(fPath))
                         }
                     } else {
@@ -113,8 +115,10 @@ shinyApp(
                         readDataShotMarker(dirname(fPath),  fNames=basename(fPath))
                     } else if(input$fileType == '5') {   ## SIUS e-target
                         readDataSIUS(fPath=dirname(fPath),  fNames=basename(fPath))
-                    } else if(input$fileType == '6') {   ## other
-                        readDataMisc(dirname(fPath), fNames=basename(fPath))
+                    } else if(input$fileType == '6') {   ## Archery World Cup
+                        readDataArcheryWC(fPath=dirname(fPath),  fNames=basename(fPath))
+                    } else if(input$fileType == '7') {   ## other
+                        readDataMisc(fPath=dirname(fPath), fNames=basename(fPath))
                     }
                 } else {
                     NULL

@@ -546,3 +546,70 @@ function(fPath=".", fNames, fPat, combine=TRUE, dstTarget, conversion) {
         return(DFs)
     }
 }
+
+readDataArcheryWC <- function(fPath=".", fNames, fPat, combine=TRUE, dstTarget, conversion) {
+    files <- getFileNames(fPath, fNames, fPat)
+    if(length(files) < 1L) { stop("No files were selected") }
+    
+    missing_dstTarget  <- missing(dstTarget)
+    missing_conversion <- missing(conversion)
+
+    ## read a single file
+    readMe <- function(f) {
+        f_raw              <- readLines(f)
+        dist_unit_idx      <- grep("^Mean X", f_raw)
+        dist_unit          <- gsub("^Mean X.+[[:blank:]]+([[:alpha:]]+)$", "\\1", f_raw[dist_unit_idx])
+        xy_start           <- grep("^Arrow positions and scores", f_raw) + 1
+        xy_stop            <- length(f_raw)
+        xy_raw             <- f_raw[xy_start:xy_stop]
+        DF                 <- read.table(text=xy_raw, header=TRUE, sep="\t", check.names=FALSE)
+        DF[["aim.x"]]      <- 0
+        DF[["aim.y"]]      <- 0
+        DF[["point.x"]]    <- DF[["X pos"]]
+        DF[["point.y"]]    <- DF[["Y pos"]]
+        DF[["X pos"]]      <- NULL
+        DF[["Y pos"]]      <- NULL
+        DF[["X"]]          <- NULL
+        DF[["file"]]       <- basename(tools::file_path_sans_ext(f))  # add filename
+        DF[["point.unit"]] <- dist_unit
+        DF[["date"]]       <- as.Date(f_raw[2], format="%d/%m/%Y")
+        
+        ## add distance if provided
+        if(!missing_dstTarget) {
+            DF[["distance"]] <- dstTarget
+        }
+        
+        ## infer (x,y)-coord units from conversion
+        if(!missing_conversion) {
+            DF[["distance.unit"]] <- getUnits(conversion, first=TRUE)  # unit for distance
+            DF[["point.unit"]]    <- getUnits(conversion, first=FALSE) # unit for xy-coords
+        }
+        
+        DF
+    }
+    
+    ## read multiple csv files
+    DFs <- lapply(files, readMe)
+    names(DFs) <- paste0("file", seq_along(DFs))  # name them
+    
+    ## build shared set of variable names
+    varNameL <- lapply(DFs, names)           # list of variable names
+    varNames <- Reduce(intersect, varNameL)  # intersection of all var names
+    
+    ## make sure that the data frames all have the correct variables
+    ## remove dots from variable names
+    wants <- c("distance", "group", "aim.x", "aim.y")  # useful
+    has   <- wants %in% varNames
+    
+    if(!all(has)) {
+        warning(c("At least one file is missing variable(s)\n",
+                  paste(wants[!has], collapse=" "),
+                  "\nthat may be required later by analysis functions"))
+    }
+    
+    if(combine) {
+        return(combineData(DFs))
+    } else {
+        return(DFs)
+    }    
+}
