@@ -6,8 +6,8 @@ function(q, sigma=1, nPerGroup=5, nGroups=1, stat=c("ES", "FoM", "D"),
     stat      <- c(ES="ES", FOM="FoM", D="D")[stat]
     nPerGroup <- as.integer(nPerGroup[1])
     nGroups   <- as.integer(nGroups[1])
-    stopifnot(nPerGroup > 1L, nPerGroup <= max(shotGroups::DFdistr$n),
-              nGroups   > 0L, nGroups   <= max(shotGroups::DFdistr$nGroups))
+    stopifnot(nPerGroup > 1L, nPerGroup <= max(shotGroups::DFdistr[["n"]]),
+              nGroups   > 0L, nGroups   <= max(shotGroups::DFdistr[["nGroups"]]))
     
     sigma <- sigma[1]
     stopifnot(is.numeric(sigma), sigma > 0)

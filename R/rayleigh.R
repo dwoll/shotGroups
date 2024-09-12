@@ -48,6 +48,7 @@ function(xy, level=0.95, mu, doRob=FALSE) {
         if(doRob) {
             warning("We need >= 4 points for robust estimations")
         }
+        
         FALSE
     } else {
         rob <- robustbase::covMcd(xy, cor=FALSE)
@@ -88,27 +89,34 @@ function(xy, level=0.95, mu, doRob=FALSE) {
     ## mean and sd for the chi distribution
     if(p == 1L) {                        # half normal with theta = sqrt(pi/2)
         ## https://mathworld.wolfram.com/Half-NormalDistribution.html
-        MU <- sqrt(2/pi)
-        SD <- sqrt((pi-2)/pi)
+        MU  <- sqrt(2/pi)
+        MED <- sqrt(qchisq(0.5, df=1))   # sqrt(pi) * (1/sqrt(2)) * qnorm(3/4) / sqrt(pi/2)
+        SD  <- sqrt((pi-2)/pi)
     } else if(p == 2L) {                 # Rayleigh distribution
-        MU <- sqrt(pi/2)
-        SD <- sqrt((4-pi)/2)
+        MU  <- sqrt(pi/2)
+        MED <- sqrt(2*log(2))            # sqrt(-2*log1p(-0.5))
+        SD  <- sqrt((4-pi)/2)
     } else if(p == 3L) {                 # Maxwell-Boltzmann distribution
-        MU <- sqrt(8/pi)
-        SD <- sqrt((3*pi-8)/pi)
+        MU  <- sqrt(8/pi)
+        MED <- sqrt(qgamma(0.5, shape=3/2, scale=2, lower.tail=TRUE))
+        SD  <- sqrt((3*pi-8)/pi)
     } else {
-        MU <- NA_real_
-        SD <- NA_real_
+        MU  <- NA_real_
+        MED <- NA_real_
+        SD  <- NA_real_
     }
 
-    MR    <- sigHat * MU                 # radial error mean
-    RSD   <- sigHat * SD                 # radial error standard deviation
-    MRci  <- c(sigCIlo, sigCIup) * MU
-    RSDci <- c(sigCIlo, sigCIup) * SD
+    MR     <- sigHat * MU                 # radial error mean
+    MEDR   <- sigHat * MED                # radial error median
+    RSD    <- sigHat * SD                 # radial error standard deviation
+    MRci   <- c(sigCIlo, sigCIup) * MU
+    MEDRci <- c(sigCIlo, sigCIup) * MED
+    RSDci  <- c(sigCIlo, sigCIup) * SD
 
-    return(list(sigma=c(sigma=sigHat, sigCIlo=sigCIlo, sigCIup=sigCIup),
-                  RSD=c(RSD=RSD, RSDciLo=RSDci[1], RSDciUp=RSDci[2]),
-                   MR=c(MR=MR, MRciLo=MRci[1], MRciUp=MRci[2])))
+    return(list(sigma=c(sigma=sigHat, sigCIlo=sigCIlo,    sigCIup=sigCIup),
+                  RSD=c(RSD  =RSD,    RSDciLo=RSDci[1],   RSDciUp=RSDci[2]),
+                   MR=c(MR   =MR,      MRciLo=MRci[1],     MRciUp=MRci[2]),
+                 MEDR=c(MEDR =MEDR,  MEDRciLo=MEDRci[1], MEDRciUP=MEDRci[2])))
 }
 
 #####---------------------------------------------------------------------------

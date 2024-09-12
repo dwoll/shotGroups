@@ -62,7 +62,6 @@ function(CEPlevel=0.5, ctr=c(0, 0), sigma=diag(length(ctr)), accuracy=FALSE, doR
             NCP <- 1*(NU/SD)^2    # N*f^2, N=1 because interested in individual shot, not mean
             SD * sqrt(qf(CEPlevel, df1=1, df2=N-1, ncp=NCP))
         } else {                  # POA = POI -> half normal / central F distribution
-            N  <- length(xy)
             SD <- getRayParam(xy, doRob=doRob)$sigma["sigma"]
             SD * sqrt(qchisq(CEPlevel, df=p))
         }

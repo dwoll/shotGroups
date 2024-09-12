@@ -1,10 +1,11 @@
 ## asumme Rayleigh case
-## convert extreme spread / figure of merit / bounding box diagonal
-## to Rayleigh sigma using lookup table from 1000000 runs for each
+## get range statistic CIs
+## using lookup table from 1000000 runs for each
 ## combination of n*nGroups
 ## http://ballistipedia.com/index.php?title=Range_Statistics
+## TODO: normalize by mean (current) or median?
 
-range2sigma <-
+getRangeStatCI <-
 function(x, stat="ES", n=5, nGroups=1, CIlevel=0.95, collapse=TRUE,
          dstTarget, conversion) {
     n       <- as.integer(n[1])
@@ -89,49 +90,53 @@ function(x, stat="ES", n=5, nGroups=1, CIlevel=0.95, collapse=TRUE,
         }
     }
 
-    ## Rayleigh sigma estimate
     ## M is for the sigma=1 case, range statistics are proportional to sigma
-    sigma <- x/M
-
+    ## normalize CI bounds to 1 via division by mean or median
+    ## then multiply by provided point estimate
     ## need extreme spread for sigma CI
+    ## 1st table entries
+    mES  <- setNames(M[names(x) == "ES"],  NULL)
+    mFoM <- setNames(M[names(x) == "FoM"], NULL)
+    mD   <- setNames(M[names(x) == "D"],   NULL)
+    
+    ## 2nd provided point estimates
     xES  <- setNames(x[names(x) == "ES"],  NULL)
     xFoM <- setNames(x[names(x) == "FoM"], NULL)
     xD   <- setNames(x[names(x) == "D"],   NULL)
     if(CIlevel %in% haveCI) {
-        CIlo <- sprintf("%04.1f", round((1-(alpha/2))*100, digits=1))
-        CIup <- sprintf("%04.1f", round(   (alpha/2) *100, digits=1))
+        CIlo <- sprintf("%04.1f", round(   (alpha/2) *100, digits=1))
+        CIup <- sprintf("%04.1f", round((1-(alpha/2))*100, digits=1))
         if(n %in% haveN) {
-            ES_CIlo  <-  xES/shotGroups::DFdistr[[sub("\\.", "", paste0("ES_Q",  CIlo))]][idx]
-            ES_CIup  <-  xES/shotGroups::DFdistr[[sub("\\.", "", paste0("ES_Q",  CIup))]][idx]
-            FoM_CIlo <- xFoM/shotGroups::DFdistr[[sub("\\.", "", paste0("FoM_Q", CIlo))]][idx]
-            FoM_CIup <- xFoM/shotGroups::DFdistr[[sub("\\.", "", paste0("FoM_Q", CIup))]][idx]
-            D_CIlo   <-   xD/shotGroups::DFdistr[[sub("\\.", "", paste0("D_Q",   CIlo))]][idx]
-            D_CIup   <-   xD/shotGroups::DFdistr[[sub("\\.", "", paste0("D_Q",   CIup))]][idx]
+            ES_CIlo  <-  xES*shotGroups::DFdistr[[sub("\\.", "", paste0("ES_Q",  CIlo))]][idx] / mES
+            ES_CIup  <-  xES*shotGroups::DFdistr[[sub("\\.", "", paste0("ES_Q",  CIup))]][idx] / mES
+            FoM_CIlo <- xFoM*shotGroups::DFdistr[[sub("\\.", "", paste0("FoM_Q", CIlo))]][idx] / mFoM
+            FoM_CIup <- xFoM*shotGroups::DFdistr[[sub("\\.", "", paste0("FoM_Q", CIup))]][idx] / mFoM
+            D_CIlo   <-   xD*shotGroups::DFdistr[[sub("\\.", "", paste0("D_Q",   CIlo))]][idx] / mD
+            D_CIup   <-   xD*shotGroups::DFdistr[[sub("\\.", "", paste0("D_Q",   CIup))]][idx] / mD
         } else {
-            ES_CIlo  <-  xES/splinefun(haveN, shotGroups::DFdistr[[sub("\\.", "", paste0("ES_Q",  CIlo))]][idxGroup],
-                                       method="fmm")(n)
-            ES_CIup  <-  xES/splinefun(haveN, shotGroups::DFdistr[[sub("\\.", "", paste0("ES_Q",  CIup))]][idxGroup],
-                                       method="fmm")(n)
-            FoM_CIlo <- xFoM/splinefun(haveN, shotGroups::DFdistr[[sub("\\.", "", paste0("FoM_Q", CIlo))]][idxGroup],
-                                       method="fmm")(n)
-            FoM_CIup <- xFoM/splinefun(haveN, shotGroups::DFdistr[[sub("\\.", "", paste0("FoM_Q", CIup))]][idxGroup],
-                                       method="fmm")(n)
-            D_CIlo   <-   xD/splinefun(haveN, shotGroups::DFdistr[[sub("\\.", "", paste0("D_Q",   CIlo))]][idxGroup],
-                                       method="fmm")(n)
-            D_CIup   <-   xD/splinefun(haveN, shotGroups::DFdistr[[sub("\\.", "", paste0("D_Q",   CIup))]][idxGroup],
-                                       method="fmm")(n)
+            ES_CIlo  <-  xES*splinefun(haveN, shotGroups::DFdistr[[sub("\\.", "", paste0("ES_Q",  CIlo))]][idxGroup],
+                                       method="fmm")(n) / mES
+            ES_CIup  <-  xES*splinefun(haveN, shotGroups::DFdistr[[sub("\\.", "", paste0("ES_Q",  CIup))]][idxGroup],
+                                       method="fmm")(n) / mES
+            FoM_CIlo <- xFoM*splinefun(haveN, shotGroups::DFdistr[[sub("\\.", "", paste0("FoM_Q", CIlo))]][idxGroup],
+                                       method="fmm")(n) / mFoM
+            FoM_CIup <- xFoM*splinefun(haveN, shotGroups::DFdistr[[sub("\\.", "", paste0("FoM_Q", CIup))]][idxGroup],
+                                       method="fmm")(n) / mFoM
+            D_CIlo   <-   xD*splinefun(haveN, shotGroups::DFdistr[[sub("\\.", "", paste0("D_Q",   CIlo))]][idxGroup],
+                                       method="fmm")(n) / mD
+            D_CIup   <-   xD*splinefun(haveN, shotGroups::DFdistr[[sub("\\.", "", paste0("D_Q",   CIup))]][idxGroup],
+                                       method="fmm")(n) / mD
         }
     } else {
         if("ES" %in% stat) {
             warning("CI estimate based on Grubbs-Patnaik chi^2 approximation")
-            ES_M <- setNames(M[names(M) %in% "ES"], NULL)
             ## Patnaik chi-approximation
             m <- ESSQ_M
             v <- ESSQ_V
             # m <- ES_M^2 + ES_V
             # v <- ES_KURT*ES_V^2 + 4*ES_SKEW*sqrt(ES_V)^3*ES_M + 4*ES_V*ES_M^2 - ES_V^2
-            ES_CIlo  <- xES/qChisqGrubbs(1-(alpha/2), m=m, v=v, n=2*m^2/v)
-            ES_CIup  <- xES/qChisqGrubbs(   alpha/2,  m=m, v=v, n=2*m^2/v)
+            ES_CIlo  <- xES*qChisqGrubbs(   alpha/2,  m=m, v=v, n=2*m^2/v) / mES
+            ES_CIup  <- xES*qChisqGrubbs(1-(alpha/2), m=m, v=v, n=2*m^2/v) / mES
             FoM_CIlo <- NULL
             FoM_CIup <- NULL
             D_CIlo   <- NULL
@@ -148,45 +153,41 @@ function(x, stat="ES", n=5, nGroups=1, CIlevel=0.95, collapse=TRUE,
     }
 
     ## convert CIs to MOA
-    sigma <- makeMOA(sigma, dst=dstTarget, conversion=conversion)
-    if(is.matrix(sigma)) {
-        colnames(sigma) <- paste0(names(x), "_", round(x, digits=3))
-    }
-    
-    sigmaESCI  <- lapply(seq_along(ES_CIlo),  function(i) {
-        makeMOA(c("sigma ("=ES_CIlo[i], "sigma )" =ES_CIup[i]),
+    x_out  <- makeMOA(x, dst=dstTarget, conversion=conversion)
+    ES_CI  <- lapply(seq_along(ES_CIlo),  function(i) {
+        makeMOA(c("ES ("=ES_CIlo[i], "ES )" =ES_CIup[i]),
                 dst=dstTarget, conversion=conversion) })
-    sigmaESCI  <- if(length(sigmaESCI) > 0L) {
-        setNames(sigmaESCI,  paste0("ES_",  round(xES, digits=2)))
+    ES_CI  <- if(length(ES_CI) > 0L) {
+        setNames(ES_CI,  paste0("ES_",  round(xES, digits=2)))
     } else { NULL }
 
-    sigmaFoMCI <- lapply(seq_along(FoM_CIlo), function(i) {
-        makeMOA(c("sigma ("=FoM_CIlo[i], "sigma )"=FoM_CIup[i]),
+    FoM_CI <- lapply(seq_along(FoM_CIlo), function(i) {
+        makeMOA(c("FoM ("=FoM_CIlo[i], "FoM )"=FoM_CIup[i]),
                 dst=dstTarget, conversion=conversion) })
-    sigmaFoMCI <- if(length(sigmaFoMCI) > 0L) {
-        setNames(sigmaFoMCI, paste0("FoM_", round(xFoM, digits=2)))
+    FoM_CI <- if(length(FoM_CI) > 0L) {
+        setNames(FoM_CI, paste0("FoM_", round(xFoM, digits=2)))
     } else { NULL }
 
-    sigmaDCI   <- lapply(seq_along(D_CIlo),   function(i) {
-        makeMOA(c("sigma ("=D_CIlo[i], "sigma )"  =D_CIup[i]),
+    D_CI   <- lapply(seq_along(D_CIlo),   function(i) {
+        makeMOA(c("D ("=D_CIlo[i], "D )"  =D_CIup[i]),
                 dst=dstTarget, conversion=conversion) })
-    sigmaDCI   <- if(length(sigmaDCI) > 0L) {
-        setNames(sigmaDCI,   paste0("D_",   round(xD,   digits=2)))
+    D_CI   <- if(length(D_CI) > 0L) {
+        setNames(D_CI,   paste0("D_",   round(xD,   digits=2)))
     } else { NULL }
 
     ## weed out non existing CIs
-    sigmaCI <- Filter(Negate(is.null), list(ES=sigmaESCI, FoM=sigmaFoMCI, D=sigmaDCI))
+    CI <- Filter(Negate(is.null), list(ES=ES_CI, FoM=FoM_CI, D=D_CI))
 
-    ## collapse sigmaCI list if required and possible
+    ## collapse CI list if required and possible
     if(collapse) {
-        for(i in seq_along(sigmaCI)) {
-            if(length(sigmaCI[[i]]) == 1L) { sigmaCI[[i]] <- sigmaCI[[c(i, 1)]] }
+        for(i in seq_along(CI)) {
+            if(length(CI[[i]]) == 1L) { CI[[i]] <- CI[[c(i, 1)]] }
         }
 
-        if(length(sigmaCI) == 1L) { sigmaCI <- sigmaCI[[1]] }
+        if(length(CI) == 1L) { CI <- CI[[1]] }
     }
 
     ## sigmaCI might be empty list when no ES is given
     Filter(function(l) { !is.null(l) && (length(l) > 0L) },
-           list(sigma=sigma, sigmaCI=sigmaCI))
+           list(range_stat=x_out, CI=CI))
 }

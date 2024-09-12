@@ -3,7 +3,7 @@
 \alias{getRayParam.data.frame}
 \alias{getRayParam.default}
 \title{Estimate Rayleigh parameters sigma, mean and standard deviation}
-\description{Estimates the radial precision parameter sigma of the Rayleigh distribution together with the radial mean MR and radial standard deviation RSD, including parametric confidence intervals. For 1D data, it estimates the parameters of the half normal distribution. For 3D data, it estimates the parameters of the Maxwell-Boltzmann distribution}
+\description{Estimates the radial precision parameter sigma of the Rayleigh distribution together with the radial mean MR, radial median MEDR, and radial standard deviation RSD, including parametric confidence intervals. For 1D data, it estimates the parameters of the half normal distribution with parameter theta = sqrt(pi/2). For 3D data, it estimates the parameters of the Maxwell-Boltzmann distribution}
 \usage{getRayParam(xy, level = 0.95, mu, doRob = FALSE)
 
 \method{getRayParam}{data.frame}(xy, level = 0.95, mu, doRob = FALSE)
@@ -20,10 +20,11 @@
 The robust estimate for the covariance matrix of (x,y)-coordinates is from \code{\link[robustbase]{covMcd}} using the MCD algorithm.
 }
 \value{
-A list with the estimates for sigma, RSD, and MR including the confidence intervals.
+A list with the estimates for sigma, RSD, MR, and MEDR including the confidence intervals.
 \item{sigma}{A vector with the sigma estimate and confidence interval bounds as named elements \code{sigma}, \code{sigCIlo}, \code{sigCIup}.}
 \item{RSD}{A vector with the RSD estimate and confidence interval bounds as named elements \code{RSD}, \code{RSDciLo}, \code{RSDciUp}.}
 \item{MR}{A vector with the MR estimate and confidence interval bounds as named elements \code{MR}, \code{MRciLo}, \code{MRciUp}.}
+\item{MEDR}{A vector with the MEDR estimate and confidence interval bounds as named elements \code{MEDR}, \code{MEDRciLo}, \code{MEDRciUp}.}
 }
 \references{
 \url{http://ballistipedia.com/index.php?title=Closed_Form_Precision}

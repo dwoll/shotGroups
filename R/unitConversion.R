@@ -182,8 +182,8 @@ function(conversion) {
         # }
 
         unname(v[conversion])
-    } else if(is.numeric(conversion)) {  # factor is given directly
-        if(any(na.omit(conversion) <= 0)) {
+    } else if(is.numeric(conversion)) {     # factor is given directly
+        if(any(na.omit(conversion) <= 0)) { # already present NAs are kept
             is.na(conversion) <- conversion <= 0
             warning("Conversion factor must be > 0")
         }

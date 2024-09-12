@@ -14,6 +14,14 @@ Version 0.8.2.0.999 (Feb 11, 2024)
     * readDataArcheryWC()
       - new function to read files created from archery World Cup
         thanks: James Park
+    * getRayParam()
+      - also return median including CI
+    * getRangeStat()
+      - also return corresponding confidence interval together
+        with point estimate
+    * getRangeStatCI()
+      - new function to get corresponding confindence interval
+        for observed range statistics
 
 Version 0.8.2 (Sep 17, 2022)
     * DFdistr
