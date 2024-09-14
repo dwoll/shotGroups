@@ -2,7 +2,7 @@
 \alias{range2CEP}
 \title{Estimate circular error probable (CEP) based on range statistics}
 \description{Estimate the circular error probable (CEP) based on range statistics such as extreme spread, figure of merit, or the bounding box diagonal. This function assumes a circular bivariate normal shot distribution with 0 mean.}
-\usage{range2CEP(x, stat="ES", n=5, nGroups=1, CEPlevel=0.5, CIlevel=0.95,
+\usage{range2CEP(x, stat="ES", n, nGroups, CEPlevel=0.5, CIlevel=0.95,
             collapse=TRUE, dstTarget, conversion)}
 \arguments{
   \item{x}{a numerical vector with values for extreme spread (ES), figure of merit (FoM), or the diagonal of the bounding box (D).}

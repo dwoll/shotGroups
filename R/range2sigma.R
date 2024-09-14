@@ -5,7 +5,7 @@
 ## http://ballistipedia.com/index.php?title=Range_Statistics
 
 range2sigma <-
-function(x, stat="ES", n=5, nGroups=1, CIlevel=0.95, collapse=TRUE,
+function(x, stat="ES", n, nGroups, CIlevel=0.95, collapse=TRUE,
          dstTarget, conversion) {
     n       <- as.integer(n[1])
     nGroups <- as.integer(nGroups[1])

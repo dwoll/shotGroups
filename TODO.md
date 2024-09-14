@@ -1,7 +1,5 @@
 # TODO
 
- * function: take group n, nGroups - return params CV, efficiency = 1 / (n*CV^2) (Figure 62) for ES, sigma
- * function: take group n, nGroups, ES or sigma, CI level - return ES and sigma CI (Figure 63 or p131)
  * function: rescale group to make variances equal, either taking removing excess variance from x or y
  * function: get relative efficiency for two sets of (n, nGroups)
  * function: take group n - return uncertainty of zero estimate as mean (sigma*sqrt(pi/2)) and median (sigma*sqrt(2*log(2))) in terms of multiples of Rayleigh sigma, or supply sigma estimate, or supply data to estimate sigma (p95)

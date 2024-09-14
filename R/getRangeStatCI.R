@@ -3,10 +3,9 @@
 ## using lookup table from 1000000 runs for each
 ## combination of n*nGroups
 ## http://ballistipedia.com/index.php?title=Range_Statistics
-## TODO: normalize by mean (current) or median?
 
 getRangeStatCI <-
-function(x, stat="ES", n=5, nGroups=1, CIlevel=0.95, collapse=TRUE,
+function(x, stat="ES", n, nGroups, CIlevel=0.95, collapse=TRUE,
          dstTarget, conversion) {
     n       <- as.integer(n[1])
     nGroups <- as.integer(nGroups[1])
@@ -94,12 +93,12 @@ function(x, stat="ES", n=5, nGroups=1, CIlevel=0.95, collapse=TRUE,
     ## normalize CI bounds to 1 via division by mean or median
     ## then multiply by provided point estimate
     ## need extreme spread for sigma CI
-    ## 1st table entries
+    ## 1st: table entries
     mES  <- setNames(M[names(x) == "ES"],  NULL)
     mFoM <- setNames(M[names(x) == "FoM"], NULL)
     mD   <- setNames(M[names(x) == "D"],   NULL)
     
-    ## 2nd provided point estimates
+    ## 2nd: provided point estimates
     xES  <- setNames(x[names(x) == "ES"],  NULL)
     xFoM <- setNames(x[names(x) == "FoM"], NULL)
     xD   <- setNames(x[names(x) == "D"],   NULL)

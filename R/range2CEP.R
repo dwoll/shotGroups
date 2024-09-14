@@ -6,7 +6,7 @@
 ## http://ballistipedia.com/index.php?title=Range_Statistics
 
 range2CEP <-
-function(x, stat="ES", n=5, nGroups=1, CEPlevel=0.5, CIlevel=0.95,
+function(x, stat="ES", n, nGroups, CEPlevel=0.5, CIlevel=0.95,
          collapse=TRUE, dstTarget, conversion) {
     sigma <- range2sigma(x=x, stat=stat, n=n, nGroups=nGroups,
                          CIlevel=CIlevel, collapse=FALSE,

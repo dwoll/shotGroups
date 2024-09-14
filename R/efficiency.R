@@ -7,7 +7,7 @@ function(n, nGroups, CIlevel=0.95, CIwidth,
               all(n > 1L),
               all(n <= max(shotGroups::DFdistr[["n"]])),
               all(CIlevel > 0))
-    
+
     n_ord <- sort(unique(as.integer(n)))
     stat  <- match.arg(toupper(stat),
                        choices=c("RAYLEIGH", "ES", "FOM", "D"),
@@ -22,12 +22,13 @@ function(n, nGroups, CIlevel=0.95, CIwidth,
     CIlevel <- round(CIlevel[1], digits=2)
     idxN    <- which((shotGroups::DFdistr[["n"]]       %in% n_ord) &
                      (shotGroups::DFdistr[["nGroups"]] ==   1L))
+
     idx1    <- which( shotGroups::DFdistr[["nGroups"]] ==   1L)
     n1      <- shotGroups::DFdistr[idx1, "n", drop=TRUE]
     alpha   <- 1 - CIlevel
     z       <- qnorm(1-(alpha/2), mean=0, sd=1)
 
-    ## can use lookup table for ES_CV and RS_CV or do spline interpolation
+    ## can use lookup table for ES_CV/FoM_CV/D_CV/RS_CV or do spline interpolation
     if(all(n_ord %in% n1)) {
         nActual <- shotGroups::DFdistr[["n"]][idxN]
         ES_CV   <- shotGroups::DFdistr[["ES_CV"]][idxN]
@@ -77,7 +78,9 @@ function(n, nGroups, CIlevel=0.95, CIwidth,
                    CIwidth=CIwidth)
     } else if(!missing(nGroups) && missing(CIwidth)) {
         ## nGroups is given, CI width is requested
-        stopifnot(is.numeric(nGroups), nGroups > 0)
+        stopifnot(is.numeric(nGroups),
+                  nGroups > 0)
+
         nGroups <- as.integer(nGroups[1])
 
         E <- if(stat == "RAYLEIGH") {

@@ -59,6 +59,8 @@ function(xy, dstTarget, conversion, CIlevel=0.95) {
     D      <- bb$diag
     getRangeStatCI(c(ES, FoM, D),
                    stat=c("ES", "FoM", "D"),
+                   n=NA_integer_,       # TODO
+                   nGroups=NA_integer_, # TODO
                    dstTarget=dstTarget,
                    conversion=conversion,
                    CIlevel=CIlevel)

@@ -2,8 +2,8 @@
 \alias{range2sigma}
 \title{Estimate Rayleigh sigma based on range statistics}
 \description{Estimate the Rayleigh sigma parameter based on range statistics like extreme spread, figure of merit, or the bounding box diagonal. This function assumes a circular bivariate normal shot distribution with 0 mean.}
-\usage{range2sigma(x, stat="ES", n=5, nGroups=1, CIlevel=0.95,
-            collapse=TRUE, dstTarget, conversion)}
+\usage{range2sigma(x, stat="ES", n, nGroups,
+            CIlevel=0.95, collapse=TRUE, dstTarget, conversion)}
 \arguments{
   \item{x}{a numerical vector with values for extreme spread (ES), figure of merit (FoM), or the diagonal of the bounding box (D).}
   \item{stat}{a character vector with elements \code{"ES"} (extreme spread), \code{"FoM"} (figure of merit), or \code{"D"} (bounding box diagonal) indicating which range statistic is given in \code{x}. Elements correspond to those in \code{x} in the sense that the second element of \code{stat} indicates the statistic for the second element of \code{x}. If all elements of \code{x} are the same kind of statistic, \code{stat} only needs to indicate it once.}
@@ -15,7 +15,7 @@
   \item{conversion}{how to convert the measurement unit for distance to target to that of the (x,y)-coordinates in MOA calculation. Example \code{'m2cm'}. See \code{\link[shotGroups]{getMOA}}.}
 }
 \details{
-Based on the lookup table \code{\link[shotGroups]{DFdistr}} with results form a Monte Carlo simulation. If the value of \code{n} is not among those simulated (but is less than 100), a monotonic spline interpolation between the neighboring simulated values of the statistic's coefficient of variation is used.
+Based on the lookup table \code{\link[shotGroups]{DFdistr}} with results from a Monte Carlo simulation. If the value of \code{n} is not among those simulated (but is less than 100), a monotonic spline interpolation between the neighboring simulated values of the statistic's coefficient of variation is used.
 
 For conversion to the circular error probable, see \code{\link[shotGroups]{range2CEP}}.
 

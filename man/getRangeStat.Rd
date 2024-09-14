@@ -16,7 +16,7 @@
   \item{CIlevel}{a numerical value with the coverage for the confidence interval.}
 }
 \value{
-A named list with first components \code{range_stat}. This is a matrix with columns \code{ES} (extreme spread), \code{FoM} (figure of merit), \code{D} (bounding box diagonal). The second component \code{CI} gives the corresponding confidence interval boundaries as a named list with components \code{ES}, \code{FoM}, \code{D}.
+A named list with first component \code{range_stat}. This is a matrix with columns \code{ES} (extreme spread), \code{FoM} (figure of merit), \code{D} (bounding box diagonal). The second component \code{CI} gives the corresponding confidence interval boundaries as a named list with components \code{ES}, \code{FoM}, \code{D}.
 }
 \references{
 Grubbs, F. E. (1964b). Statistical measures of accuracy for riflemen and missile engineers. Ann Arbor, ML: Edwards Brothers.
