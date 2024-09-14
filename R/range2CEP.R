@@ -11,6 +11,7 @@ function(x, stat="ES", n, nGroups, CEPlevel=0.5, CIlevel=0.95,
     sigma <- range2sigma(x=x, stat=stat, n=n, nGroups=nGroups,
                          CIlevel=CIlevel, collapse=FALSE,
                          dstTarget=dstTarget, conversion=conversion)
+
     CEP <- qRayleigh(CEPlevel, scale=sigma$sigma)
     CEP <- if(is.matrix(sigma$sigma)) {
         dim(CEP)      <- dim(sigma$sigma)

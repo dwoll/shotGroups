@@ -30,5 +30,8 @@ Grubbs, F. E. (1964b). Statistical measures of accuracy for riflemen and missile
 \code{\link[shotGroups]{range2sigma}}
 }
 \examples{
-getRangeStatCI(c(1, 2, 3), stat=c("ES", "FoM", "D"))
+getRangeStatCI(c(1, 2, 3),
+               stat=c("ES", "FoM", "D"),
+               n=10,
+               nGroups=1)
 }

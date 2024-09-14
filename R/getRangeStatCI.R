@@ -10,19 +10,32 @@ function(x, stat="ES", n, nGroups, CIlevel=0.95, collapse=TRUE,
     n       <- as.integer(n[1])
     nGroups <- as.integer(nGroups[1])
     stopifnot(all(x > 0),
-              n       > 1L, n       <= max(shotGroups::DFdistr[["n"]]),
-              nGroups > 0L, nGroups <= max(shotGroups::DFdistr[["nGroups"]]),
+              n       > 1L,
+              nGroups > 0L,
               CIlevel > 0)
     
     stat <- match.arg(toupper(stat),
                       choices=c("ES", "FOM", "D"),
                       several.ok=TRUE)
     
-    argL <- recycle(x, stat)
-    x    <- argL[[1]]
-    stat <- c(ES="ES", FOM="FoM", D="D")[argL[[2]]]
-    x    <- setNames(x, stat)
-
+    argL  <- recycle(x, stat)
+    x     <- argL[[1]]
+    stat  <- c(ES="ES", FOM="FoM", D="D")[argL[[2]]]
+    x     <- setNames(x, stat)
+    x_out <- makeMOA(x, dst=dstTarget, conversion=conversion)
+    
+    if((n       > max(shotGroups::DFdistr[["n"]])) ||
+       (nGroups > max(shotGroups::DFdistr[["nGroups"]]))) {
+        warning("n or nGroups are beyond tabulated data")
+        CIL <- lapply(stat, function(s) {
+            rbind(unit=setNames(c(NA_real_, NA_real_),
+                                paste0(s, c(" (", " )"))))
+        })
+        
+        return(list(range_stat=x_out,
+                    CI=CIL))
+    }
+    
     ## check if CIlevel is given in percent
     if(CIlevel >= 1) {
         while(CIlevel >= 1) { CIlevel <- CIlevel / 100 }
@@ -47,7 +60,7 @@ function(x, stat="ES", n, nGroups, CIlevel=0.95, collapse=TRUE,
     
     alpha    <- 1 - CIlevel
     idxGroup <- which(shotGroups::DFdistr[["nGroups"]] == nGroups)
-    haveN    <- unique(shotGroups::DFdistr[["n"]][idxGroup])
+    haveN    <- unique(shotGroups::DFdistr[["n"]])
     haveCI   <- c(0.5, 0.8, 0.9, 0.95, 0.99)
 
     ## Rayleigh sigma: use lookup table or monotone spline interpolation
@@ -152,7 +165,6 @@ function(x, stat="ES", n, nGroups, CIlevel=0.95, collapse=TRUE,
     }
 
     ## convert CIs to MOA
-    x_out  <- makeMOA(x, dst=dstTarget, conversion=conversion)
     ES_CI  <- lapply(seq_along(ES_CIlo),  function(i) {
         makeMOA(c("ES ("=ES_CIlo[i], "ES )" =ES_CIup[i]),
                 dst=dstTarget, conversion=conversion) })

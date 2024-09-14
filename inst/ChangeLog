@@ -20,8 +20,12 @@ Version 0.8.2.0.999 (Feb 11, 2024)
       - also return corresponding confidence interval together
         with point estimate
     * getRangeStatCI()
-      - new function to get corresponding confindence interval
-        for observed range statistics
+      - new function to calculate corresponding confidence interval
+        for observed range statistics for given number of shots per
+        group and number of groups
+    * getRangeStatEff()
+      - new function to calculate efficiency of range statistics
+        for given number of shots per group and number of groups
 
 Version 0.8.2 (Sep 17, 2022)
     * DFdistr
