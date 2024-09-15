@@ -22,7 +22,8 @@ function(n, nGroups) {
     have_n       <- sort(unique(shotGroups::DFdistr[["n"]]))
     have_nGroups <- sort(unique(shotGroups::DFdistr[["nGroups"]]))
 
-    ## get coefficient of variation
+    ## get coefficient of variation for given
+    ## combination of number of shots per group / number of groups
     get_CV <- function(i) {
         n_here  <- n[i]
         nG_here <- nGroups[i]

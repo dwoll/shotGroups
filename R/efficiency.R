@@ -45,8 +45,8 @@ function(n, nGroups, CIlevel=0.95, CIwidth,
     alpha   <- 1 - CIlevel
     z       <- qnorm(1-(alpha/2), mean=0, sd=1)
 
-    ## TODO: do this on a case-by-case basis
-    ## get coefficient of variation
+    ## get coefficient of variation for given
+    ## combination of number of shots per group / number of groups
     get_CV <- function(i) {
         n_here  <- n[i]
         nG_here <- nGroups_use[i]

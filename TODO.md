@@ -1,10 +1,9 @@
 # TODO
 
- * function: rescale group to make variances equal, either taking removing excess variance from x or y
- * function: get relative efficiency for two sets of (n, nGroups)
+ * function: rescale group to make variances equal, by removing excess variance from x or y, or Mahalanobis + rescaling?
  * function: take group n - return uncertainty of zero estimate as mean (sigma*sqrt(pi/2)) and median (sigma*sqrt(2*log(2))) in terms of multiples of Rayleigh sigma, or supply sigma estimate, or supply data to estimate sigma (p95)
  * move `CompQuadForm` (used in `pmvnEll()`) to Suggests?
- * bs4Dash shiny app: active distance to target should depend on current group selection
+ * `bs4Dash` shiny app: active distance to target should depend on current group selection
 
 ## Short / medium term
 ### Misc
