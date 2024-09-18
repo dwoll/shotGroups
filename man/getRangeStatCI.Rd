@@ -3,7 +3,7 @@
 \title{Confidence interval for range statistics}
 \description{Returns the confindence interval for given range statistics: extreme spread, figure of merit, bounding box diagonal. Calculations assume a circular bivariate normal shot distribution with 0 mean.}
 \usage{getRangeStatCI(x, stat="ES", n, nGroups, CIlevel=0.95,
-              collapse=TRUE, dstTarget, conversion5)}
+               collapse=TRUE, dstTarget, conversion5)}
 \arguments{
   \item{x}{a numerical vector with values for extreme spread (ES), figure of merit (FoM), or the diagonal of the bounding box (D).}
   \item{stat}{a character vector with elements \code{"ES"} (extreme spread), \code{"FoM"} (figure of merit), or \code{"D"} (bounding box diagonal) indicating which range statistic is given in \code{x}. Elements correspond to those in \code{x} in the sense that the second element of \code{stat} indicates the statistic for the second element of \code{x}. If all elements of \code{x} are the same kind of statistic, \code{stat} only needs to indicate it once.}

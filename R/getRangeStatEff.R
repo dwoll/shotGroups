@@ -4,7 +4,7 @@
 ## but accept nGroups anyway to check
 ## http://ballistipedia.com/index.php?title=Range_Statistics
 getRangeStatEff <-
-function(n, nGroups) {
+function(n, nGroups=1) {
     stopifnot(is.numeric(n),
               all(n > 1L),
               all(n     <= max(shotGroups::DFdistr[["n"]])),

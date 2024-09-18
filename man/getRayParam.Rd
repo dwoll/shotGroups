@@ -11,7 +11,7 @@
 \method{getRayParam}{default}(xy, level = 0.95, mu, doRob = FALSE)}
 \arguments{
   \item{xy}{either a numerical matrix with the coordinates of n points (1 row of coordinates per point), or a data frame with either the variables \code{x}, \code{y} or \code{point.x}, \code{point.y}.}
-  \item{level}{a numerical value with the coverage for the confidence intervals for sigma, MR, RSD.}
+  \item{level}{a numerical value with the coverage for the confidence intervals for sigma, MR, MEDR, RSD.}
   \item{mu}{numerical 2-vector with the true group center (optional). See details.}
   \item{doRob}{logical: use robust estimation of covariance matrix as basis for estimators?}
 }

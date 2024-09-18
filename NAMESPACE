@@ -28,7 +28,7 @@ export(analyzeGroup,
        readDataMisc, readDataOT1, readDataOT2, readDataSMT,
        readDataShotMarker, readDataSIUS, readDataArcheryWC,
        runGUI,
-       simRingCount,
+       scaleGroup, simRingCount,
        range2sigma, range2CEP, efficiency)
 
 S3method(getBoundingBox, data.frame)
@@ -79,3 +79,5 @@ S3method(groupSpread, data.frame)
 S3method(groupSpread, default)
 S3method(simRingCount, data.frame)
 S3method(simRingCount, default)
+S3method(scaleGroup, data.frame)
+S3method(scaleGroup, default)
