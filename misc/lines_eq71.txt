@@ -1,0 +1,92 @@
+> Mj[2, c('X1', 'X2')] - Mj[1, c('X1', 'X2')]  # Abweichung M2-M1=beta2
+> Mj[3, c('X1', 'X2')] - Mj[1, c('X1', 'X2')]  # Abweichung M3-M1=beta3
+> Yhat <- Pf %*% Ym1                  # Vorhersage vollständiges Modell
+# vollst. Modell: orth. Proj. auf durch Designmatrix aufgespannten Raum
+> Yhat <- Pf %*% Ym2                  # Vorhersage vollständiges Modell
+> (HLT1 <- sum(diag(solve(WW) %*% B1)))         # Hotelling-Lawley-Spur
+> kfCV <- cv.glm(regrDf, glmfit=glmFit, K=k) # k-fache Kreuzvalidierung
+> kfCV$delta                    # Kreuzvalidierungsfehler und Korrektur
+# einzelne Kreuzvalidierung gegeben logische Indizes der Teststichprobe
+> mean((residuals(lmFit) / (1 - hatvalues(lmFit)))^2)     # manuell ...
++                         predict(bsFit, newdata=dat, type='response'))
+> dev.set(dev.next())                   # aktiviere das folgende device
+> pdf('pdf_test.pdf')                  # device öffnen (mit Dateinamen)
+> plot(x=<Vektor>, y=<Vektor>, type='<Option>', main='<Diagrammtitel>',
+> (dTab <- xtabs(~ dice)                        # absolute Häufigkeiten
+> barplot(dTab, ylim=c(0, 30), xlab='Augenzahl', ylab='N', col='black',
+> roll1   <- dice[1:50]                  # erste Serie von Würfelwürfen
+> rollAll <- rbind(table(roll1), table(roll2))     # Matrix Gesamtdaten
+> drinks <- c('beer', 'red wine', 'white wine')     # mögliche Getränke
+> dotchart(x=<Daten>, labels='<Namen>', groups=<Faktor>, gdata=<Daten>)
+> IV  <- gl(2, Nj)                               # Gruppenzugehörigkeit
+> dotchart(DV, gdata=Mj, color=rep(c('red', 'blue', 'green'), each=Nj),
+> library(Hmisc)                                   # für cnvrt.coords()
+> pt1 <- cnvrt.coords(0, 0, input='fig')           # Figure-Koordinaten
+> yC <- sin(pi * xA) / (pi * xA)              # normierte Sinc-Funktion
+> abline(fit, lwd=2)                                # Regressionsgerade
++       x1=c(height[1]-0.5, height[3]), y1=c(weight[1], weight[3]+0.5),
+> n   <- 7                               # Anzahl an Zeilen und Spalten
+> xRight <- rep(seq(len, 1,     by=len), times=n)     # x-Koord. rechts
+> plot(c(0,1), c(0,1), axes=FALSE, type='n', asp=1, main='Farbverlauf')
+> selX  <- seq(mu-sigma, mu+sigma, length.out=100)      # [mu +- sigma]
+> selY  <- dnorm(selX, mu, sigma)    # Werte im Intervall [mu +- sigma]
+> par(new=TRUE)            # folgendes Diagramm in bestehendes zeichnen
++                         bgroup('(', frac(x-mu, sigma), ')')^2, ')')))
+> mat <- ifelse(abs(mat) > 2, NA, mat)        # Werte > 2 auf NA setzen
+> matplot(vec, mat, lwd=2, lty=c(1, 2, 4), col=c(12, 14, 17), type='l',
+> IV <- factor(rep(1:P, Nj))                     # Gruppenzugehörigkeit
+> axis(side=1, at=1:P, labels=LETTERS[1:P])      # Gruppenbezeichnungen
+> Mj1  <- c(2, 3, 6, 3, 5)                       # Mittelwerte Gruppe 1
+> Mj2  <- c(4, 3, 2, 1, 3)                       # Mittelwerte Gruppe 2
+> xOff <- 0.1        # horizontaler Offset zwischen Werten einer Gruppe
+> ErrBars(from=c(Mj1, Mj2) - c(Sj1, Sj2), to=c(Mj1, Mj2) + c(Sj1, Sj2),
++          ylab='Mittelwert', main='Mittelwerte & Konfidenzintervalle')
+> ciLo <- Mj - ciWidths                        # Fehlerb. untere Grenze
+> phi <- alpha*x + beta*y            # konvexe Mischung der Koordinaten
+> height <- rnorm(100, mean=175, sd=7)       # Körpergröße 100 Personen
+> limits <- seq(from=fromTo[1], to=fromTo[2], by=5)  # Intervallgrenzen
+> curve(dnorm(x, mean(height), sd(height)), lwd=2, col='blue',add=TRUE)
+> points(1:P, Mj, pch=16, cex=2)                  # zeige Gruppenmittel
+> IV   <- gl(P, Nj)                              # Gruppenzugehörigkeit
++     xlab='Quantile t-Verteilung', ylab='empirische Quantile', pch=19)
+> curve(pnorm, add=TRUE, col='gray', lwd=2) # Vergleich mit Standard-NV
+> textRad  <- 0.5                           # Radius für Beschriftungen
+> hullIdx <- chull(x, y)                  # Indizes Ecken konvexe Hülle
+> sigma <- matrix(c(1, 0.6, 0.6, 1), nrow=2)          # Kovarianzmatrix
+> wScale <- (weight-min(weight)) * (0.8 / abs(diff(range(weight))))+0.2
+> symbols(age, sport, circles=wScale, inch=0.6, fg=NULL, bg=rainbow(N),
+> IV <- factor(rep(c('CG', 'T'), each=N/P))      # Gruppenzugehörigkeit
+> mvDf   <- data.frame(IV, age, IQ, rating, score)          # Datensatz
+# Funktion, um Streuungsellipsen getrennt für beide Gruppen zu zeichnen
++         RowSideColors=cmCol, main='Heatmap einer Korrelationsmatrix')
+> (mat1 <- matrix(1:4, 2, 2))   # 4 Regionen derselben Größe definieren
+> layout(mat1)                                   # Device-Fläche teilen
+> par(mfrow=c(1, 2))                        # Diagrammfenster aufteilen
+> split.screen(splitMat)                   # Diagrammfläche unterteilen
+> boxplot(sample(1:20,100,replace=TRUE) ~ gl(4,25,labels=LETTERS[1:4]),
+> group  <- factor(rep(c('control','placebo','treatment'), each=Q*Njk))
+> sgComb <- interaction(sex, group)  # kombinierte Gruppenzugehörigkeit
+# füge Grundschicht Streudiagramm mit größeren Datenpunktsymbolen hinzu
++              aes(x=group, y=mood, color=sex, shape=sex, group=sex)) +
+> xOne     <- 1:9                                            # x-Koord.
+> yOne     <- rnorm(9)                                       # y-Koord.
+> ptsConst <- approx(xOne, yOne, method='constant')          # konstant
+> ord <- order(xTwo)                      # für geordnete x-Koordinaten
+> ptsSpline <- spline(xOne, yOne, n=201)             # kubischer spline
++        'spar=0.5'), pch=c(19, NA, NA, NA, NA), lty=c(NA, 1, 1, 1, 1),
+> loess.smooth(x=<x-Koordinaten>, y=<y-Koordinaten>, span=<Bandbreite>)
+> xTwo  <- rnorm(100)                                   # x-Koordinaten
+> yTwo  <- 0.4 * xTwo + rnorm(100, 0, 1)                # y-Koordinaten
+> ptsL1 <- loess.smooth(xTwo, yTwo, span=1/3)           # weniger glatt
+> lines(ptsL1, lwd=2, col='red')            # LOESS-Glätter einzeichnen
+> qnorm(U, mean=0, sd=1)            # Kontrolle -> leichte Abweichungen
+> grad(pnorm, x, mean=0, sd=1)          # Ableitung Verteilungsfunktion
++                    brks=breaks, obs=observed, gr=NULL, method='BFGS')
+# wiederhole nTests mal für beide Stichproben Ziehen von je Nj Personen
+> groups <- rbind(group1, group2)       # füge Daten zu Matrix zusammen
++           sqrt(1/Nj) * sqrt(var(x[1:Nj]) + var(x[(Nj+1):(2*Nj)])) } )
+> while(x >= y) { x <- x-y }   # Modulo-Berechnung (für positive Werte)
+> info.numeric    <- function(x) { range(x)  } # für numerischen Vektor
+> info(myDf)                               # ruft info.data.frame() auf
+> boot:::basic.ci  # basic.ci() aus Paket boot, sonst nicht sichtbar...
+> get('fligner.test.default')             # Fehler: unsichtbare Methode

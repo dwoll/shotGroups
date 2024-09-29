@@ -1,0 +1,851 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\chapter{R als Programmiersprache}
+\label{sec:programming}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\index{programmieren}
+R bietet nicht nur Mittel zur numerischen und grafischen Datenanalyse, sondern ist gleichzeitig eine Programmiersprache, die dieselbe Syntax wie die bisher behandelten Auswertungen verwendet. Das sehr umfangreiche Thema der Programmierung mit R soll in den folgenden Abschnitten nur soweit angedeutet werden, dass nützliche Sprachkonstrukte wie z.\,B.\ Kontrollstrukturen verwendet sowie einfache Funktionen selbst erstellt und analysiert werden können.
+
+Eine ausführliche Behandlung sei der hierauf spezialisierten Literatur überlassen \cite{Chambers2008,Gillespie2017,Wickham2014a}. Die Entwicklung eigener R-Pakete behandeln \citeA{RDevelopmentCoreTeam2014} und \citeA{Wickham2014e}. R kann auch direkt Bibliotheken oder Funktionen nutzen, die in anderen Programmiersprachen erstellt wurden, etwa Python \cite{Allaire2018}, Java \cite{Urbanek2018}, C/C++ \cite{Eddelbuettel2013} oder Julia \cite{Li2018}.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Kontrollstrukturen}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\index{Kontrollstrukturen}
+\emph{Kontrollstrukturen} ermöglichen es, die Abfolge von Befehlen gezielt zu steuern. Sie machen etwa die Ausführung von Befehlen von Bedingungen abhängig und verzweigen so den Befehlsfluss, oder wiederholen in \emph{Schleifen} dieselben Befehle, solange bestimmte Nebenbedingungen gelten. Hilfe zu diesem Thema zeigt \lstinline!?Control!.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Fallunterscheidungen}
+\label{sec:ifElseSwitch}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\index{Fallunterscheidung}
+\index{Verzweigung}
+Mit \lstinline!if()!\index[func]{if()@\lstinline{if()}} können Befehle im Rahmen einer Fallunterscheidung in Abhängigkeit davon ausgeführt werden, ob eine Bedingung gilt.
+\begin{lstlisting}
+if(<<logischer Ausdruck>>) {
+    <<Befehlsblock>>         # ausgeführt, wenn <<Ausdruck>> TRUE ist
+}
+\end{lstlisting}
+
+Als Argument erwartet \lstinline!if()! zur Formulierung der Bedingung einen Ausdruck, der sich zu einem einzelnen Wahrheitswert \lstinline!TRUE! oder \lstinline!FALSE! auswerten lässt. Hierbei ist auszuschließen, dass der Ausdruck einen Vektor mit Länge $\neq 1$ oder aber \lstinline!NA!, \lstinline!NaN! bzw.\ \lstinline!NULL! ergibt. Sicherstellen kann man dies etwa, indem der Ausdruck in \lstinline!isTRUE()! eingeschlossen wird (Abschn.\ \ref{sec:isTRUE}).
+
+Mögliche Ausdrücke sind u.\,a.\ logische Vergleiche. Im Folgenden, durch\index[func]{"{"}@\lstinline."{"}.} \lstinline!{}! eingeschlossenen Block, sind jene Befehle aufzuführen, die nur dann ausgewertet werden sollen, wenn der Ausdruck gleich \lstinline!TRUE! ist.\footnote{Mit\index{Kommentar} \lstinline!if(FALSE) \{ <<Befehle>> \}! können damit schnell viele Befehlszeilen von der Verarbeitung ausgeschlossen werden, ohne diese einzeln mit \lstinline!#! auskommentieren zu müssen. Die ausgeschlossenen Zeilen müssen dabei jedoch nach wie vor syntaktisch korrekt, können also keine Kommentare im engeren Sinne sein.} Finden die Befehle in einer Zeile hinter \lstinline!if()! Platz, sind die geschweiften Klammern optional.\footnote{Allgemein gilt, dass in einer Zeile stehende Befehle einen Block bilden und zusammen ausgeführt werden. Geschweifte Klammern sorgen dafür, dass die zwischen ihnen stehenden Befehle auch dann als einzelner Block gewertet werden, wenn sie sich über mehrere Zeile erstrecken. Die Auswertung erfolgt erst, wenn die Klammer geschlossen wird, auch wenn Abschnitte davor bereits für sich genommen syntaktisch vollständig sind.} Das Ergebnis von \lstinline!if()! ist der Wert des letzten ausgewerteten Ausdrucks und lässt sich direkt einem Objekt zuweisen.
+\begin{lstlisting}
+> (x <- round(rnorm(1, mean=100, sd=15)))
+[1] 115
+
+> y <- NA                    # default Wert
+> y <- if(x > 100) { TRUE }
+> y
+[1] TRUE
+\end{lstlisting}
+
+Für den Fall, dass der Ausdruck gleich \lstinline!FALSE! ist, kann eine Verzweigung des Befehlsflusses auch einen alternativen Block von Befehlen vorsehen, der sich durch das Schlüsselwort \lstinline!else!\index[func]{else@\lstinline{else}} eingeleitet an den auf \lstinline!if()! folgenden Block anschließt.
+\begin{lstlisting}
+if(<<Ausdruck>>) {
+    <<Befehlsblock>>         # ausgeführt, wenn <<Ausdruck>> TRUE ist
+} else {
+    <<Befehlsblock>>         # ausgeführt, wenn <<Ausdruck>> FALSE ist
+}
+\end{lstlisting}
+
+Hier ist zu beachten, dass sich das Schlüsselwort \lstinline!else! in derselben Zeile wie die schließende Klammer \lstinline!}! des \lstinline!if()! Blocks befinden muss und nicht separat in der auf die Klammer folgenden Zeile stehen kann.
+\begin{lstlisting}
+> x <- round(rnorm(1, mean=100, sd=15))
+> text_out <- if(x > 100) {
++     cat("x is", x, "(greater than 100)\n")
++ } else {
++     cat("x is", x, "(100 or less)\n")
++ }
+
+> text_out
+[1] x is 83 (100 or less)
+\end{lstlisting}
+
+Innerhalb der auf \lstinline!if()! oder \lstinline!else! folgenden Befehlssequenz können wiederum \lstinline!if()! Abfragen stehen. So verschachtelt lassen sich auch Bedingungen prüfen, die mehr als zwei Ausprägungen annehmen können.
+\begin{lstlisting}
+> (day <- sample(c("Mon", "Tue", "Wed"), size=1))
+[1] "Wed"
+
+> if(day == "Mon") {
++     print("The day is Monday")
++ } else {
++     if(day == "Tue") {
++         print("The day is Tuesday")
++     } else {
++         print("The day is neither Monday nor Tuesday")
++     }
++ }
+[1] "The day is neither Monday nor Tuesday"
+\end{lstlisting}
+
+Kürzer und mit weniger Verschachtelungsebenen lässt sich die mehrfache Verzweigung formulieren, indem das \lstinline!else! und folgende \lstinline!if! einander direkt angeschlossen werden.
+\begin{lstlisting}
+> text_out <- if(day == "Mon") {
++     print("The day is Monday")
++ } else if(day == "Tue") {
++     print("The day is Tuesday")
++ } else {
++     print("The day is neither Monday nor Tuesday")
++ }
+
+> text_out
+[1] "The day is neither Monday nor Tuesday"
+\end{lstlisting}
+
+Die \lstinline!switch()!\index[func]{switch()@\lstinline{switch()}} Anweisung ist für eben solche Situationen gedacht, in denen eine Nebenbedingung mehr als zwei Ausprägungen besitzen kann und für jede dieser Ausprägungen anders verfahren werden soll. \lstinline!switch()! ist meist übersichtlicher als eine ebenfalls immer mögliche verschachtelte \lstinline!if()! Abfrage. Lässt sich die Bedingung zu einem ganzzahligen Wert im Bereich von $1$ bis zur Anzahl der möglichen Befehle auswerten, hat die Syntax folgende Form:
+\begin{lstlisting}
+switch(EXPR=<<Ausdruck>>, <<Befehl 1>>, <<Befehl 2>>, ...)
+\end{lstlisting}
+
+Als erstes Argument \lstinline!EXPR! ist der Ausdruck zu übergeben, von dessen Ausprägung abhängen soll, welcher Befehl ausgeführt wird -- häufig ist dies lediglich ein Objekt. Es folgen durch Komma getrennt mögliche Befehle. Das Ergebnis des Ausdrucks \lstinline!EXPR! muss in diesem Fall den auszuführenden Befehl numerisch bezeichnen, bei einer $1$ würde der erste Befehl ausgewertet, bei einer $2$ der zweite, usw. Sollen für einen Wert von \lstinline!EXPR! mehrere Befehle ausgeführt werden, sind diese in \lstinline!{}! einzuschließen.
+\begin{lstlisting}
+> (val <- sample(1:3, size=1))
+[1] 3
+
+> switch(val, print("val is 1"), print("val is 2"), print("val is 3"))
+[1] "val is 3"
+\end{lstlisting}
+
+Ist \lstinline!EXPR! dagegen eine Zeichenkette, hat die Syntax die folgende Gestalt.
+\begin{lstlisting}
+switch(EXPR=<<Ausdruck>>,
+       <<Wert 1>>=<<Befehl 1>>, <<Wert 2>>=<<Befehl 2>>, ...
+       <<Befehl>>)
+\end{lstlisting}
+
+Auf \lstinline!EXPR! folgt hier durch Komma getrennt eine Reihe von (nicht in Anführungszeichen stehenden) möglichen Werten mit einem durch Gleichheitszeichen angeschlossenen zugehörigen Befehl. Schließlich besteht die Möglichkeit, einen Befehl ohne vorher genannte Ausprägung für all jene Situationen anzugeben, in denen \lstinline!EXPR! keine der zuvor explizit genannten Ausprägungen besitzt -- andernfalls ist das Ergebnis in einem solchen Fall \lstinline!NULL!\@.
+
+Abschnitt \ref{sec:function} erläutert, wie Funktionen wie hier im Beispiel selbst erstellt werden können.
+\begin{lstlisting}
+> myCalc <- function(op, vals) {
++     switch(op,
++         plus  = vals[1] + vals[2],
++         minus = vals[1] - vals[2],
++         times = vals[1] * vals[2],
++         vals[1] / vals[2])            # default / catch all
++ }
+
+> (vals <- round(rnorm(2, 1, 10)))
+[1] -5 -7
+
+> myCalc("minus", vals)
+[1] 2
+
+> myCalc("XX", vals)                    # -> catch all in switch() 
+[1] 0.7142857
+\end{lstlisting}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Schleifen}
+\label{sec:loops}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\index{Schleifen}
+\emph{Schleifen} dienen dazu, eine Folge von Befehlen mehrfach ausführen zu lassen, ohne diese Befehle für jede Ausführung neu notieren zu müssen. Wie oft eine Befehlssequenz durchlaufen wird, kann dabei von Nebenbedingungen und damit von zuvor durchgeführten Auswertungen abhängig gemacht werden.\footnote{Anders als in kompilierten Programmiersprachen wie etwa C oder Fortran sind Schleifen in R als interpretierter Sprache oft ineffizient. Abschnitt \ref{sec:efficiency} gibt Hinweise für die Steigerung der Effizienz.}
+\begin{lstlisting}
+for(<<Variable>> in <<Vektor>>) {
+    <<Befehlsblock>>
+}
+\end{lstlisting}
+
+Die Funktion \lstinline!for()!\index[func]{for()@\lstinline{for()}} besteht aus zwei Teilen: zum einen, in runde Klammern eingeschlossen, dem \emph{Kopf} der Schleife, zum anderen, darauf folgend in\index[func]{"{"}@\lstinline."{"}.} \lstinline!{}! eingeschlossen, der zu wiederholenden Befehlssequenz -- dem \emph{Rumpf}. Im Kopf der Schleife ist \lstinline!<<Variable>>! ein Objekt, das im Rumpf verwendet werden kann. Es nimmt nacheinander die in \lstinline!<<Vektor>>! enthaltenen Werte an, oft ist dies eine numerische Sequenz. Für jedes Element von \lstinline!<<Vektor>>! wird der Schleifenrumpf einmal ausgeführt, wobei der Wert von \lstinline!<<Variable>>! wie beschrieben nach jedem Durchlauf der Schleife wechselt.
+\begin{lstlisting}
+> ABC <- c("Alfa", "Bravo", "Charlie", "Delta")
+> for(i in ABC) { print(i) }
+[1] "Alfa"
+[1] "Bravo"
+[1] "Charlie"
+[1] "Delta"
+\end{lstlisting}
+
+Mit Schleifen lassen sich Simulationen\index{Simulation} erstellen, mit denen etwa die Robustheit statistischer Verfahren bei Verletzung ihrer Voraussetzungen untersucht werden kann. Im folgenden Beispiel wird zu diesem Zweck zunächst eine Grundgesamtheit von $100.000$ Zufallszahlen einer normalverteilten Variable simuliert. Daraufhin werden die Zahlen quadriert und logarithmiert, also einer nichtlinearen Transformation unterzogen. In einer Schleife werden aus dieser Grundgesamtheit $1.000$ mal $2$ Gruppen von je $20$ Zahlen zufällig ohne Zurücklegen gezogen und mit einem $t$-Test für unabhängige Stichproben sowie mit einem $F$-Test auf Varianzhomogenität verglichen. Da beide Stichproben aus derselben Grundgesamtheit stammen, ist in beiden Tests die Nullhypothese richtig, die Voraussetzung der Normalverteiltheit dagegen verletzt. Ein robuster Test sollte in dieser Situation nicht wesentlich häufiger fälschlicherweise signifikant werden, als durch das nominelle $\alpha$-Niveau vorgegeben.
+\begin{lstlisting}
+> src     <- log(rnorm(100000, 0, 1)^2)   # Grundgesamtheit
+> alpha   <- 0.05                         # nominelles alpha
+> nTests  <- 1000                         # Anzahl simulierter Tests
+> Nj      <- 20                           # Gruppengröße
+> sigVecT <- numeric(nTests)              # für Ergebnisse t.test()
+> sigVecV <- numeric(nTests)              # für Ergebnisse var.test()
+
+> for(i in seq(length.out=nTests)) {
++   group1     <- sample(src, size=Nj, replace=FALSE) # Stichprobe 1
++   group2     <- sample(src, size=Nj, replace=FALSE) # Stichprobe 2
++   resT       <- t.test(group1, group2)              # t-Test
++   resV       <- var.test(group1, group2)            # Varianz-Test
++   sigVecT[i] <- as.logical(resT$p.value < alpha)    # t signifikant?
++   sigVecV[i] <- as.logical(resV$p.value < alpha)    # F signifikant?
++ }
+
+> cat("Erwartete Anzahl signifikanter Tests:", alpha*nTests, "\n")
+Erwartete Anzahl signifikanter Tests: 50
+
+> cat("Signifikante t-Tests:", sum(sigVecT), "\n")
+Signifikante t-Tests: 46
+
+> cat("Signifikante F-Tests Varianzhomogenität:", sum(sigVecV), "\n")
+Signifikante F-Tests Varianzhomogenität: 197
+\end{lstlisting}
+
+Während der $t$-Test im Beispiel in der Tat robust ist, reagiert der $F$-Test sehr liberal -- er fällt weit häufiger signifikant aus, als das nominelle $\alpha$-Niveau erwarten lässt.
+
+Schleifen können zur Effizienzsteigerung dann gut vermieden werden, wenn die Berechnungen in den einzelnen Schleifendurchläufen voneinander unabhängig sind -- wenn, wie hier, ein Durchlauf also keine Werte benötigt, die in vorherigen Durchläufen berechnet wurden. Eine Alternative zum obigen Vorgehen zeigt Abschn.\ \ref{sec:replicate}.
+
+Während bei \lstinline!for()! durch die Länge von \lstinline!<<Vektor>>! festgelegt ist, wie häufig die Schleife durchlaufen wird, kann dies bei \lstinline!while()!\index[func]{while()@\lstinline{while()}} durch Berechnungen innerhalb der Schleife gesteuert werden.
+\begin{lstlisting}
+while(<<Ausdruck>>) { <<Befehlsblock>> }
+\end{lstlisting}
+
+Als Argument erwartet \lstinline!while()! einen Ausdruck, der sich zu einem einzelnen Wahrheitswert \lstinline!TRUE! oder \lstinline!FALSE! auswerten lässt. Hierbei ist auszuschließen, dass der Ausdruck einen Vektor mit Länge $\neq 1$ oder aber \lstinline!NA!, \lstinline!NaN! bzw.\ \lstinline!NULL! ergibt. Sicherstellen kann man dies etwa, indem der Ausdruck in \lstinline!isTRUE()! eingeschlossen wird (Abschn.\ \ref{sec:isTRUE}).
+
+Der in \lstinline!{}! eingefasste Schleifenrumpf wird immer wieder durchlaufen, solange der Ausdruck gleich \lstinline!TRUE! ist. Typischerweise ändern Berechnungen im Schleifenrumpf den Ausdruck, so dass dieser \lstinline!FALSE! ergibt, sobald ein angestrebtes Ziel erreicht wird. Es ist zu gewährleisten, dass dies auch irgendwann der Fall ist, andernfalls handelt es sich um eine \emph{Endlosschleife}, die den weiteren Programmablauf blockiert und auf der Konsole mit der \myURL{ESC} Taste abgebrochen werden müsste (unter Linux mit \myURL{Strg+c}).
+\begin{lstlisting}
+> x <- 37
+> y <- 10
+> while(x >= y) { x <- x-y }   # Modulo-Berechnung (für positive Werte)
+> x
+[1] 7
+\end{lstlisting}
+
+Die Schlüsselwörter \lstinline!break!\index[func]{break@\lstinline{break}} und \lstinline!next!\index[func]{next@\lstinline{next}} erlauben es, die Ausführung von Schleifen innerhalb des Schleifenrumpfes zu steuern. Sie stehen i.\,d.\,R.\ innerhalb eines durch \lstinline!if()! eingeleiteten Blocks. Durch \lstinline!break! wird die Ausführung der Schleife abgebrochen, noch ehe das hierfür im Schleifenkopf definierte Kriterium erreicht ist. Mit \lstinline!next! bricht nur der aktuelle Schleifendurchlauf ab und geht zum nächsten Durchlauf über, ohne ggf.\ auf \lstinline!next! folgende Befehle innerhalb des Schleifenrumpfes auszuführen. Die Schleife wird also fortgesetzt, die auf \lstinline!next! folgenden Befehle dabei aber einmal übersprungen.
+\begin{lstlisting}
+> for(i in 1:10) {
++     if((i %% 2) != 0) { next  }
++     if((i %% 8) == 0) { break }
++     print(i)
++ }
+[1] 2
+[1] 4
+[1] 6
+\end{lstlisting}
+
+Eine durch \lstinline!repeat!\index[func]{repeat@\lstinline{repeat}} eingeleitete Schleife wird solange ausgeführt, bis sie explizit durch \lstinline!break! abgebrochen wird. Der Schleifenrumpf muss also eine Bedingung überprüfen und eine \lstinline!break! Anweisung beinhalten, um eine Endlosschleife zu vermeiden.
+\begin{lstlisting}
+repeat { <<Befehlsblock>> }
+\end{lstlisting}
+
+\begin{lstlisting}
+> i <- 0
+> repeat {
++     i <- i+1
++     if((i %% 4) == 0) { break }
++     print(i)
++ }
+[1] 1
+[1] 2
+[1] 3
+\end{lstlisting}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Funktionsaufrufe ohne Schleifen wiederholen}
+\label{sec:replicate}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Als vereinfachte Form von \lstinline!sapply()! (Abschn.\ \ref{sec:sapply}) sorgt \index[func]{replicate()@\lstinline{replicate()}} \lstinline!replicate(n=<<Anzahl>>, expr=<<Befehl>>)! dafür, dass derselbe Ausdruck \lstinline!expr! mehrfach (\lstinline!n! mal) wiederholt wird. Die Ausgabe erfolgt als Matrix mit \lstinline!n! Spalten und so vielen Zeilen, wie \lstinline!expr! pro Ausführung Werte erzeugt.
+\begin{lstlisting}
+> replicate(6, round(rnorm(4), digits=2))
+      [,1]   [,2]  [,3]   [,4]   [,5]   [,6]
+[1,] -0.31  -0.17  0.35  -0.46  -1.23  -2.39
+[2,]  0.73  -1.12  0.60  -0.61  -0.07   0.58
+[3,] -0.16   0.64  0.46  -1.21   0.20  -0.81
+[4,]  0.87   0.49  0.04  -1.38   0.05   1.83
+\end{lstlisting}
+
+Im vorangehenden Beispiel einer Simulation für die Power-Schätzung (Abschn.\ \ref{sec:loops}) ließe sich die \lstinline!for()! Schleife auch vermeiden, indem \lstinline!replicate()! sowie Möglichkeiten zur Vektorisierung genutzt werden. Häufig ist insbesondere letzteres aus Effizienzgründen erstrebenswert.
+\begin{lstlisting}
+# wiederhole nTests mal für beide Stichproben Ziehen von je Nj Personen
+> group1 <- replicate(nTests, sample(src, size=Nj, replace=FALSE))
+> group2 <- replicate(nTests, sample(src, size=Nj, replace=FALSE))
+> groups <- rbind(group1, group2)       # füge Daten zu Matrix zusammen
+
+# berechne Teststatistiken für t-Tests: zunächst Streuungsschätzungen
+> estSigDiffs <- apply(groups, 2, function(x) {
++           sqrt(1/Nj) * sqrt(var(x[1:Nj]) + var(x[(Nj+1):(2*Nj)])) } )
+
+# berechne alle Mittelwertsdifferenzen
+> meanDiffs <- apply(groups, 2, function(x) {
++                    mean(x[1:Nj]) - mean(x[(Nj+1):(2*Nj)]) } )
+
+# vektorisierte Befehle, um t-Werte und p-Werte zu erhalten
+> tVals <- meanDiffs / estSigDiffs      # t-Werte
+> pVals <- pt(tVals, (2*Nj)-2, lower.tail=FALSE)        # p-Werte
+> sum(pVals < alpha)                    # Anzahl signifikanter Tests
+[1] 55
+\end{lstlisting}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Eigene Funktionen erstellen}
+\label{sec:function}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\index{Funktion!erstellen}
+\index[func]{function()@\lstinline{function()}}
+Funktionen sind eine Zusammenfassung von Befehlen auf Basis von beim Aufruf mitgelieferten Eingangsinformationen, den \emph{Funktionsargumenten}. Ebenso wie etwa Matrizen als Objekte der Klasse \lstinline!matrix! können Funktionen als Objekte der Klasse \lstinline!function! erstellt werden. Dafür wird über \lstinline!function()! eine Funktion definiert und das Ergebnis einem Objekt zugewiesen. Selbst erstellte Funktionen haben denselben Status und dieselben Möglichkeiten wie mit R mitgelieferte Funktionen.
+\begin{lstlisting}
+<<Name>> <- function(<<Argument1>>=<<Voreinstellung>>,
+                   <<Argument2>>=<<Voreinstellung>>, ...) {
+    <<Befehlsblock>>
+}
+\end{lstlisting}
+
+Als Beispiel soll eine Funktion mit dem Namen\index[func]{.First()@\lstinline{.First()}} \lstinline!.First! erstellt werden, über die in der Datei \myURL{Rprofile.site} im \myURL{etc/} Ordner des R-Programmordners individuell festgelegt werden kann, welche Befehle zu Beginn jeder R-Sitzung automatisch auszuführen sind (Abschn.\ \ref{sec:settings}).
+\begin{lstlisting}
+> .First <- function() {
++     library(car)                      # lade automatisch Paket car
++     print("Have a nice day!")         # gib Begrüßung aus
++ }
+\end{lstlisting}
+
+Eine Kurzschreibweise von \lstinline!function()!, die sich insbesondere bei der Definition anonymer Funktionen innerhalb von Aufrufen von \lstinline!lapply()!, \lstinline!sapply()!, etc.\ eignet, ist\index[func]{\\()@\lstinline{\()}} \lstinline!\()! (Abschn.\ \ref{sec:functionUse}). 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Funktionskopf}
+\label{sec:functionBody}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\index{Funktion!Kopf}
+Zunächst ist bei einer Funktion der \emph{Funktionskopf} innerhalb der runden Klammern\index[func]{()@\lstinline{()}} \lstinline!()! zu definieren, in dem durch Komma getrennt jene \emph{formalen} Argumente\index{Funktion!Argumente} benannt werden, die eine Funktion als Eingangsinformation akzeptiert. Die hier benannten Argumente stehen innerhalb des Funktionsrumpfes (s.\,u.) als Objekte zur Verfügung.\footnote{Die aufgerufene Funktion kann nur Kopien der ursprünglichen Objekte, nicht aber die Objekte selbst ändern, da Argumente als \emph{Wertparameter} (\emph{call by value}) übergeben werden.} Auch ein leerer Funktionskopf ist möglich, wenn die folgenden Befehle nicht von äußeren Informationen abhängen.
+
+Jedem formalen Argument kann mit \lstinline!=! ein Wert zugewiesen werden, den das Argument als Voreinstellung (\emph{default}) annimmt, sofern es beim Aufruf der Funktion nicht explizit genannt wird. Fehlt ein solcher default, muss beim Aufruf der Funktion zwingend ein Wert für das Argument übergeben werden. Argumente mit Voreinstellung sind beim Aufruf dagegen optional (Abschn.\ \ref{sec:funcParam}).
+
+Argumente können von jeder Klasse, also auch ihrerseits Funktionen sein -- eine Möglichkeit, die etwa bei \lstinline!lapply()! oder \lstinline!curve()! Verwendung findet. Eine solche Funktion höherer Ordnung, die eine Funktion als Argument akzeptiert und auf einen Wert abbildet, ist ein \emph{Funktional}.
+
+Anders als in vielen Programmiersprachen ist es nicht notwendig, im Funktionskopf explizit anzugeben, was für eine Klasse ein Objekt haben muss, das für ein Argument bestimmt ist. Im Funktionsrumpf sollte deshalb eine Prüfung erfolgen, ob beim Funktionsaufruf tatsächlich ein für die weiteren Berechnungen geeignetes Objekt für ein Argument übergeben wurde (Abschn.\ \ref{sec:checkArgs}).
+
+Das Argument \lstinline!...!\index[func]{...@\lstinline{...}} besitzt eine besondere Bedeutung: Beim Aufruf der Funktion hierfür übergebene Werte können im Funktionsrumpf unter dem Namen \lstinline!...! verwendet werden. Dabei kann es sich um mehrere, durch Komma getrennte Werte handeln, die sich innerhalb der Funktion gemeinsam mittels \lstinline!<<Objekt>> <- list(...)! in einem Objekt speichern und weitergeben lassen. Das Argument \lstinline!...! sollte das letzte Argument im Funktionskopf sein. Es bietet sich besonders dann an, wenn im Funktionsrumpf eine Funktion verwendet wird, bei der noch nicht feststeht, ob und wenn ja wie viele Argumente sie ihrerseits benötigt, wenn die selbst definierte Funktion später ausgeführt wird.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Funktionsrumpf}
+\label{sec:funcBody}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\index{Funktion!Rumpf}
+Auf den Funktionskopf folgt eingeschlossen in geschweifte\index[func]{"{"}@\lstinline."{"}.} Klammern \lstinline!{}! der sich ggf.\ über mehrere Zeilen erstreckende \emph{Funktionsrumpf} als Block von Befehlen und durch \lstinline!#! eingeleiteten Kommentaren. Findet die vollständige Funktionsdefinition in einer Zeile Platz, sind die geschweiften Klammern optional.
+
+Die Befehle im Funktionsrumpf haben Zugriff auf alle übergebenen Argumente und auf die in einer R-Sitzung zuvor erstellten \emph{globalen} Objekte. Objekte, die innerhalb eines Funktionsrumpfes definiert werden, stehen dagegen nur\index{Objekt!lokales} \emph{lokal}, d.\,h.\ innerhalb der Funktion zur Verfügung und verfallen nach dem Aufruf der Funktion.\footnote{Lokale Objekte existieren in einer beim Funktionsaufruf eigens erstellten\index{Umgebung} Umgebung (Abschn.\ \ref{sec:objectNames}). Für das in diesem Kontext relevante, aber komplexe Thema der Regeln für die Gültigkeit\index{Objekt!Lebensdauer}\index{Objekt!Gültigkeit}\index{Scoping-Regeln|see{Objekte}} von Objekten (\emph{scoping}) vgl.\ \citeA{Chambers2008}.}
+
+Werden innerhalb des Funktionsrumpfes Argumente aus dem Funktionskopf verwendet, ist das \emph{Lazy-Evaluation}-Prinzip\index{lazy evaluation} zu beachten, nach dem der Inhalt von Funktionsargumenten erst mit deren tatsächlichen Verwendung ausgewertet wird.\footnote{Bis zur Auswertung ist das Argument ein \emph{promise}. Für gewöhnliche Zuweisungen an Objekte gilt dagegen das \emph{Eager-Evaluation}-Prinzip\index{eager evaluation}, nach dem der Inhalt von neuen Objekten schon bei der Zuweisung ausgewertet wird. Um auch für diese Objekte das Lazy-Evaluation-Prinzip zu nutzen, muss \index[func]{delayedAssign()@\lstinline{delayedAssign()}} \lstinline!delayedAssign()! verwendet werden.} Im Folgenden laute der Funktionskopf \lstinline!function(var1, var2=mean(var1))!. Wird nun beim Aufruf der Funktion für \lstinline!var2! kein Wert übergeben, führt R die Berechnung \lstinline!mean(var1)! als voreingestellten Wert für \lstinline!var2! erst dann aus, wenn \lstinline!var2! zum ersten Mal im Funktionsrumpf auftaucht. Jede in vorherigen Befehlen des Funktionsrumpfes ggf.\ vorgenommene Änderung an \lstinline!var1! würde sich dann im Wert von \lstinline!var2! niederschlagen. Die Funktionsrümpfe \lstinline!{ var2 }! und \lstinline!{ var1 <- var1^2; var2 }! hätten damit unterschiedliche Ergebnisse für \lstinline!var2! zur Folge. Bei der Verwendung von Zuweisungen in Voreinstellungen von Argumenten ist deshalb Sorgfalt geboten.
+
+Das Lazy-Evaluation-Prinzip ermöglicht es auch, dass die Voreinstellung eines Arguments auf Objekte Bezug nimmt, die erst später im Funktionsrumpf erstellt werden. Beispiel in Abschn.\ \ref{sec:checkArgs} sei eine Plot-Funktion mit einem optionalen Argument für den Wertebereich der Abszisse, wobei die Funktion bei Vektoren ungleicher Länge automatisch den längeren passend kürzt.
+
+Die Befehle im Funktionsrumpf führen zu keiner Ausgabe auf der Konsole, die Arbeitsschritte der Funktion sind also beim Funktionsaufruf nicht sichtbar. Für Ausgaben auf der Konsole müssen innerhalb des Funktionsrumpfes deshalb die Funktionen \lstinline!print()! und \lstinline!cat()! verwendet werden (Abschn.\ \ref{sec:strings}).
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Funktionsargumente prüfen}
+\label{sec:checkArgs}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Häufig setzen Auswertungsschritte im Rumpf einer Funktion voraus, dass die als Argumente übergebenen Objekte von einer vorher festgelegten Struktur sind, es sich etwa um Matrizen einer bestimmten Dimensionierung, Vektoren von Zeichenketten, o.\,ä.\ handelt. Um sicherzustellen, dass erwartete Argumente auch tatsächlich beim Funktionsaufruf übergeben wurden und die richtige Form besitzen, ist es sinnvoll, den Funktionsrumpf mit entsprechenden Prüfungen zu beginnen.\footnote{Für einfache, nur zum eigenen Gebrauch bestimmte Funktionen mag dies überflüssig erscheinen, da man dann selbst darauf achten kann, sie korrekt zu verwenden. Allerdings ist dies gefährlich, da sich Funktionen durch andere als die vorgesehenen Eingangsinformationen stillschweigend anders als beabsichtigt verhalten können und so u.\,U.\ schwer entdeckbare Fehler verursachen (Abschn.\ \ref{sec:funcGeneric}).}
+
+Zunächst prüft \index[func]{missing()@\lstinline{missing()}} \lstinline!missing("<<Argumentname>>")!, ob ein konkreter Wert für ein Argument fehlt. Ein weiteres Hilfsmittel ist die Funktion \index[func]{match.arg()@\lstinline{match.arg()}} \lstinline!match.arg()!. Sie ermittelt, ob der für ein Funktionsargument übergebene Wert tatsächlich aus einer vorgegebenen Menge möglicher Werte stammt.
+\begin{lstlisting}
+match.arg(arg, choices=<<Werte>>, several.ok=FALSE)
+\end{lstlisting}
+
+Ohne weitere Angaben für \lstinline!choices! und \lstinline!several.ok! wird geprüft, ob der für das formale Funktionsargument \lstinline!arg! übergebene Wert aus dem Vektor stammt, der im Funktionskopf als Voreinstellung benannt wurde. Ist dies nicht der Fall, bricht die Funktion mit einer Fehlermeldung ab. Wichtig ist hierbei, dass \emph{partial matching} erlaubt ist. Es ist also ausreichend, wenn der der Beginn des Werts mit einem der vordefinierten Werte zumindest soweit übereinstimmt, dass eine eindeutige Zuordnung möglich ist. Sollen nicht die im Funktionskopf als Voreinstellung genannten Werte für die Prüfung herangezogen werden, lässt sich alternativ für das Argument \lstinline!choices! ein Vektor zulässiger Werte nennen. \lstinline!several.ok! definiert, ob ein einzelner Wert notwendig ist, oder auch ein Vektor von Werten übergeben werden kann.
+\begin{lstlisting}
+# Funktion zur Transformation von Werten
+> modify <- function(x, how=c("standardize", "normalize")) {
++     how <- match.arg(how)
++     if(how == "standardize") {
++         scale(x, center=TRUE, scale=TRUE)
++     } else if(how == "normalize") {
++         (x - min(x)) / diff(range(x))
++     }
++ }
+ 
+> x      <- rnorm(100, mean=5, sd=3)
+> x_mod1 <- modify(x, how="standardize")
+> mean(x_mod1)
+[1] 6.531613e-17
+> sd(x_mod1)
+[1] 1
+
+# Aufruf mit abgekürzter Wahl für das Argument how
+> x_mod2 <- modify(x, how="norm")
+> range(x_mod2)
+[1] 0 1
+
+# Aufruf mit nicht vorgesehenem Wert für how
+> x_mod3 <- modify(x, how="boxcox")
+Fehler in match.arg(how) : 
+'arg' should be one of "standardize", "normalize"
+\end{lstlisting}    
+
+Funktionen wie \lstinline!inherits(<<Objekt>>, "<<Klasse>>")! (Abschn.\ \ref{sec:objects}) eignen sich dazu sicherzustellen, dass ein übergebenes Objekt eine bestimmte Klasse und damit eine vorgebene Struktur besitzt.
+
+Selbst erstellte Prüfungen können mit \index[func]{stop()@\lstinline{stop()}} \lstinline!stop("<<Fehlermeldung>>")! kombiniert werden, um die Funktion abzubrechen, wenn Voraussetzung nicht erfüllt sind. Soll die Funktion dagegen weiter ausgeführt werden und nur eine Warnmeldung ausgeben, ist \index[func]{warning()@\lstinline{warning()}} \lstinline!warning("<<Warnhinweis>>")! zu verwenden. \lstinline!stopifnot()!\index[func]{stopifnot()@\lstinline{stopifnot()}} liefert eine andere Möglichkeit zum Abbruch einer Funktion, nachdem sie einen logischen Ausdruck geprüft hat.
+\begin{lstlisting}
+stopifnot(<<logischer Ausdruck 1>>, <<logischer Ausdruck 2>>, ...)
+\end{lstlisting}
+
+\lstinline!stopifnot()! beendet die Funktion, sofern bereits einer der übergebenen Ausdrücke nicht \lstinline!TRUE!, sondern \lstinline!FALSE!, \lstinline!NA!, \lstinline!NaN!, \lstinline!NULL! oder ein leerer Vektor ist und kann damit eine Konstruktion wie die folgende ersetzen:
+\begin{lstlisting}
+> if(!isTRUE(<<logischer Ausdruck>>)) { stop("<<Fehlermeldung>>") }
+\end{lstlisting}
+
+\begin{lstlisting}
+# Voreinstellung für xLims ist ein erst im Rumpf erstelltes Objekt
+> myPlot <- function(x, y, xLims=xRange) {
++    # stelle sicher, dass x und y numerisch und nicht leer sind
++    stopifnot(is.numeric(x), is.numeric(y))
++    stopifnot(length(x) > 0, length(y) > 0)
++
++    # prüfe, ob ein Vektor automatisch gekürzt werden muss
++    if(length(x) != length(y)) {
++        warning("x und y haben ungleiche Länge -> kürze")
++        lenMin <- min(c(length(x), length(y)))
++        x <- x[seq_len(lenMin)]
++        y <- y[seq_len(lenMin)]
++    }
++
++    # fehlt xLims im Aufruf, verwende diesen Wertebereich für x
++    xRange <- round(range(x), -1) + c(-10, 10)
++
++    # Auswertung von Argument xLims erfolgt erst im nächsten Befehl
++    plot(x, y, xlim=xLims)
+}
+
+> myPlot(1:5, 1:10)
+Warnmeldung:
+In myPlot(1:5, 1:10) : x und y haben ungleiche Länge -> kürze
+\end{lstlisting}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Fehler behandeln}
+\label{sec:errorHandling}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Führt ein im Funktionsrumpf verwendeter Ausdruck zur Laufzeit zu einem Fehler, bricht die gesamte Funktion an dieser Stelle ab. Eine Funktion kann aber auch fehlertolerant werden, indem potentiell zu Fehlern führende Ausrücke in \index[func]{try()@\lstinline{try()}} \lstinline!try(<<Ausdruck>>)! eingeschlossen werden. Mit dieser Konstruktion ist die Funktion immun gegenüber vom Ausdruck produzierten Fehlern und setzt sich im Anschluss wie gewohnt fort. Schlägt der Ausdruck mit Fehlern fehl, gibt \lstinline!try()! ein Objekt zurück, das aus der Klasse \lstinline!"try-error"! abgeleitet ist. Mit\index[func]{inherits()@\lstinline{inherits()}} \lstinline!inherits(<<try-Objekt>>, what="try-error")! lässt sich dies prüfen, um ggf.\ dann notwendige Befehle auszuführen (s.\ Abschn.\ \ref{sec:predBoot} für ein Beispiel).
+
+Um die Fehlerbehandlung mit \lstinline!try()! auch bei Warnungen nutzen zu können, lässt sich mit\index[func]{options()@\lstinline{options()}} \lstinline!options(warn=2)! das Verhalten von R so ändern, dass Warnungen wie Fehler behandelt werden -- Voreinstellung ist \lstinline!options(warn=0)!.
+
+Präziser lassen sich durch Ausdrücke im Funktionsrumpf ausgelöste Fehler und Warnungen mit \index[func]{tryCatch()@\lstinline{tryCatch()}} \lstinline!tryCatch()! behandeln.
+\begin{lstlisting}
+tryCatch({ <<Ausdruck>> },
+         error=function(e)   { <<Ausdruck>> },
+         warning=function(w) { <<Ausdruck>> },
+         finally=            { <<Ausdruck>> })
+\end{lstlisting}
+
+Als erstes Argument ist der potentiell zu Fehlern oder Warnungen führende Ausdruck anzugeben -- erstreckt er sich über mehrere Zeilen, ist er in \lstinline!{ }! einzuschließen. Das Argument \lstinline!error! erwartet eine Funktion, die ausgeführt wird, wenn es zu einem Fehler kommt. Sie erhält ihrerseits die Fehlermeldung als Argument. Analog ist für \lstinline!warning! eine Funktion zu nennen, die bei Warnmeldungen aufgerufen werden soll. Ein für \lstinline!finally! übergebener Ausdruck wird in jedem Fall im Anschluss an den eigentlichen Ausdruck sowie nach den für \lstinline!error! und \lstinline!warning! genannten Funktionen ausgewertet -- auch wenn keine Fehler oder Warnungen auftreten.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Rückgabewert und Funktionsende}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\index{Funktion!Rückgabewert}
+\index{Rückgabewert|see{Funktion}}
+Das von einer Funktion zurückgegebene Ergebnis ist die Ausgabe des letzten Befehls im Funktionsrumpf. Empfehlenswert ist es allerdings, die Rückgabe eines Objekts explizit über \lstinline!return(<<Objekt>>)!\index[func]{return()@\lstinline{return()}} erfolgen zu lassen. Dies beendet die Ausführung der Funktion, auch wenn im Funktionsrumpf weitere Auswertungsschritte folgen -- eine Situation, die auftreten kann, wenn sich der Befehlsfluss unter Verwendung von Kontrollstrukturen verzweigt (Abschn.\ \ref{sec:ifElseSwitch}).
+
+Mehrere Werte lassen sich gemeinsam zurückgeben, indem sie zuvor im Funktionsrumpf in einem geeigneten Objekt zusammengefasst werden, etwa einem Vektor, einer Matrix, einer Liste oder einem Datensatz.
+
+Soll die Funktion keinen Wert zurückgeben, etwa weil sie nur Grafiken zu erstellen hat, ist als letzte Zeile der Befehl \lstinline!return(invisible(NULL))!\index[func]{invisible()@\lstinline{invisible()}} zu verwenden. Mit \lstinline!return(invisible(<<Objekt>>))! gibt die Funktion ein Objekt zurück, das jedoch nach ihrem Aufruf nicht auf der Konsole sichtbar ist -- wie etwa bei \lstinline!barplot()!.
+
+Mit \lstinline!on.exit(<<Ausdruck>>)!\index[func]{on.exit()@\lstinline{on.exit()}} kann zu Beginn im Funktionsrumpf ein Ausdruck festgelegt werden, der beim Beenden der Funktion ausgeführt wird -- unabhängig davon, an welcher Position die Funktion tatsächlich verlassen wird. Dies ist etwa sinnvoll, wenn eine Funktion temporär globale Optionen mit \lstinline!options()! ändern und am Schluss wieder auf den ursprünglichen Wert zurücksetzen soll (s.\ Abschn.\ \ref{sec:predBoot} für ein Beispiel).
+
+Da Funktionen selbst reguläre (\emph{first class}) Objekte sind, lassen sie sich ebenfalls als Rückgabewert verwenden. Dabei ist die Besonderheit zu beachten, dass eine zurückgegebene Funktion eine Kopie der Daten der Umgebung mit einschließt, in der sie definiert wurde (\emph{closure}). In der closure bleiben diese Daten konstant, auch wenn sie sich außerhalb der closure später ändern. Gemeinsam mit anderen Eigenschaften sind closures ein wesentliches Merkmal funktionaler Programmiersprachen \citeA{Wickham2014a}. Weitere solche Merkmale sind die Möglichkeit, Funktionen höherer Ordnung (Funktionale, Abschn.\ \ref{sec:functionBody}) zu definieren, Funktionen in Listen zu speichern, anonyme Funktionen zu verwenden (Abschn.\ \ref{sec:functionUse}) und die Strategie, Funktionen so zu gestalten, dass sie keine \emph{Seiteneffekte}, also Auswirkungen auf Objekte außerhalb der Funktion haben.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Eigene Funktionen verwenden}
+\label{sec:functionUse}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\index{Funktion!aufrufen}
+Nach ihrer Definition sind eigens erstellte Funktionen auf dieselbe Weise verwendbar wie die von R selbst oder von Zusatzpaketen zur Verfügung gestellten. Dies ist u.\,a.\ dann nützlich, wenn Funktionen an Befehle wie \lstinline!apply()! oder \lstinline!Map()! übergeben werden können, s.\ etwa Abschn.\ \ref{sec:powerAnova}, \ref{sec:runsTest}, \ref{sec:boot}, \ref{sec:3dContour}, oder \ref{sec:pairs} für Beispiele.
+
+Funktionen müssen für ihre Verwendung nicht unbedingt in einem Objekt gespeichert werden. Analog zur Indizierung eines nicht als Objekt gespeicherten Vektors mit \lstinline!c(1, 2, 3)[1]! lassen sich auch Funktionen direkt verwenden -- man bezeichnet sie dann als\index{Funktion!anonyme}\index{Funktion!unbenannte}\index{anonyme Funktion|see{Funktion}}\index{unbenannte Funktion|see{Funktion}} \emph{anonyme}, weil namenlose Funktionen. Diese lassen sich direkt innerhalb eines Funktionsaufrufs definieren, wo eine Funktion als Argument zu übergeben ist, s.\ etwa Abschn.\ \ref{sec:kappaFleiss} und \ref{sec:loops} für Beispiele.
+\begin{lstlisting}
+> (function(arg1, arg2) { arg1^2 + arg2^2 })(-3, 4)
+[1] 25
+
+# euklidische Länge jeder Spalte einer Matrix
+> mat <- matrix(rnorm(16, mean=100, sd=15), nrow=4)
+> apply(mat, 2, \(x) { sqrt(sum(x^2)) })    # Kurzform \()
+[1] 218.9201 203.0049 205.1682 209.4517
+
+> sqrt(colSums(mat^2))                      # Kontrolle: effizienter
+[1] 218.9201 203.0049 205.1682 209.4517
+\end{lstlisting}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Generische Funktionen}
+\label{sec:funcGeneric}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\index{Funktion!generische}
+\index{generische Funktion|see{Funktion}}
+\index{Objektorientierung}
+\emph{Generische} Funktionen stellen eine Möglichkeit dar, mit der R \emph{objektorientiertes} Programmieren unterstützt. Funktionen werden als generisch bezeichnet, wenn sie sich abhängig von der Klasse der übergebenen Argumente automatisch unterschiedlich verhalten. Es existieren dann mehrere Varianten (\emph{Methoden})\index{Funktion!Methode}\index{Methode|see{Funktion}} einer Funktion, die alle unter demselben allgemeinen Namen angesprochen werden können. Die Methoden können ebenfalls unter einem eigenen, eindeutigen Namen aufgerufen werden, der nach dem Muster \lstinline!<<Funktionsname>>.<<Klasse>>! aufgebaut ist, wobei sich \lstinline!<<Klasse>>! auf die Klasse des ersten Funktionsarguments bezieht. So existiert etwa für \lstinline!plot()! die Methode \lstinline!plot.lm()! für den Fall, dass das erste Argument ein mit \lstinline!lm()! angepasstes lineares Modell ist. Ebenso verhält sich z.\,B.\ \lstinline!summary()! für numerische Vektoren anders als für Faktoren.
+
+Es handelt sich bei der hier vorgestellten Technik um das\index{S3-Paradigma@S3-, S4-Paradigma} S3-Paradigma -- in Abgrenzung zum flexibleren, aber auch komplizierteren S4-Paradigma, das etwa beim beschriebenen \emph{method dispatch} nicht auf das erste Argument beschränkt ist.\footnote{Eine als Paket implementierte Alternative, die mehr aus anderen Programmiersprachen bekannte Funktionalität der Objektorientierung anbietet, sind \emph{R6} Klassen (\url{https://r6.r-lib.org/}). Dagegen sind \emph{S7} Klassen (\url{https://rconsortium.github.io/S7/}) bei Drucklegung des Buchs noch experimentell, könnten mittelfristig aber Teil des Basisumfangs von R werden.}
+
+Vorhandene S3-Methoden einer Funktion nennt\index[func]{methods()@\lstinline{methods()}} \lstinline!methods("<<Funktionsname>>")!, auf die auch ihre Hilfe-Seite unter \lstinline!Usage! verweist. Analog erhält man mit \lstinline!methods(class="<<Klasse>>")! Auskunft darüber, welche Funktionen spezielle Methoden für Objekte einer bestimmten Klasse besitzen.\footnote{Für S4-Methoden analog\index[func]{showMethods()@\lstinline{showMethods()}} \lstinline!showMethods("<<Funktionsname>>")! sowie \lstinline!showMethods(classes="<<Klasse>>")!.} Die generische Eigenschaft von Funktionen bleibt dem Anwender meist verborgen, da die richtige der unterschiedlichen Methoden automatisch in Abhängigkeit von der Klasse der übergebenen Argumente aufgerufen wird, ohne dass man dafür den passenden spezialisierten Funktionsnamen nennen müsste.
+
+Selbst erstellte Funktionen können im S3-Paradigma generisch gemacht werden, indem sie im Funktionsrumpf als letzten Befehl einen Aufruf von \lstinline!UseMethod()!\index[func]{UseMethod()@\lstinline{UseMethod()}} enthalten.
+\begin{lstlisting}
+UseMethod(generic="<<Funktionsname>>")
+\end{lstlisting}
+
+Für das Argument \lstinline!generic! ist als Zeichenkette der Name der Funktion zu nennen, die generisch werden soll.
+
+In einem zweiten Schritt sind alle gewünschten Methoden der mit \lstinline!generic! bezeichneten Funktion zu erstellen, deren Namen nach dem \lstinline!<<Funktionsname>>.<<Klasse>>! Muster aufgebaut sein müssen. Für Argumente aller Klassen, die nicht explizit durch eine eigene Methode Berücksichtigung finden, muss eine Methode mit dem Namen \lstinline!<<Funktionsname>>.default! angelegt werden, wenn die Funktion auch in diesem Fall arbeiten soll.
+
+Als Beispiel wird eine Funktion \lstinline!info()! erstellt, die eine wichtige Information über das übergebene Objekt ausgibt und dabei unterscheidet, ob es sich um einen numerischen Vektor (Klasse \lstinline!numeric!), eine Matrix (Klasse \lstinline!matrix!) oder einen Datensatz (Klasse \lstinline!data.frame!) handelt.
+\begin{lstlisting}
+> info <- function(x) { UseMethod("info") }    # generische Funktion
+
+# Methoden für Objekte verschiedener Klassen
+> info.numeric    <- function(x) { range(x)  } # für numerischen Vektor
+> info.matrix     <- function(x) { dim(x)    } # für Matrix
+> info.data.frame <- function(x) { names(x)  } # für Datensatz
+> info.default    <- function(x) { length(x) } # für andere Objekte
+
+# Objekte verschiedener Klassen
+> vec  <- round(runif(12, 20, 100), 2)  # numerischer Vektor
+> char <- LETTERS[sample(1:26, 5)]      # Vektor von Zeichenketten
+> mat  <- matrix(vec, nrow=3)           # Matrix
+> myDf <- setNames(data.frame(mat),     # Datensatz mit Variablennamen
++                  LETTERS[seq_len(ncol(myDf))])
+     
+# Anwendung von info() auf Objekte verschiedener Klassen
+> info(vec)                             # ruft info.numeric() auf
+[1] 26.05 91.62
+
+> info(mat)                             # ruft info.matrix() auf
+[1] 3 4
+
+> info(myDf)                            # ruft info.data.frame() auf
+[1] "A" "B" "C" "D"
+
+> info(char)                            # ruft info.default() auf
+[1] 5
+\end{lstlisting}
+
+Die verschiedenen Methoden einer generischen Funktion können im Prinzip unterschiedliche Argumente erwarten. In der Praxis empfiehlt es sich jedoch, diese Freiheit nur dahingehend zu nutzen, dass jede Methode zunächst alle Argumente der generischen Funktion in derselben Reihenfolge mit denselben Voreinstellungen verwendet. Zusätzlich können Methoden danach weitere Argumente besitzen, die sich je nach Methode unterscheiden. In diesem Fall muss die generische Funktion als letztes Argument \lstinline!...! besitzen.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Funktionen analysieren}
+\label{sec:debug}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\index{Funktion!debuggen}
+Ein wichtiger Bestandteil der vertieften Arbeit mit fremden und selbst erstellten Funktionen ist die Analyse der ausgeführten Befehlsabfolge, insbesondere hinsichtlich der Frage, ob die Funktion fehlerfrei und effizient arbeitet (\emph{debugging}). Hierfür eignet sich zum einen die Begutachtung ihres Quelltextes, zum anderen die schrittweise Untersuchung ihres Verhaltens zur Laufzeit.\footnote{Entwicklungsumgebungen wie RStudio (Abschn.\ \ref{sec:gui}) bieten grafische Oberflächen, die das debugging sehr erleichtern.}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Quelltext fremder Funktionen begutachten}
+\label{sec:debugForeign}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\index{Funktion!Quelltext}
+Aus welchen Befehlen sie besteht, ist bei selbst erstellten Funktionen bekannt. Bei fremden Funktionen hilft der Umstand, dass R den Quelltext auf der Konsole ausgibt, wenn der Funktionsname ohne runde Klammern als Befehl eingegeben wird.\footnote{Operatoren sind in rückwärts gerichtete Hochkommata zu setzen, etwa \lstinline!`+`! für die Addition.} Mit \lstinline!capture.output(<<Funktionsname>>)!\index[func]{capture.output()@\lstinline{capture.output()}} lässt sich dieser Quelltext in einem Vektor aus Zeichenketten zur späteren Analyse speichern. Bei \lstinline!sd()! etwa ist erkennbar, dass letztlich \lstinline!var()! aufgerufen und die Streuung als Wurzel der Varianz berechnet wird.
+\begin{lstlisting}
+> sdSource <- capture.output(sd)
+> sdSource
+[1] "function (x, na.rm = FALSE) "                                    
+[2] "sqrt(var(if (is.vector(x) || is.factor(x)) x else as.double(x), "
+[3] "    na.rm = na.rm))"                                             
+[4] "<bytecode: 0x000001cfcf4a7c20>"                                  
+[5] "<environment: namespace:stats>"
+\end{lstlisting}
+
+\index[func]{::@\lstinline{::}}
+\index[func]{:::@\lstinline{:::}}
+Um explizit auf Objekte einer bestimmten Umgebung (etwa der eines Pakets) zuzugreifen, ist dem Objektnamen der Paketname mit zwei Doppelpunkten voranzustellen. Alternativ eignet sich auch\index[func]{get()@\lstinline{get()}} \lstinline!get()!. Zusatzpakete können über \emph{Namensräume} (\emph{namespaces}) dafür sorgen, dass manche ihrer Objekte nur für Funktionen aus dem Paket selbst verwendbar sind, außerhalb davon jedoch nicht. Indem man den mit dem Paketnamen übereinstimmenden Namensraum mit \lstinline!:::! dem Objektnamen voranstellt, lassen sich auch solche Objekte untersuchen.
+\begin{lstlisting}
+> base::mean       # mean() aus Paket base ...
+> boot:::basic.ci  # basic.ci() aus Paket boot, sonst nicht sichtbar...
+\end{lstlisting}
+
+Ist eine Funktion im S3-Paradigma generisch (Abschn.\ \ref{sec:funcGeneric}), enthält sie nur den \lstinline!UseMethod()! Befehl. Über \lstinline!methods("<<Funktionsname>>")! erfährt man jedoch, welche Methoden für eine solche Funktion existieren und sich über ihren vollständigen Namen ausgeben lassen.\footnote{Für S4-Methoden analog\index[func]{showMethods()@\lstinline{showMethods()}} \lstinline!showMethods("<<Funktionsname>>")!.} Manche Methoden sind dabei zunächst unsichtbar, was durch ein \lstinline!*! Symbol deutlich gemacht wird, mit dem der Name der Methode in der Ausgabe von \lstinline!methods()! versehen wird. \lstinline!getS3method("<<Funktionsname>>", "<<Klasse>>")!\index[func]{getS3method()@\lstinline{getS3method()}} hilft, auch den Inhalt solcher Methoden anzuzeigen.\footnote{Für S4-Methoden analog\index[func]{showMethods()@\lstinline{showMethods()}} \lstinline!showMethods("<<Funktionsname>>", classes="<<Klasse>>", includeDefs=TRUE)!.} Demselben Zweck dient auch \index[func]{getAnywhere()@\lstinline{getAnywhere()}} \lstinline!getAnywhere("<<Funktionsname>>")!, wobei hier der vollständige Funktionsname i.\,S.\ von \lstinline!"<<Basisname>>.<<Klasse>>"! anzugeben ist.
+\begin{lstlisting}
+> get("fligner.test")                     # fligner.test ist generisch
+function (x, ...)
+UseMethod("fligner.test")
+<environment: namespace:stats>
+
+> methods("fligner.test")                 # Methoden für fligner.test
+[1] fligner.test.default* fligner.test.formula*
+Non-visible functions are asterisked
+
+> get("fligner.test.default")             # Fehler: unsichtbare Methode
+Fehler: Objekt 'fligner.test.default' nicht gefunden
+
+> getS3method("fligner.test", "default")  # findet Methode ...
+> getAnywhere("fligner.test.default")     # findet Methode ...
+\end{lstlisting}
+
+In jedem Fall ist es über den auf CRAN erhältlichen Quelltext von R\footnote{Unter \url{https://github.com/wch/r-source/} kann eine Kopie des Quelltext online gelesen und durchsucht werden.} und den der Zusatzpakete\footnote{\url{https://r-pkg.org/} verlinkt für jedes Paket auf CRAN eine URL, unter der der Quelltext eines Pakets online gelesen und durchsucht werden kann.} möglich, die Befehlsabfolge einer Funktion zu analysieren.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Funktionen zur Laufzeit untersuchen}
+\label{sec:debugRun}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Mit \lstinline!cat()! und \lstinline!print()! lassen sich innerhalb einer selbst geschriebenen Funktion Zwischenergebnisse auf der Konsole ausgeben, um während ihrer Entwicklung Anhaltspunkte darüber zu gewinnen, wie sich die Funktion zur Laufzeit verhält. Treten Fehler im Endergebnis auf, kann so womöglich die Ursache auf einen bestimmten Teilschritt eingegrenzt werden. Ebenso sollten Zwischenergebnisse, die von einem bestimmten Typ sein müssen, analog zu übergebenen Funktionsargumenten daraufhin geprüft werden, ob die Vorgaben auch eingehalten sind. Andernfalls ist die Funktion ggf.\ mit \lstinline!stop("<<Fehlermeldung>>")! oder \lstinline!stopifnot()! abzubrechen (Abschn.\ \ref{sec:funcBody}).
+
+Treten Fehler beim Ausführen einer Funktion auf, zeigt\index[func]{traceback()@\lstinline{traceback()}} \lstinline!traceback()! den \emph{call stack} an, welche Funktionen also zuletzt ineinander verschachtelt aufgerufen wurden. Um diese Möglichkeit auch bei Warnungen nutzen zu können, lässt sich mit\index[func]{options()@\lstinline{options()}} \lstinline!options(warn=2)! das Verhalten von R so ändern, dass Warnungen wie Fehler behandelt werden. Damit bricht eine Funktion ab, sobald es zu einer Warnung kommt. Im Beispiel wird deutlich, dass zuletzt \lstinline!stop()! ausgeführt und vorher aus der Funktion \lstinline!stopifnot()! aufgerufen wurde, die wiederum innerhalb von \lstinline!myPlot()! gestartet wurde (Abschn.\ \ref{sec:funcBody}).
+\begin{lstlisting}
+> myPlot(1:2, "ABC")
+Fehler: is.numeric(y) is not TRUE
+
+> traceback()
+3: stop(paste(ch, " is not ", if (length(r) > 1L) "all ", "TRUE",
+       sep = ""), call. = FALSE)
+2: stopifnot(is.numeric(x), is.numeric(y)) at selection.r#2
+1: myPlot(1:2, "ABC")
+\end{lstlisting}
+
+Wenn durch den Aufruf von \lstinline!traceback()! klar ist, in welcher Funktion ein Problem auftritt, kann man sich mit \index[func]{debug()@\lstinline{debug()}} \lstinline!debug(<<Funktionsname>>)! in diese direkt hinein begeben, während sie ausgeführt wird. Die zu analysierende Funktion ist als Argument zu übergeben. Dadurch wird sie zum debugging markiert und fortan bei ihrem Aufruf immer im \emph{browser} ausgeführt, der zunächst alle Befehle der Funktion anzeigt und dann die schrittweise Abarbeitung jedes einzelnen Befehls ermöglicht. Jeder Ausdruck innerhalb der Funktion (eine Zeile oder ein durch \lstinline!{ ... }! definierter Block mehrerer Zeilen) wird dabei zunächst separat angezeigt. Daraufhin ist \lstinline!n! (\emph{next}) bzw.\ die \myURL{Return} Taste zu drücken, um ihn auszuführen und zum nächsten Ausdruck zu gelangen.
+
+Darüber hinaus kann im browser die Konsole von R wie gewohnt verwendet werden, um sich etwa mit \lstinline!ls()!, \lstinline!print()!, \lstinline!head()! oder \lstinline!str()! einen Überblick über den Inhalt der vorhandenen Objekte zu verschaffen und die verarbeiteten Daten zu begutachten. \lstinline!c! (\emph{continue}) setzt die Abarbeitung der Funktion ohne weitere Unterbrechung fort, \lstinline!s! (\emph{step into}) führt das debugging innerhalb der in der aktuellen Zeile auszuführenden Funktion weiter, \lstinline!f! (\emph{finish}) beendet den aktuellen Funktionsaufruf oder Schleifendurchlauf. Die Eingabe von \lstinline!where! dient dazu, die Reihenfolge der durch die letzten ineinander verschachtelten Funktionsaufrufe erstellten Umgebungen zu nennen. Weitere Befehle gibt \lstinline!help! im browser aus, \lstinline!Q! (\emph{quit}) bricht das debugging ab. Soll eine Funktion nicht weiter analysiert werden, ist ihr Name an \index[func]{undebug()@\lstinline{undebug()}} \lstinline!undebug(<<Funktionsname>>)! als Argument zu übergeben.
+
+% Im browser kann eine Funktion über \lstinline!fix(<<Funktionsname>>)! etwa zur Fehlerkorrektur geändert und dann erneut aufgerufen werden, um das neue Verhalten zu kontrollieren.
+
+Als Beispiel diene die in Abschn.\ \ref{sec:funcGeneric} erstellte generische \lstinline!info()! Funktion.
+\begin{lstlisting}
+> debug(info)                               # setze debug-flag
+> info(sample(1:10, 10, replace=TRUE))      # Aufruf startet browser
+debugging in: info(sample(1:10, 10, replace = TRUE))
+debug: {
+    UseMethod("info")
+}
+
+Browse[1]> n                                # beginne Ausführung
+debug: UseMethod("info")
+
+Browse[1]> n                                # führe 1. Befehl aus
+debugging in: info.numeric(sample(1:10, 10, replace = TRUE))
+debug: {
+    range(x)
+}
+
+Browse[2]> ls()                             # vorhandene Objekte
+[1] "x"
+
+Browse[2]> x                                # zeige Inhalt von x
+[1] 5 8 2 4 8 9 7 9 6 2
+
+Browse[1]> where                            # letzte Funktionsaufrufe
+where 1: info.numeric(sample(1:10, 10, replace = TRUE))
+where 2: info(sample(1:10, 10, replace = TRUE))
+
+Browse[2]> c                                # setze Funktion fort
+exiting from: info.numeric(sample(1:10, 10, replace = TRUE))
+exiting from: info(sample(1:10, 10, replace = TRUE))
+[1] 2 9
+
+> undebug(info)                             # entferne debug-flag
+\end{lstlisting}
+
+Mitunter ist es mühsam, durch die schrittweise Ausführung einer Funktion im browser schließlich an die Stelle zu gelangen, die z.\,B.\ im Rahmen einer Fehlersuche als mögliche Problemquelle identifiziert wurde. Bei selbst erstellten Funktionen lässt sich der Debug-Prozess abkürzen: Mit Einfügen des \index[func]{browser()@\lstinline{browser()}} \lstinline!browser()! Befehls vor dem zu analysierenden Abschnitt setzt man einen Haltepunkt, durch den sich beim Ausführen der Funktion der browser öffnet, sobald die bezeichnete Stelle erreicht ist. Damit i.\,S.\ eines bedingten Haltepunkts nur dann das debugging gestartet wird, wenn bestimmte Randbedingungen gelten, ist \lstinline!if(<<Bedingung>>) { browser() }! zu verwenden (Abschn.\ \ref{sec:ifElseSwitch}).
+
+Für eine weitere Möglichkeit, Haltepunkte in selbst geschriebenen Skriptdateien zu setzen, vgl.\ \lstinline!?setBreakpoint! sowie insbesondere die grafische Umsetzung innerhalb einer Entwicklungsumgebung wie R{}Studio. Bei fremden Funktionen dient die Option \lstinline!options(error=recover)! dazu, beim Auftreten eines Fehlers direkt in den browser zu wechseln. Danach sollte die Option mit \lstinline!options(error=NULL)! wieder zurückgesetzt werden.
+
+\lstinline!trace(<<Funktion>>, tracer=browser, at=<<Position>>, ...)!\index[func]{trace()@\lstinline{trace()}} erlaubt es, bei nicht selbst erstellten Funktionen Haltepunkte an einer beliebigen Stelle zu setzen. Dafür muss man sich zunächst den Quelltext des Funktionsrumpfes mit \lstinline!as.list(body(<<Funktion>>))! als Liste anzeigen lassen. Jeder Funktionsblock ist dabei ein Listenelement. Der numerische Index des Funktionsblocks, bei dem man den Debug-Prozess beginnen möchte, ist an \lstinline!trace()! für das Argument \lstinline!at! zu übergeben. Mit\index[func]{untrace()@\lstinline{untrace()}} \lstinline!untrace(<<Funktion>>)! wird der Haltepunkt wieder entfernt.
+\begin{lstlisting}
+> as.list(body(median.default))
+[[1]]
+`{`
+
+[[2]]
+if (is.factor(x) || is.data.frame(x)) stop("need numeric data")
+
+[[3]]
+if (length(names(x))) names(x) <- NULL
+# ...
+
+# setze Haltepunkt bei Block 3
+> trace(median.default, tracer=browser, at=3)
+Tracing function "median.default" in package "stats"
+[1] "median.default"
+
+> median.default(rnorm(100))
+Tracing median.default(rnorm(100)) step 4 
+Called from: eval(expr, p)
+Browse[1]> n
+debug: if (length(names(x))) names(x) <- NULL
+
+Browse[2]> c             # setze Funktionsaufruf fort
+[1] -0.0518763
+
+> untrace(median.default)
+Untracing function "median.default" in package "stats"
+\end{lstlisting}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Effizienz von Auswertungen steigern}
+\label{sec:performance}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Bei komplexeren Analysen und großen Datensätzen beginnt die Frage an Bedeutung zu gewinnen, wie die Geschwindigkeit der Auswertungsschritte erhöht werden kann. Der folgende Abschnitt stellt mögliche Ansätze dafür vor.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Grundlegende Empfehlungen}
+\label{sec:efficiency}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\index{Effizienz}
+\index{Geschwindigkeit|see{Effizienz}}
+\index{Optimierung|see{Effizienz}}
+\index{Funktion!profilen}
+\index{Funktion!Geschwindigkeit}
+Bevor generelle Empfehlungen ausgesprochen werden, sei an die klassische Warnung vor einer verfrühten Optimierung erinnert: Wichtiger als besonders schnelle Berechnungen ist zunächst immer ihre Richtigkeit. Zudem setzt Optimierung eine eingehende Diagnostik voraus: Nur wenn bekannt ist, welche Einzelschritte einer Funktion besonders viel Zeit benötigen, weiß man, wo sinnvollerweise Zeit einzusparen ist. Hier hilft die Funktion\index[func]{system.time()@\lstinline{system.time()}} \lstinline!system.time(<<Befehl>>)!, die ausgibt, wieviel Rechenzeit die Abarbeitung eines Befehls benötigt hat.\footnote{Erweiterungen liefern die Pakete \index[pack]{bench@\lstinline{bench}} \lstinline!bench! \cite{Hester2019b} und \index[pack]{microbenchmark@\lstinline{microbenchmark}} \lstinline!microbenchmark! \cite{Mersmann2023}.} Weitere Hinweise zum \emph{profiling} finden sich unter \lstinline!?Rprof!, die Ergebnisse lassen sich mit dem Paket \index[pack]{profvis@\lstinline{profvis}} \lstinline!profvis! \cite{Chang2016} visualisieren. Die Speichernutzung\index{Objekt!Größe} eines Objekts erfährt man durch\index[func]{object.size()@\lstinline{object.size()}} \lstinline!object.size(<<Objekt>>)!.
+\begin{lstlisting}
+# Zeit, um (400x400)-Zufallsmatrix zu invertieren
+> system.time(solve(matrix(sample(1:100, 400^2, replace=TRUE),
++                          nrow=400)))
+User  System  verstrichen
+0.06    0.00         0.09
+
+# Speicherverbrauch double-Gleitkommazahlen: N*8 byte + overhead
+> xDbl <- rnorm(10000, 0, 10)                 # Gleitkommazahlen
+> object.size(xDbl)
+80048 bytes
+
+# Speicherverbrauch ganze Zahlen (integer): N*4 byte + overhead
+> object.size(as.integer(xDbl))
+40048 bytes
+\end{lstlisting}
+
+Bei der Analyse extrem großer Datenmengen besteht gegenwärtig das Problem, dass R Datensätze zur Bearbeitung im Arbeitsspeicher vorhalten muss, was die Größe von praktisch auswertbaren Datensätzen einschränkt (s.\ \lstinline!?Memory!). Für Ansätze, diese Einschränkung zu umgehen s.\ den Abschnitt \emph{High-Performance and Parallel Computing} der CRAN Task Views \cite{CRANtvHPC}. Er nennt auch Mittel zur besseren Ausnutzung paralleler Rechnerarchitekturen (Abschn.\ \ref{sec:parallel}) sowie Möglichkeiten, besonders zeitkritische Auswertungsschritte in kompilierte Sprachen wie C++ auszulagern \cite{Eddelbuettel2013}. Generell bieten folgende Ratschläge Potential, die Geschwindigkeit von Analysen zu erhöhen:
+\begin{enumerate}
+\item Ein großzügig dimensionierter Hauptspeicher samt angepasster maximaler Speichernutzung (s.\ \lstinline!?Memory!) ist generell sinnvoll.
+\item Objekte schrittweise zu vergrößern, ist aufgrund der dafür notwendigen internen Kopiervorgänge ineffizient. Objekte sollten bereits mit der Größe angelegt werden, die sie später benötigen. Dabei ist der später benötigte Datentyp zu wählen -- fügt man etwa einer vorher angelegten Matrix aus logischen Werten später eine Zahl hinzu, muss die gesamte Matrix per Kopie in einen numerischen Datentyp konvertiert werden (Abschn.\ \ref{sec:dataTypes}).
+\item Bei großen Datensätzen ist nach Möglichkeiten zu suchen, nur mit Teilmengen der Daten zu arbeiten und ggf.\ eine Datenbank als Speicherort zu nutzen. Über eine lokale Datenbankanbindung können Daten evtl.\ schneller als aus einer Datei eingelesen werden. Für Daten in Textform aus sehr großen Dateien arbeitet \lstinline!fread()!\index[func]{fread()@\lstinline{fread()}} aus dem Paket \lstinline!data.table!\index[pack]{data.table@\lstinline{data.table}} deutlich schneller als \lstinline!read.table()!. Eine Alternative ist das Apache Arrow Format, das vom Paket \lstinline!arrow!\index[pack]{arrow@\lstinline{arrow}} \cite{Richardson2024} unterstützt wird.
+\item Generell ist die Leistungsfähigkeit beim Umgang mit großen Datenmengen eine Stärke des Pakets \lstinline!data.table!. Manche Aufgaben, die mit dem Basisumfang von R nur sehr langsam, oder mit dem zur Verfügung stehenden Arbeitsspeicher gar nicht bearbeitet werden können, lassen sich mit \lstinline!data.table! gut lösen.
+\item Ganzzahlige Werte können mit \lstinline!as.integer()! als solche gespeichert werden und benötigen dadurch weniger Speicher als die normalen Gleitkommazahlen doppelter Genauigkeit (Abschn.\ \ref{sec:dataTypes}).
+\item Werden sehr große Objekte nicht mehr benötigt, sollten sie mit \lstinline!rm()! entfernt werden. Dabei ist auch an das automatisch erzeugte Objekt \lstinline!.Last.value! zu denken. Der Speicher wird mit der nächsten \emph{garbage collection} freigegeben, die man manuell mit\index[func]{gc()@\lstinline{gc()}} \lstinline!gc()! anstoßen kann.
+\item Objekte ohne Namensattribut (z.\,B.\ im Fall von Vektoren oder Matrizen) werden schneller als solche mit Namen verarbeitet. Zudem bieten Funktionen wie \lstinline!lapply()!, \lstinline!sapply()! oder \lstinline!mapply()! an, Namensattribute mit dem Argument \lstinline!USE.NAMES=FALSE! unberücksichtigt zu lassen.
+\item Matrizen sind effizienter zu verarbeiten als Datensätze.
+\item \label{item:blas} Bei vielen Auswertungen kommen intern Matrix-Operationen zum Einsatz (z.\,B.\ Singulärwertzerlegung, Abschn.\ \ref{sec:linAlg}), die bei sehr großen Datenmengen die Auswertungszeit entscheidend bestimmen können. Diese Rechnungen können von einer für den im Computer verwendeten Prozessor optimierten Version der \emph{BLAS}-Bibliothek profitieren (\emph{basic linear algebra subprograms}, s.\ Frage 8.2 in \citeNP{Ripley2008}).
+\item Schleifen sind in R als interpretierter und nicht kompilierter Sprache ein eher ineffizientes Sprachkonstrukt. Nach Möglichkeit sollte deshalb die meist schnellere und für R typische vektorwertige Formulierung von Rechnungen gewählt werden \cite{Ligges2008}. Weiter ist darauf zu achten, innerhalb einer oft durchlaufenen Schleife nur unbedingt notwendige Berechnungen durchzuführen. Objekte zu initialisieren sowie vorher feststehende Ergebnisse zu berechnen, sollte dagegen vorher außerhalb der Schleife geschehen. Datensätze sind in Schleifen besonders ineffizient, weil R bei jedem Durchlauf die Integrität eines Datensatzes prüft, etwa bzgl.\ der richtigen Anzahl von Beobachtungen in jeder Variable. Dies ist bei etwa bei Listen nicht der Fall.
+\item Während \lstinline!apply()! in seiner Verwendung parallelisiert scheint, beruht es tatsächlich auf R-Schleifen. Dagegen greift \lstinline!lapply()! (und damit \lstinline!sapply()!) intern auf kompilierten Code zurück, was für einen Geschwindigkeitsvorteil sorgen kann.
+\end{enumerate}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Auswertungen parallelisieren}
+\label{sec:parallel}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\index{Parallelisieren}
+\index{Multicore}
+
+Auch wenn auf einem Computer mehrere Prozessoren oder zumindest logische Rechenkerne (\emph{cores}) zur Verfügung stehen, nutzt R für Berechnungen im Normalfall nur einen davon. Man kann jedoch dafür sorgen, dass umfangreiche Auswertungen auf mehrere Kerne verteilt parallel laufen. Dadurch kann die insgesamt aufgewendete Verarbeitungszeit deutlich sinken. Der im Folgenden vorgestellte Ablauf verwendet Funktionen des im Basisumfang von R enthaltenen Pakets \lstinline!parallel!\index[pack]{parallel@\lstinline{parallel}}. Besonders für \emph{high performance computing} Umgebungen ist das ergänzende Paket \lstinline!parallelly!\index[pack]{parallelly@\lstinline{parallelly}} \cite{Bengtsson2024} empfehlenswert.
+
+Demonstriert werden soll hier der einfachste Fall paralleler Verarbeitung, bei dem es sich um \emph{embarassingly parallel} Aufgaben handelt. Bei diesen ist offensichtlich, wie sie sich in einzelne, unabhängig voneinander ausführbare Teilaufgaben strukturieren lassen. Dies ist etwa der Fall, wenn beim bootstrap (Abschn.\ \ref{sec:boot}) oder bei der Kreuzvalidierung (Abschn.\ \ref{sec:regrCV}) dasselbe Regressionsmodell immer wieder für jeweils andere Daten angepasst werden muss.
+
+\begin{enumerate}
+\item Zunächst ist mit \lstinline!detectCores(logical=TRUE)!\index[func]{detectCores()@\lstinline{detectCores()}} zu ermitteln, wie viele logische Kerne im Prinzip genutzt werden können. Mit \lstinline!logical=FALSE! erfährt man die Anzahl tatsächlicher Prozessoren, wobei das Ergebnis abhängig vom Betriebssystem sein kann. Es ist deshalb zu empfehlen, das Ergebnis von \lstinline!detectCores()! mit unabhängigen Informationen zur verfügbaren Hardware des Computers zu validieren.
+\item \label{item:par_mc} \lstinline!makeCluster(<<Anzahl>>)!\index[func]{makeCluster()@\lstinline{makeCluster()}} erzeugt die gewünschte Anzahl an Unterprozessen (\emph{worker}). Jedem worker wird typischerweise ein Rechenkern zugewiesen. Das Ergebnis \lstinline!<<cluster>>! ist eine Liste, die in allen weiteren Verarbeitungsschritten die Kommunikation mit den workern ermöglicht. In jedem worker wird eine unabhängige Instanz von R ausgeführt, so dass sie sich als \emph{cluster} von getrennten Computern betrachten lassen. Wenn R alle Kerne eines Computers verwendet, kann dies die Systemlast so stark erhöhen, dass sich der Computer in der Zwischenzeit nur noch schlecht für andere Tätigkeiten nutzen lässt.
+\item \label{item:par_ceq} Da die worker unabhängig vom Hauptprozess sind, muss ihre jeweilige R-session so vorbereitet werden, dass sie die Auswertung durchführen kann. Insbesondere müssen mit \lstinline!clusterEvalQ(<<cluster>>, <<Befehl>>)!\index[func]{clusterEvalQ()@\lstinline{clusterEvalQ()}} ggf.\ notwendige Zusatzpakete geladen werden. Außerdem sind mit \lstinline!clusterExport(<<cluster>>, c("<<Objekt1>>", ...))!\index[func]{clusterExport()@\lstinline{clusterExport()}} die Namen der Objekte zu nennen, die vom Hauptprozess in die jeweilige R-session der worker kopiert werden müssen. Relevant sind dabei alle Objekte, auf die die im worker später ausgeführte Funktion zugreift.
+\item Die von einem worker jeweils in einem Schritt zu verarbeitenden Daten müssen als Komponente einer Liste vorliegen, wie sie etwa \lstinline!lapply()! oder \lstinline!split()! aus einem Datensatz erzeugt. Es kann mehr solcher Komponenten als verwendete Rechenkerne geben. Die Komponenten werden dann nach und nach an die worker verteilt und dort verarbeitet. Alternativ kann man mit \lstinline!clusterExport()! zunächst den gesamten Datensatz allen workern zur Verfügung stellen und mit \lstinline!splitIndices(<<# Indizes>>, <<# Komponenten>>)!\index[func]{splitIndices()@\lstinline{splitIndices()}} seine Indizes gleichmäßig auf die Komponenten einer Liste verteilen. Die in den Workern ausgeführte Funktion erhält dann nicht jeweils eine Teilmenge der Daten selbst, sondern nur eine Teilmenge der Indizes zum gesamten Datensatz.
+\item \label{item:par_pla} \lstinline!parLapply(<<cluster>>, X=<<Liste>>, fun=<<Funktion>>, ...)!\index[func]{parLapply()@\lstinline{parLapply()}} wendet wie \lstinline!lapply()! die mit \lstinline!fun! definierte Funktion auf jede Komponente der Liste \lstinline!X! an und sammelt die jeweiligen Ergebnisse als Komponenten einer Liste. Benötigt \lstinline!fun! weitere Argumente, können diese an Stelle der \lstinline!...! übergeben werden. Die Besonderheit von \lstinline!parLapply()! besteht darin, dass die Komponenten von \lstinline!X! an die worker des bezeichneten clusters verteilt und dort jeweils parallel verarbeitet werden. Gegebenenfalls kann man die von \lstinline!parLapply()! ausgegebene Liste mit \lstinline!unlist()! in einen Vektor oder mit \lstinline!do.call(rbind.data.frame, <<Liste>>)!\index[func]{do.call()@\lstinline{do.call()}} in einen Datensatz konvertieren.
+\item \label{item:par_sc} Schließlich beendet \lstinline!stopCluster(<<cluster>>)!\index[func]{stopCluster()@\lstinline{stopCluster()}} die Prozesse der worker.
+\end{enumerate}
+
+Als Beispiel soll die $k$-fache Kreuzvalidierung (\ref{sec:kfoldCV}) einer ordinalen Regression (Abschn.\ \ref{sec:regrOrdFit}) dienen. Dabei werden die dafür notwendigen $k$ Modellanpassungen parallel durchgeführt. Aus jeder Anpassung wird das odds ratio der ersten Kovariate gespeichert, ebenso die Rate der korrekten Klassifikation der vorhergesagten Kategorien als Maß für die Vorhersagegüte in der Teststichprobe.
+\begin{lstlisting}
+> N     <- 1000                                     # Daten simulieren
+> X1    <- rnorm(N, 175, 7)                         # Prädiktor 1
+> X2    <- rnorm(N,  30, 8)                         # Prädiktor 2
+> Ycont <- 0.5*X1 - 0.3*X2 + 10 + rnorm(N, 0, 6)    # stetige Zielgröße
+
+# ordinale Zielgröße
+> Yord <- cut(Ycont, breaks=quantile(Ycont), include.lowest=TRUE,
++             labels=c("--", "-", "+", "++"), ordered=TRUE)
+
+# parallel ausgeführte Kreuzvalidierung
+> library(parallel)                          # für detectCores(), ...
+> datOrd <- data.frame(X1, X2, Yord)         # Datensatz
+> k      <- detectCores() - 1                # Anzahl verwendeter Kerne
+> cl     <- makeCluster(k)                   # cluster erzeugen
+> stuff  <- clusterEvalQ(cl, library(VGAM))  # Paket in workern laden
+> clusterExport(cl, "datOrd")                # Daten in worker kopieren
+
+# numerische Indizes Teststichprobe -> Rate korrekter Klassifikation
+> getPerf <- function(idx) {
++     datTst <- datOrd[ idx, , drop=FALSE]   # Teststichprobe
++     datTrn <- datOrd[-idx, , drop=FALSE]   # Trainingsstichprobe
++     # Regression in Trainingsstichprobe anpassen
++     fit <- vglm(Yord ~ X1 + X2, family=propodds, data=datTrn)
++     # vorhergesagte Gruppenwahrscheinlichkeiten in Teststichprobe
++     Phat <- predict(fit, newdata=datTst, type="response")
++     # vorhergesagte Kategorien in Teststichprobe
++     catHat <- levels(datOrd$Yord)[max.col(Phat)]
++     # beobachtete vs. vorhergesagte Kategorien in Teststichprobe
++     cTab <- xtabs(~ Yord + catHat, data=datTst)
++     cbind(OR=exp(VGAM::coef(fit))["X1"],   # Odds Ratio X1
++           CCR=sum(diag(cTab)) / sum(cTab)) # Rate korrekte Klassfik.
++ }
+
+# Kreuzvalidierung: partitioniere Daten in k zufällige Gruppen
+> tstGrp <- sample(seq_len(N), size=N, replace=FALSE) %% k
+> foldsL <- split(seq_along(tstGrp), tstGrp) # Liste k Teststichproben
+> outL   <- parLapply(cl, foldsL, getPerf)   # getPerf() parallel
+> stopCluster(cl)                            # worker beenden
+> do.call(rbind.data.frame, outL)            # Ergebnisse aller worker
+       OR_X1       CCR
+X1  1.144516 0.3263403
+X11 1.158220 0.2217036
+X12 1.156725 0.3488915
+X13 1.149187 0.3325554
+\end{lstlisting}
+
+Bei der parallelen Verarbeitung nach obigem Schema sind folgende Aspekte zu beachten:
+\begin{itemize}
+\item Bei der Verwendung von Zufallszahlen in workern sind Ergebnisse bei gleichem seed nur dann reproduzierbar, wenn vor dem Aufruf von \lstinline!set.seed()! im Hauptprozess zunächst mit \lstinline!RNGkind("L'Ecuyer-CMRG")! explizit ein passender Generator ausgewählt wird (Abschn.\ \ref{sec:gen_sequence}, Fußnote \ref{ftn:random_num}). Details erläutert \lstinline!vignette("parallel")!.
+\item Die Speichernutzung kann deutlich höher als bei seriellen Arbeitsschritten ausfallen. Nicht ausreichender Hauptspeicher kann zu zufällig auftretenden und schwer diagnostizierbaren Fehlern führen. Es empfiehlt sich daher, die Speichernutzung vorher genau zu analysieren und an den verfügbaren Hauptspeicher anzupassen.
+\item Typischerweise nimmt die beanspruchte Zeitdauer nicht proportional mit der Anzahl der eingesetzten Rechenkerne ab. Eine Ursache dafür ist, dass die Kommunikation zwischen Hauptprozess und workern \emph{overhead} erzeugt und ihrerseits Zeit beansprucht. Hauptprozess und worker kommunizieren u.\,a.\ dann, wenn ein worker die übergebenen Daten bearbeitet hat und neue Daten erhält. Parallelisierung lohnt sich erst dann, wenn der pro worker jeweils zu erledigende Arbeitsschritt so umfassend ist, dass die durch overhead verlorene Zeit nicht stark ins Gewicht fällt. Nach Möglichkeit sollten deshalb die jeweils unabhängigen Arbeitsschritte in größere \emph{batches} gebündelt werden.
+\end{itemize}
+
+Unter Unix-artigen Betriebssystemen wie Linux und MacOS gibt es als weiteren Weg zur Parallelisierung eine effiziente Möglichkeit, den Hauptprozess mit der darin ausgeführten R-session per \emph{fork} zu kopieren. Auf dieser Möglichkeit basiert die Funktion \lstinline!mclapply()!\index[func]{mclapply()@\lstinline{mclapply()}}. Sie vereinfacht den skizzierten Ablauf, indem sie die Schritte \ref{item:par_mc}, \ref{item:par_ceq}, \ref{item:par_pla} und \ref{item:par_sc} in einem Aufruf vereint. \lstinline!mclapply()! hat den Vorteil, dass die erstellten Unterprozesse automatisch dieselben Speicherinhalte und Ressourcen wie der Hauptprozess besitzen. Deshalb müssen mit dieser Methode die R-sessions in den workern nicht manuell für die Datenauswertung vorbereitet werden, wenn dies schon im Hauptprozess erledigt wurde.\footnote{Allerdings sorgen die Besonderheiten der fork Technik für mögliche Probleme, etwa wenn Verbindungen zum Lesen und Schreiben von Daten parallel verwendet werden. Auch sind nicht alle Zusatzpakete für die fork Technik geeignet. Zudem sollte R dann nicht innerhalb von RStudio oder einer anderen grafischen Entwicklungsumgebung laufen. Details erläutert \lstinline!?mclapply!.}
+\begin{lstlisting}
+# Beispiel unter Linux / MacOS statt parLapply(), aber ohne
+# makeCluster() -> clusterEvalQ() -> clusterExport() -> stopCluster()
+> library(VGAM)
+> outL <- mclapply(foldsL, getPerf, mc.cores=k)
+\end{lstlisting}
+
+\label{page:par_instpack}
+Manche R Funktionen bieten direkt Unterstützung für parallele Ausführung, etwa \lstinline!boot()!\index[func]{boot()@\lstinline{boot()}} aus dem Paket \lstinline!boot!\index[pack]{boot@\lstinline{boot}} mit den Optionen \lstinline!parallel! und \lstinline!ncpus! (Abschn.\ \ref{sec:bootFun}). Gibt man im Aufruf von \lstinline!install.packages()! für die Option \lstinline!Ncpus! die Anzahl zu verwendender Rechenkerne an, wird die Installation von Zusatzpaketen parallel ausgeführt. Ist die globale Option \lstinline!options(Ncpus=<<Anzahl>>)! gesetzt, greifen \lstinline!install.packages()! und damit auch \lstinline!update.packages()! automatisch darauf zu. Weiterhin gibt es die Möglichkeit, eine Variante der BLAS Systembibliothek für lineare Algebra zu verwenden, die automatisch parallel arbeitet (Abschn.\ \ref{sec:efficiency}, Punkt \ref{item:blas}).

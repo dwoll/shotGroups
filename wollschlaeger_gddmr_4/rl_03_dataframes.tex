@@ -1,0 +1,1516 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\chapter{Datensätze}
+\label{sec:dfChap}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Vektoren, Matrizen und arrays sind dahingehend eingeschränkt, dass sie gleichzeitig nur Werte desselben Datentyps aufnehmen können. Da in empirischen Erhebungen meist Daten unterschiedlichen Typs -- etwa numerische Variablen, Faktoren und Zeichenketten -- anfallen, sind sie nicht unmittelbar geeignet, vollständige Datensätze zu speichern. Objekte der Klasse \lstinline!list! und \lstinline!data.frame! sind in dieser Hinsicht flexibler: Sie erlauben es, gleichzeitig Variablen unterschiedlichen Datentyps und auch unterschiedlicher Klasse als Komponenten zu besitzen.
+
+Der Datentyp von Listen und Datensätzen selbst ist \lstinline!list!. Listen eignen sich zur Repräsentation heterogener Sammlungen von Daten und werden deshalb von vielen Funktionen genutzt, um ihr Ergebnis zurückzugeben. Listen sind darüber hinaus die allgemeine Grundform von Datensätzen (Klasse \lstinline!data.frame!), der gewöhnlich am besten geeigneten Struktur für empirische Daten.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Listen}
+\label{sec:list}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\index[func]{list()@\lstinline{list()}}
+\index{Liste}
+\index{Datentyp!mischen}
+Listen werden mit dem Befehl \lstinline!list(<<Komponente1>>, <<Komponente2>>, ...)! erzeugt, wobei für jede Komponente ein (ggf.\ bereits bestehendes) Objekt zu nennen ist. Alternativ lässt sich eine Liste mit \lstinline!<<Anzahl>>! vielen leeren Komponenten über \lstinline!vector("list", <<Anzahl>>)! erstellen. Komponenten einer Liste können Objekte jeglicher Klasse und jedes Datentyps, also auch selbst wieder Listen sein. Die erste Komponente könnte also z.\,B.\ ein numerischer Vektor, die zweite ein Vektor von Zeichenketten und die dritte eine Matrix aus Wahrheitswerten sein. Die von \lstinline!length(<<Liste>>)!\index[func]{length()@\lstinline{length()}} ausgegebene Länge einer Liste ist die Anzahl ihrer Komponenten auf oberster Ebene, \lstinline!lengths(<<Liste>>)!\index[func]{lengths()@\lstinline{lengths()}} nennt die jeweilige Länge der Listenkomponenten.
+\begin{lstlisting}
+> myList1 <- list(c(1,3), c(12,8,29,5))   # Liste erstellen
+> length(myList1)                         # Anzahl Komponenten
+[1] 2
+
+> lengths(myList1)                        # Länge der Komponenten
+[1] 2 4
+
+> vector("list", 2)                       # Liste: 2 leere Komponenten
+[[1]]
+NULL
+
+[[2]]
+NULL
+\end{lstlisting}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Komponenten auswählen und verändern}
+\label{sec:listExtract}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\index[func]{[[]]@\lstinline{[[]]}}
+Um auf eine Listen-Komponente zuzugreifen, kann der \lstinline![[<<Index>>]]! Operator benutzt werden, der als Argument die Position der zu extrahierenden Komponente in der Liste benötigt. Dabei kann der Index auch in einem Objekt gespeichert sein. \lstinline![[<<Index>>]]! gibt immer nur eine Komponente zurück, selbst wenn mehrere Indizes in Form eines Indexvektors übergeben werden.\footnote{Für Hilfe zu diesem Thema vgl.\ \lstinline!?Extract!.} Die zweite Komponente einer Liste könnte also so ausgelesen werden:
+\begin{lstlisting}
+> myList1[[2]]
+[1] 12 8 29 5
+
+> idx <- 1
+> myList1[[idx]]
+[1] 1 3
+\end{lstlisting}
+
+Einzelne Elemente einer aus mehreren Werten bestehenden Komponente können auch direkt abgefragt werden, etwa das dritte Element des obigen Vektors. Dazu wird der für Vektoren genutzte \lstinline![<<Index>>]! Operator an den Listenindex \lstinline![[<<Index>>]]! angehängt, weil die Auswertung des Befehls \lstinline!myList1[[2]]! zuerst erfolgt und den im zweiten Schritt zu indizierenden Vektor zurückliefert:
+\begin{lstlisting}
+> myList1[[2]][3]
+[1] 29
+\end{lstlisting}
+
+Beispiel sei eine Liste aus drei Komponenten. Die erste soll ein Vektor sein, die zweite eine aus je zwei Zeilen und Spalten bestehende Matrix, die dritte ein Vektor aus Zeichenketten.
+\begin{lstlisting}
+> (myList2 <- list(1:4, matrix(1:4, 2, 2), c("Lorem", "ipsum")))
+[[1]]
+[1] 1 2 3 4
+
+[[2]]
+     [,1]  [,2]
+[1,]    1     3
+[2,]    2     4
+
+[[3]]
+[1] "Lorem" "ipsum"
+\end{lstlisting}
+
+Das Element in der ersten Zeile und zweiten Spalte der Matrix, die ihrerseits die zweite Komponente der Liste darstellt, wäre dann so aufzurufen:
+\begin{lstlisting}
+> myList2[[2]][1, 2]
+[1] 3
+\end{lstlisting}
+
+Auch bei Listen kann der \lstinline![<<Index>>]! Operator verwendet werden, der immer ein Objekt desselben Datentyps zurückgibt wie den des indizierten Objekts. Im Unterschied zu \lstinline![[<<Index>>]]! liefert er deshalb nicht die Komponente selbst zurück, sondern eine Liste, die wiederum als einzige Komponente das gewünschte Objekt besitzt -- also gewissermaßen eine Teilliste ist. Während \lstinline!myList2[[2]]! also eine numerische Matrix ausgibt, ist das Ergebnis von \lstinline!myList2[2]! eine Liste, deren einzige Komponente diese Matrix ist.
+\begin{lstlisting}
+> myList2[[2]]     # Komponente: numerische Matrix -> Datentyp numeric
+     [,1]  [,2]
+[1,]    1     3
+[2,]    2     4
+
+> mode(myList2[[2]])
+[1] "numeric"
+
+> myList2[2]       # Teilliste -> Datentyp list
+[[1]]
+     [,1]  [,2]
+[1,]    1     3
+[2,]    2     4
+
+> mode(myList2[2])
+[1] "list"
+\end{lstlisting}
+
+Wie auch bei Vektoren können die Komponenten einer Liste benannt sein und mittels \lstinline!<<Liste>>[["<<Variablenname>>"]]! über ihren Namen ausgewählt werden.
+\begin{lstlisting}
+> (myList3 <- list(numvec=1:5, word="dolor"))
+$numvec
+[1] 1 2 3 4 5
+
+$word
+[1] "dolor"
+
+> myList3[["word"]]
+[1] "dolor"
+\end{lstlisting}
+
+Wenn man auf eine benannte Komponente zugreifen will, kann dies mittels \lstinline![[]]! Operator und ihrem numerischen Index oder ihrem Namen geschehen, zusätzlich aber auch über den Operator\index[func]{$@\lstinline{$}} \lstinline!<<Liste>>$<<Variablenname>>!. Dieser bietet den Vorteil, dass er ohne Klammern und numerische Indizes auskommt und damit recht übersichtlich ist. Nur\index{Anfuhrungszeichen@Anführungszeichen} wenn der Name Leerzeichen enthält, wie es bisweilen bei von R zurückgegebenen Objekten der Fall ist, muss er zudem in Anführungszeichen stehen. \lstinline!$! benötigt immer den Variablennamen selbst, anders als mit \lstinline![[]]! kann kein Objekt verwendet werden, das den Namen speichert. Welche Namen die Komponenten tragen, erfährt man mit \lstinline!names(<<Liste>>)!\index[func]{names()@\lstinline{names()}}.
+\begin{lstlisting}
+> myList3$numvec
+[1] 1 2 3 4 5
+
+> mat     <- cbind(1:10, sample(-10:10, 10, replace=FALSE))
+> retList <- cov.wt(mat, method="ML")   # unkorrigierte Kovarianzmatrix
+> names(retList)                        # Komponenten der Liste
+[1] "cov" "center" "n.obs"
+
+> retList$cov                           # Kovarianzmatrix selbst
+     [,1]   [,2]
+[1,] 8.25   6.20
+[2,] 6.20  28.44
+
+> retList$center                        # Spaltenmittel
+[1] 5.5 3.4
+
+> retList$n.obs                         # Anzahl Beobachtungen
+[1] 10
+\end{lstlisting}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Komponenten hinzufügen und entfernen}
+\label{sec:addRemove}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Auf dieselbe Weise, wie sich die Komponenten einer Liste anzeigen lassen, können auch weitere Komponenten zu einer bestehenden Liste hinzugefügt werden, also mit
+\begin{itemize}
+\item \lstinline!<<Liste>>[[<<Index>>]]!
+\item \lstinline!<<Liste>>[["<<neue Komponente>>"]]!
+\item \lstinline!<<Liste>>$<<neue Komponente>>!
+\end{itemize}
+
+\begin{lstlisting}
+> myList1[[3]]          <- LETTERS[1:5]   # 1. neue Komponente
+> myList1[["neuKomp2"]] <- letters[1:5]   # 2. neue Komponente
+> myList1$neuKomp3      <- 100:105        # 3. neue Komponente
+> myList1
+[[1]]
+[1] 1 3
+
+[[2]]
+[1] 12 8 29 5
+
+[[3]]
+[1] "A" "B" "C" "D" "E"
+
+$neuKomp2
+[1] "a" "b" "c" "d" "e"
+
+$neuKomp3
+[1] 100 101 102 103 104 105
+\end{lstlisting}
+
+Um die Komponenten mehrerer Listen zu einer Liste zu verbinden, eignet sich wie bei Vektoren \lstinline!c(<<Liste1>>, <<Liste2>>, ...)!.
+\begin{lstlisting}
+> myListJoin <- c(myList1, myList2)       # verbinde Listen
+\end{lstlisting}
+
+Komponenten einer Liste werden gelöscht, indem ihnen die leere Menge \lstinline!NULL! zugewiesen wird.
+\begin{lstlisting}
+myList1$neuKomp3 <- NULL                  # lösche Komponente
+\end{lstlisting}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Listen mit mehreren Ebenen}
+\label{sec:unlist}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Da Komponenten einer Liste Objekte verschiedener Klassen und auch selbst Listen sein können, ergibt sich die Möglichkeit, Listen zur Repräsentation hierarchisch organisierter Daten unterschiedlicher Art zu verwenden. Derartige Objekte können auch als Baum mit mehreren Verästelungsebenen betrachtet werden. Um aus einem solchen Objekt einen bestimmten Wert zu erhalten, kann man sich zunächst mit \lstinline!str(<<Liste>>)! einen Überblick über die Organisation der Liste verschaffen und sich ggf.\ sukzessive von Ebene zu Ebene zum gewünschten Element vorarbeiten.
+
+Im Beispiel soll aus einer Liste mit letztlich drei Ebenen ein Wert aus einer Matrix extrahiert werden, die sich in der dritten Verästelungsebene befindet.
+\begin{lstlisting}
+# 4 Komponenten in der zweiten Ebene
+> myListAA <- list(AAA=c(1, 2), AAB=c("AAB1", "AAB2", "AAB3"))
+> myMatAB  <- matrix(1:8, nrow=2)
+> myListBA <- list(BAA=matrix(rnorm(10), ncol=2), BAB=c("BAB1", "BAB2"))
+> myVecBB  <- sample(1:10, 5)
+
+# 2 Komponenten in der ersten Ebene
+> myListA <- list(AA=myListAA, AB=myMatAB)
+> myListB <- list(BA=myListBA, BB=myVecBB)
+
+# Gesamtliste
+> myList4 <- list(A=myListA, B=myListB)
+> str(myList4)                            # Gesamtstruktur
+List of 2
+$ A:List of 2
+ ..$ AA:List of 2
+ .. ..$ AAA: num [1:2]  1 2
+ .. ..$ AAB: chr [1:3]  "AAB1" "AAB2" "AAB3"
+ ..$ AB: int [1:2, 1:4]  1 2 3 4 5 6 7 8
+
+$ B:List of 2
+ ..$ BA:List of 2
+ .. ..$ BAA: num [1:5, 1:2]  -0.618 -1.059 -1.150 0.919 -1.146 ...
+ .. ..$ BAB: chr [1:2]  "BAB1" "BAB2"
+ ..$ BB: int [1:5]  3 5 7 2 9
+
+# Struktur der 2. Komponente (B) der 1. Ebene
+> str(myList4$B)
+List of 2
+$ BA:List of 2
+  ..$ BAA: num [1:5, 1:2]  -0.618 -1.059 -1.150 0.919 -1.146 ...
+  ..$ BAB: chr [1:2]  "BAB1" "BAB2"
+$ BB: int [1:5]  3 5 7 2 9
+
+# Struktur der 3. Komponente (BA) der 2. Ebene
+> str(myList4$B$BA)
+List of 2
+$ BAA: num [1:5, 1:2]  -0.618 -1.059 -1.150 0.919 -1.146 ...
+$ BAB: chr [1:2]  "BAB1" "BAB2"
+
+# Element der 1. Komponente (BAA) der 3. Ebene
+> myList4$B$BA$BAA[4, 2]
+[1] 0.1446770
+\end{lstlisting}
+
+Die hierarchische Struktur einer Liste kann mit dem Befehl \lstinline!unlist(<<Liste>>)!\index[func]{unlist()@\lstinline{unlist()}} aufgelöst werden. Der Effekt besteht darin, dass alle Komponenten (in der Voreinstellung \lstinline!recursive=TRUE! rekursiv, d.\,h.\ einschließlich aller Ebenen) in denselben Datentyp umgewandelt und seriell in einem Vektor zusammengefügt werden. Als Datentyp wird jener gewählt, der alle Einzelwerte ohne Informationsverlust speichern kann (Abschn.\ \ref{sec:dataTypes}).
+\begin{lstlisting}
+> myList5 <- list(c(1, 2, 3), c("A", "B"), matrix(5:12, 2))
+> unlist(myList5)
+[1] "1" "2" "3" "A" "B" "5" "6" "7" "8" "9" "10" "11" "12"
+\end{lstlisting}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Datensätze}
+\label{sec:dataframe}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\index{Datensatz}
+\index{Datentyp!mischen}
+Ein Datensatz ist eine spezielle Liste und besitzt die Klasse \lstinline!data.frame!. Datensätze erben die Grundeigenschaften einer Liste, besitzen aber bestimmte einschränkende Merkmale -- so müssen ihre Komponenten alle dieselbe Länge besitzen. Die in einem Datensatz zusammengefassten Objekte können von unterschiedlicher Klasse sein und Werte unterschiedlichen Datentyps beinhalten. Dies entspricht der empirischen Situation, dass Werte verschiedener Variablen an derselben Menge von Beobachtungsobjekten erhoben wurden. Anders gesagt enthält jede einzelne Variable Werte einer festen Menge von Beobachtungsobjekten, die auch die Werte für die übrigen Variablen geliefert haben. Werte auf unterschiedlichen Variablen lassen sich somit einander hinsichtlich des Beobachtungsobjekts zuordnen, von dem sie stammen. Da Datensätze gewöhnliche Objekte sind, ist es im Gegensatz zu einigen anderen Statistikprogrammen möglich, mit mehreren von ihnen gleichzeitig zu arbeiten.
+
+Die Basisinstallation von R beinhaltet bereits viele vorbereitete Datensätze, an denen sich statistische Auswertungsverfahren erproben lassen, vgl.\ \lstinline!data()! für eine Übersicht. Weitere Datensätze werden durch\index{Datensatz!Pakete} Zusatzpakete bereitgestellt und lassen sich mit \lstinline!data(<<Datensatz>>, package="<<Paketname>>")! laden.\footnote{Hervorzuheben sind etwa \lstinline!DAAG!\index[pack]{DAAG@\lstinline{DAAG}} \cite{Maindonald2009} und \lstinline!HSAUR3!\index[pack]{HSAUR3@\lstinline{HSAUR3}} \cite{Everitt2011}.} Nähere Erläuterungen zu einem dokumentierten Datensatz gibt \lstinline!help(<<Datensatz>>)! aus.
+
+\index{Datensatz!erstellen}
+\index[func]{data.frame()@\lstinline{data.frame()}|textbf}
+Objekte der Klasse \lstinline!data.frame! sind die bevorzugte Organisationsweise für empirische Datensätze.\footnote{Außer bei sehr großen Datensätzen, die sich effizienter als Matrix oder als spezielle Datenstruktur verarbeiten lassen, wie sie das Paket \lstinline!data.table!\index[pack]{data.table@\lstinline{data.table}|textbf} \cite{Dowle2014} bereitstellt.} Listenkomponenten spielen dabei die Rolle von Variablen und ähneln damit den Spalten einer Matrix. Werden Datensätze in R ausgegeben, stehen die Variablen als Komponenten in den Spalten, während jede Zeile i.\,d.\,R.\ für ein Beobachtungsobjekt\index{Datensatz!Aufbau} steht. Datensätze werden mit \lstinline!data.frame(<<Objekt1>>, <<Objekt2>>, ...)! aus mehreren einzelnen Objekten erzeugt, die typischerweise Vektoren oder Faktoren sind. Matrizen werden dabei wie separate, durch die Spalten der Matrix gebildete Vektoren behandelt.\footnote{Gleiches gilt für Listen -- hier werden die Komponenten als separate Vektoren gewertet. Soll dieses Verhalten verhindert werden, um eine Liste als eine einzelne Variable des Datensatzes zu erhalten, muss sie in \lstinline!I()!\index[func]{I()@\lstinline{I()}} eingeschlossen werden: \lstinline!data.frame(I(<<Liste>>), <<Objekt2>>, ...)!.}
+
+Als Beispiel seien $12$ Personen betrachtet, die zufällig auf drei Untersuchungsgruppen (Kontrollgruppe \lstinline!CG!, Wartelisten-Gruppe \lstinline!WL!, Treatment-Gruppe \lstinline!T!) verteilt werden. Als Variablen werden demografische Daten, Ratings und der IQ-Wert simuliert. Zudem soll die fortlaufende Nummer jeder Person gespeichert werden.\footnote{Für die automatisierte\index{Simulation} Simulation von Datensätzen nach vorgegebenen Kriterien, etwa hinsichtlich der Gruppen-Effekte, vgl.\ die \lstinline!sim.<<Typ>>()!\index[func]{sim.<Typ>()@\lstinline{sim.<<Typ>>()}} Funktionen des Pakets \lstinline!psych!\index[pack]{psych@\lstinline{psych}|textbf} \cite{Revelle2009}.}
+\begin{lstlisting}
+> N      <- 12
+> sex    <- sample(c("f", "m"), N, replace=TRUE)
+> group  <- sample(rep(c("CG", "WL", "T"), 4), N, replace=FALSE)
+> age    <- sample(18:35, N, replace=TRUE)
+> IQ     <- round(rnorm(N, mean=100, sd=15))
+> rating <- round(runif(N, min=0, max=6))
+> (myDf1 <- data.frame(id=1:N, sex, group, age, IQ, rating))
+    id  sex  group  age   IQ  rating
+ 1   1    f      T   26  112       1
+ 2   2    m     CG   30  122       3
+ 3   3    m     CG   25   95       5
+ 4   4    m      T   34  102       5
+ 5   5    m     WL   22   82       2
+ 6   6    f     CG   24  113       0
+ 7   7    m      T   28   92       3
+ 8   8    m     WL   35   90       2
+ 9   9    m     WL   23   88       3
+10  10    m     WL   29   81       5
+11  11    m     CG   20   92       1
+12  12    f      T   21   98       1
+\end{lstlisting}
+
+In der ersten Spalte der Ausgabe befinden sich die Zeilennamen, die in der Voreinstellung mit den Zeilennummern übereinstimmen. Eine spätere Teilauswahl der Zeilen (Abschn.\ \ref{sec:subset}) hebt diese Korrespondenz jedoch häufig auf.
+
+\index{Datensatz!Dimensionierung}
+\index[func]{dim()@\lstinline{dim()}}
+\index[func]{nrow()@\lstinline{nrow()}}
+\index[func]{ncol()@\lstinline{ncol()}}
+\index[func]{length()@\lstinline{length()}}
+\index[func]{summary()@\lstinline{summary()}}
+Die Anzahl von Beobachtungen (Zeilen) und Variablen (Spalten) kann wie bei Matrizen mit \lstinline!dim(<<Datensatz>>)!, \lstinline!nrow(<<Datensatz>>)! und \lstinline!ncol(<<Datensatz>>)! ausgegeben werden. Die mit \lstinline!length()! ermittelte Länge eines Datensatzes ist die Anzahl der in ihm gespeicherten Variablen, also Spalten. Eine Übersicht über die Werte aller Variablen eines Datensatzes erhält man durch \lstinline!summary(<<Datensatz>>)!.
+\begin{lstlisting}
+> dim(myDf1)
+[1] 12  6
+
+> nrow(myDf1)
+[1] 12
+
+> ncol(myDf1)
+[1] 6
+
+> summary(myDf1)
+           id  sex  group            age              IQ         rating
+Min.   : 1.00  m:9   CG:4  Min.   :20.00  Min.   : 81.00  Min.   :0.000
+1st Qu.: 3.75  w:3   T :4  1st Qu.:22.75  1st Qu.: 89.50  1st Qu.:1.000
+Median : 6.50        WL:4  Median :25.50  Median : 93.50  Median :2.500
+Mean   : 6.50              Mean   :26.42  Mean   : 97.25  Mean   :2.583
+3rd Qu.: 9.25              3rd Qu.:29.25  3rd Qu.:104.50  3rd Qu.:3.500
+Max.   :12.00              Max.   :35.00  Max.   :122.00  Max.   :5.000
+\end{lstlisting}
+
+\index[func]{head()@\lstinline{head()}}
+\index[func]{tail()@\lstinline{tail()}}
+\index[func]{View()@\lstinline{View()}}
+\index{Daten!Viewer}
+Will man sich einen Überblick über die in einem Datensatz gespeicherten Werte verschaffen, können die Funktionen \lstinline!head(<<Datensatz>>, n=<<Anzahl>>)! und \lstinline!tail(<<Datensatz>>, n=<<Anzahl>>)! verwendet werden, die seine ersten bzw.\ letzten \lstinline!n! Zeilen anzeigen. Mit \lstinline!View(<<Datensatz>>)! ist es zudem möglich, ein separates Fenster -- in RStudio ein Tab -- mit dem Inhalt eines Datensatzes zu öffnen. Dessen Werte sind dabei vor Veränderungen geschützt.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Datentypen in Datensätzen}
+\label{sec:dfDataTypes}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Mit \lstinline!str(<<Datensatz>>)!\index[func]{str()@\lstinline{str()}} kann die interne Struktur des Datensatzes erfragt werden, d.\,h.\ aus welchen Gruppierungsfaktoren und wie vielen Beobachtungen an welchen Variablen er besteht.
+\begin{lstlisting}
+> str(myDf1)
+'data.frame': 12 obs. of 6 variables:
+$ id    : int  1 2 3 4 5 6 7 8 9 10 ...
+$ sex   : Factor w/ 2 levels  "f", "m": 1 2 2 2 2 1 2 2 2 2 ...
+$ group : Factor w/ 3 levels  "CG", "T", "WL": 2 1 1 2 3 1 2 ...
+$ age   : int  26 30 25 34 22 24 28 35 23 29 ...
+$ IQ    : num  112 122 95 102 82 113 92 90 88 81 ...
+$ rating: num  1 3 5 5 2 0 3 2 3 5 ...
+\end{lstlisting}
+
+\index{Zeichenketten!Umwandlung in Faktor}
+In der Struktur ist hier zu erkennen, dass die in den Datensatz aufgenommenen \lstinline!character! Vektoren automatisch in Objekte der Klasse \lstinline!factor! umgewandelt werden. Eine Umwandlung von Zeichenketten in \lstinline!factor! Objekte ist nicht immer gewünscht, denn Zeichenketten codieren nicht immer eine Gruppenzugehörigkeit, sondern können auch andere Variablen wie Namen darstellen. Wird ein Zeichenketten-Vektor in \lstinline!I(<<Vektor>>)! eingeschlossen, verhindert dies die automatische Umwandlung. Für alle \lstinline!character! Vektoren gleichzeitig kann dies auch über das \lstinline!stringsAsFactors=FALSE! Argument von \lstinline!data.frame()! erreicht werden.
+\begin{lstlisting}
+> fac   <- c("CG", "T1", "T2")
+> DV1   <- c(14, 22, 18)
+> DV2   <- c("red", "blue", "blue")
+> myDf2 <- data.frame(fac, DV1, DV2, stringsAsFactors=FALSE)
+> str(myDf2)
+'data.frame': 3 obs. of 3 variables:
+$ fac: chr  "CG" "T1" "T2"
+$ DV1: num  14 22 18
+$ DV2: chr  "red" "blue" "blue"
+\end{lstlisting}
+
+Im Beispiel wird dabei allerdings auch der Vektor \lstinline!fac! nicht mehr als Faktor interpretiert. Stellt nur einer von mehreren \lstinline!character! Vektoren eine Gruppierungsvariable dar, so kann das Argument \lstinline!stringsAsFactors=FALSE! zwar verwendet werden, die Gruppierungsvariable ist dann aber vor oder nach der Zusammenstellung des Datensatzes manuell mit \lstinline!as.factor(<<Vektor>>)! zu konvertieren.
+\begin{lstlisting}
+> fac   <- as.factor(fac)
+> myDf3 <- data.frame(fac, DV1, DV2, stringsAsFactors=FALSE)
+> str(myDf3)
+'data.frame': 3 obs. of 3 variables:
+$ fac: Factor w/ 3 levels  "CG",..:  1 2 3
+$ DV1: num  14 22 18
+$ DV2: chr  "red" "blue" "blue"
+\end{lstlisting}
+
+Matrizen und Vektoren können mit \lstinline!as.data.frame(<<Objekt>>)!\index[func]{as.data.frame()@\lstinline{as.data.frame()}}\index{Datensatz!Umwandlung in Datensatz} in einen Datensatz umgewandelt werden. Dabei sind die in Matrizen und Vektoren notwendigerweise identischen Datentypen nachträglich zu konvertieren, wenn sie eigentlich unterschiedliche Variablentypen repräsentieren. Dies ist z.\,B.\ dann der Fall, wenn numerische Vektoren und Zeichenketten in Matrizen zusammengefasst und so alle Elemente zu Zeichenketten gemacht wurden.
+
+Listen können in Datensätze umgewandelt werden, wenn ihre Komponenten alle dieselbe Länge besitzen. Umgekehrt können Datensätze mit \lstinline!data.matrix(<<Datensatz>>)!\index[func]{data.matrix()@\lstinline{data.matrix()}} und auch \lstinline!as.matrix(<<Datensatz>>)!\index[func]{as.matrix()@\lstinline{as.matrix()}} zu Matrizen gemacht, wobei alle Werte in denselben Datentyp umgewandelt werden: bei \lstinline!data.matrix()! immer in \lstinline!numeric!, bei \lstinline!as.matrix()! in den umfassendsten Datentyp, der notwendig ist, um alle Werte ohne Informationsverlust zu speichern (Abschn.\ \ref{sec:dataTypes}). Bei der Umwandlung in eine Liste mit \lstinline!as.list(<<Datensatz>>)!\index[func]{as.list()@\lstinline{as.list()}} ist dies dagegen nicht notwendig.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Elemente auswählen und verändern}
+\label{sec:dfIndex}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\index{Datensatz!Elemente auswählen und verändern}
+\index{Datensatz!indizieren}
+\index[func]{[[]]@\lstinline{[[]]}}
+\index[func]{$@\lstinline{$}}
+Um einzelne Elemente anzeigen zu lassen und diese zu ändern, lassen sich dieselben Befehle wie bei Listen verwenden.
+\begin{lstlisting}
+> myDf1[[3]][2]                     # 2. Element der 3. Variable
+[1] CG
+Levels: CG T WL
+
+> myDf1$rating                      # Variable rating
+[1] 1 3 5 5 2 0 3 2 3 5 1 1
+
+> myDf1$age[4]                      # Alter der 4. Person
+[1] 34
+
+> myDf1$IQ[10:12] <- c(99, 110, 89) # ändere IQ-Werte für Person 10-12
+\end{lstlisting}
+
+Als Besonderheit können Datensätze analog zu Matrizen mit dem Operator
+\begin{itemize}
+\item \lstinline![<<Index Element der Komponente>>, <<Index der Komponente>>]!\index[func]{[]@\lstinline{[]}}
+\end{itemize}
+indiziert werden. Bei dieser Variante bleibt die gewohnte Reihenfolge von Zeile (entspricht einer Person) -- Spalte (entspricht einer Variable) erhalten, ist also in vielen Fällen dem \lstinline![[<<Index>>]]! Operator vorzuziehen.
+\begin{lstlisting}
+> myDf1[3, 4]                       # 3. Element der 4. Variable
+[1] 25
+
+> myDf1[4, "group"]                 # 4. Person, Variable group
+[1] T
+Levels: CG T WL
+\end{lstlisting}
+
+Wie bei Matrizen gilt das Weglassen eines Index unter Beibehaltung des Kommas als Anweisung, die Werte von allen Indizes der ausgelassenen Dimension anzuzeigen.\footnote{Das Komma ist von Bedeutung: So würde etwa \lstinline!<<Datensatz>>[3]! wie in Listen nicht einfach die dritte Variable von \lstinline!<<Datensatz>>! zurückgeben, sondern einen Datensatz, dessen einzige Komponente diese Variable ist.} Auch hier ist das Argument \lstinline!drop=FALSE!\index[func]{drop@\lstinline{drop}} notwendig, wenn ein einspaltiges Ergebnis bei der Ausgabe weiterhin ein Datensatz sein soll. Bei der Arbeit mit Indexvektoren, um Spalten eines Datensatzes auszuwählen, ist häufig im voraus nicht absehbar, ob letztlich nur eine oder mehrere Spalten auszugeben sind. Um inkonsistentes Verhalten zu vermeiden, empfiehlt es sich in solchen Situationen, \lstinline!drop=FALSE! in jedem Fall zu verwenden.
+\begin{lstlisting}
+> myDf1[2, ]                        # alle Werte der 2. Person
+  id  sex  group  age   IQ  rating
+2  2    m     CG   30  122       3
+
+> myDf1[ , "age"]                   # alle Elemente Variable age
+[1] 26 30 25 34 22 24 28 35 23 29 20 21
+
+> myDf1[1:5, 4, drop=FALSE]         # Variable als Datensatz
+  age
+1  26
+2  30
+3  25
+4  34
+5  22
+\end{lstlisting}
+
+Enthält der Datensatz möglicherweise fehlende Werte, müssen diese zunächst im Indexvektor mit \lstinline!is.na()! identifiziert und logisch ausgeschlossen werden (Abschn.\ \ref{sec:isna}).
+\begin{lstlisting}
+> ok <- myDf1$sex == "f"            # Indizes weibliche Personen
+> myDf[ok & !is.na(ok), ]           # entferne ggf. NA aus Indexvektor
+    id  sex  group  age   IQ  rating
+1    1    f      T   26  112       1
+6    6    f     CG   24  113       0
+12  12    f      T   21   89       1
+\end{lstlisting}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Namen von Variablen und Beobachtungen}
+\label{sec:rowNames}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\index{Datensatz!Variablennamen}
+\index[func]{dimnames()@\lstinline{dimnames()}}
+Die von arrays bekannte Funktion \lstinline!dimnames(<<Datensatz>>)! dient dazu, die Namen eines Datensatzes auf beiden Dimensionen (Zeilen und Spalten, also meist Beobachtungsobjekte und Variablen) zu erfragen und auch zu ändern.\footnote{Namen werden als Attribut gespeichert und sind mit \lstinline!attributes(<<Datensatz>>)! sichtbar (Abschn.\ \ref{sec:objects}).} Sie gibt eine Liste aus, in der die einzelnen Namen für jede der beiden Dimensionen als Komponenten enthalten sind. Wurden die Zeilen nicht benannt, werden ihre Nummern ausgegeben.
+\begin{lstlisting}
+> dimnames(myDf1)
+[[1]]
+[1] "1" "2" "3" "4" "5" "6" "7" "8" "9" "10" "11" "12"
+
+[[2]]
+[1] "id" "sex" "group" "age" "IQ" "rating"
+\end{lstlisting}
+
+Die Namen der Variablen in einem Datensatz können mit der \lstinline!names(<<Datensatz>>)!\index[func]{names()@\lstinline{names()}} Funktion erfragt werden. Diese gibt nur die Variablennamen aus und ist damit gleichwertig zur Funktion\index[func]{colnames()@\lstinline{colnames()}} \lstinline!colnames(<<Datensatz>>)!, welche die Spaltennamen liefert.
+\begin{lstlisting}
+> names(myDf1)
+[1] "id" "sex" "group" "age" "IQ" "rating"
+\end{lstlisting}
+
+Variablennamen lassen sich verändern, indem der entsprechende Variablenname im obigen Ergebnisvektor ausgewählt und über eine Zuweisung umbenannt wird. Dabei kann entweder die Position direkt angegeben oder durch Vergleich mit dem gesuchten Variablennamen implizit ein logischer Indexvektor verwendet werden.
+\begin{lstlisting}
+> names(myDf1)[3]
+[1] "group"
+
+> names(myDf1)[3] <- "fac"
+> names(myDf1)
+[1] "id" "sex" "fac" "age" "IQ" "rating"
+
+> names(myDf1)[names(myDf1) == "fac"] <- "group"
+> names(myDf1)
+[1] "id" "sex" "group" "age" "IQ" "rating"
+\end{lstlisting}
+
+Die Bezeichnungen der Zeilen können mit \lstinline!rownames(<<Datensatz>>)! bzw.\ \lstinline!row.names(<<Datensatz>>)!\index[func]{rownames()@\lstinline{rownames()}} ausgegeben und auch geändert werden. Der Vorgang ist analog zu jenem bei \lstinline!names()!.
+\begin{lstlisting}
+> (rows <- paste("Z", 1:12, sep=""))
+[1] "Z1" "Z2" "Z3" "Z4" "Z5" "Z6" "Z7" "Z8" "Z9" "Z10" "Z11" "Z12"
+
+> rownames(myDf1) <- rows
+> head(myDf1)
+   id  sex  group  age   IQ  rating
+Z1  1    f      T   26  112       1
+Z2  2    m     CG   30  122       3
+Z3  3    m     CG   25   95       5
+Z4  4    m      T   34  102       5
+Z5  5    m     WL   22   82       2
+Z6  6    f     CG   24  113       0
+
+> rownames(myDf1) <- NULL                 # entferne Zeilennamen
+\end{lstlisting}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Datensätze in den Suchpfad einfügen}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\index{Datensatz!Suchpfad}
+\index{Suchpfad|see{Datensatz}}
+Die in einem Datensatz vorhandenen Variablen sind außerhalb des Datensatzes unbekannt. Enthält ein Datensatz \lstinline!myDf! die Variable \lstinline!var!, so kann auf diese nur mit \lstinline!myDf$var!, nicht aber einfach mit \lstinline!var! zugegriffen werden. Nun kann es bequem sein, die Variablennamen auch ohne das wiederholte Aufführen von \lstinline!myDf$! zu verwenden. Eine temporär wirkende Möglichkeit hierzu bietet\index[func]{with()@\lstinline{with()}} \lstinline!with()!.
+\begin{lstlisting}
+> with(data=<<Datensatz>>, expr=<<R-Befehle>>)
+\end{lstlisting}
+
+Innerhalb der unter \lstinline!expr! angegebenen Befehle sind die Variablennamen des unter \lstinline!data! genannten Datensatzes bekannt. Der Datensatz selbst kann innerhalb von \lstinline!with()! nicht verändert, sondern nur gelesen werden.
+\begin{lstlisting}
+> with(myDf1, tapply(IQ, group, FUN=mean))
+    KG       T     WL
+105.50  101.00  85.25
+\end{lstlisting}
+
+Demselben Zweck dient in vielen Funktionen das Argument
+\lstinline!data=<<Datensatz>>!, das es erlaubt, in anderen Argumenten der Funktion Variablen von \lstinline!data! zu verwenden.
+\begin{lstlisting}
+> xtabs(~ sex + group, data=myDf1)
+         group
+sex  CG  T  WL
+  f   1  2   0
+  m   3  2   4
+\end{lstlisting}
+
+Mit \lstinline!attach(<<Datensatz>>)!\index[func]{attach()@\lstinline{attach()}} ist es möglich, einen Datensatz in den Suchpfad einzuhängen und die Namen seiner Variablen so auch permanent ohne wiederholtes Voranstellen von \lstinline!<<Datensatz>>$! verfügbar zu machen. Dies wird etwa an der Ausgabe von \lstinline!search()! deutlich, die den Datensatz nach Einhängen in den Suchpfad mit aufführt (Abschn.\ \ref{sec:objectNames}).
+\begin{lstlisting}
+> IQ[3]
+Fehler: Objekt "IQ" nicht gefunden
+
+> attach(myDf1)
+> IQ[3]
+[1] 95
+
+> search()[1:4]
+[1] ".GlobalEnv"  "myDf1"  "package:grDevices"  "package:datasets"
+\end{lstlisting}
+
+Wichtig ist, dass durch \lstinline!attach()! im workspace Kopien aller Variablen des Datensatzes angelegt werden.\footnote{Bei sehr großen Datensätzen empfiehlt es sich daher aus Gründen der Speichernutzung, nur eine geeignete Teilmenge von Fällen mit \lstinline!attach()! verfügbar zu machen (Abschn.\ \ref{sec:subset}).} Greift man daraufhin auf eine Variable \lstinline!var! ohne Nennung von \lstinline!myDf$! zu, so verwendet man diese Kopie. Insbesondere schlagen sich spätere Änderungen am Datensatz selbst nicht in den früher angelegten Kopien nieder, genauso wirken sich Veränderungen an den Kopien nicht auf den eigentlichen Datensatz aus. Datensätze sollten wegen dieser Gefahr, nicht synchronisierte Änderungen vorzunehmen, höchstens dann in den Suchpfad eingefügt werden, wenn alle Modifikationen an ihm abgeschlossen sind.
+
+Mit dem Befehl \lstinline!detach(<<Datensatz>>)!\index[func]{detach()@\lstinline{detach()}} kann der Datensatz wieder aus dem Suchpfad entfernt werden, wenn nicht mehr auf seine Variablen zugegriffen werden muss. Dies sollte nicht vergessen werden, sonst besteht das Risiko, mit einem neuerlichen Aufruf von \lstinline!attach()! denselben Datensatz mehrfach verfügbar zu machen, was für Verwirrung sorgen kann.
+\begin{lstlisting}
+> IQ[3] <- 130                            # Änderung der Kopie
+> IQ[3]
+[1] 130
+
+> myDf1$IQ[3]                             # Original
+[1] 95
+
+> detach(myDf1)
+> IQ
+Fehler: Objekt "IQ" nicht gefunden
+\end{lstlisting}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Datensätze transformieren}
+\label{sec:dfTransform}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Bevor Datensätze analysiert werden können, müssen sie häufig in eine andere als ihre ursprüngliche Form gebracht werden -- etwa um neue Variablen zu bilden, Fälle bzw.\ Variablen auszuwählen sowie Datensätze zu teilen bzw.\ unterschiedliche Datensätze zusammenzuführen.\footnote{Das Paket \lstinline!dplyr!\index[pack]{dplyr@\lstinline{dplyr}|textbf} \cite{Wickham2014c} enthält spezialisierte Funktionen, die diese Arbeitsschritte systematisieren und besonders bequem durchführbar machen.}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Variablen hinzufügen und entfernen}
+\label{sec:dfCbind}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\index{Datensatz!Variablen hinzufügen}
+Wie bei Listen (Abschn.\ \ref{sec:listExtract}) können einem bestehenden Datensatz neue Variablen mit den Operatoren \lstinline!<<Datensatz>>$<<neue Variable>>! und \lstinline!<<Datensatz>>["<<neue Variable>>"]! hinzugefügt werden. Analog zum Vorgehen bei Matrizen kann an einen Datensatz auch mit \lstinline!cbind(<<Datensatz>>, <<Vektor>>, ...)!\index[func]{cbind()@\lstinline{cbind()}} eine weitere Variable als Spalte angehängt werden, sofern der zugehörige Vektor passend viele Elemente umfasst.\footnote{Dagegen ist das Ergebnis von \lstinline!cbind(<<Vektor1>>, <<Vektor2>>)! eine Matrix. Dies ist insbesondere wichtig, wenn numerische Daten und Zeichenketten zusammengefügt werden -- in einer Matrix würden die numerischen Werte automatisch in Zeichenketten konvertiert.}
+
+Im Beispiel soll der Beziehungsstatus der Personen dem Datensatz hinzugefügt werden.
+\begin{lstlisting}
+> married <- sample(c(TRUE, FALSE), nrow(myDf1), replace=TRUE)
+> myDf2   <- myDf1                                    # erstelle Kopie
+> myDf2$married1    <- married                        # Möglichkeit 1
+> myDf2["married2"] <- married                        # Möglichkeit 2
+> myDf3 <- cbind(myDf1, married)                      # Möglichkeit 3
+> head(myDf3, n=3)
+  id  sex  group  age   IQ  rating  married
+1  1    f      T   26  112       1     TRUE
+2  2    m     CG   30  122       3     TRUE
+3  3    m     CG   25   95       5    FALSE
+\end{lstlisting}
+
+Alternativ kann auch \lstinline!transform()!\index[func]{transform()@\lstinline{transform()}} Verwendung finden.
+\begin{lstlisting}
+> transform(<<Datensatz>>, <<Variablenname>>=<<Ausdruck>>)
+\end{lstlisting}
+
+Unter \lstinline!<<Ausdruck>>! ist anzugeben, wie sich die Werte der neuen Variable ergeben, die unter \lstinline!<<Variablenname>>! gespeichert und an \lstinline!<<Datensatz>>! angehängt wird. Wie im Aufruf von \lstinline!data.frame()! werden Variablen mit Zeichenketten dabei durch die Transformation automatisch in Faktoren konvertiert, wenn nicht \lstinline!stringsAsFactors=FALSE! gesetzt ist. Im Beispiel soll das Quadrat des Ratings angefügt werden. Die Variablennamen des Datensatzes sind innerhalb von \lstinline!transform()! bekannt.
+\begin{lstlisting}
+> myDf4 <- transform(myDf1, rSq=rating^2)
+> head(myDf4, n=3)
+  id  sex  group  age   IQ  rating  rSq
+1  1    f      T   26  112       1    1
+2  2    m     CG   30  122       3    9
+3  3    m     CG   25   95       5   25
+\end{lstlisting}
+
+\index{Datensatz!Variablen löschen}
+Variablen eines Datensatzes werden gelöscht, indem ihnen die leere Menge \lstinline!NULL! zugewiesen wird -- im Fall mehrerer Variablen gleichzeitig in Form einer Liste mit der Komponente \lstinline!NULL!.\footnote{Das genannte Vorgehen wirft die Frage auf, wie sich allen Elementen einer Variable gleichzeitig der Wert \lstinline!NULL! zuweisen lässt, statt die Variable zu löschen. Dies ist durch \lstinline!<<Datensatz>>$<<Variable>> <- list(NULL)! möglich.}
+\begin{lstlisting}
+> dfTemp       <- myDf1                   # Kopie erstellen
+> dfTemp$group <- NULL                    # eine Variable löschen
+> head(dfTemp, n=3)
+  id  sex  age   IQ  rating
+1  1    w   26  112       1
+2  2    m   30  122       3
+3  3    m   25   95       5
+
+> delVars <- c("sex", "IQ")               # mehrere Variablen löschen
+> dfTemp[delVars] <- list(NULL)
+> head(dfTemp, n=3)
+   id  age  rating
+Z1  1   26       1
+Z2  2   30       3
+Z3  3   25       5
+\end{lstlisting}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Datensätze sortieren}
+\label{sec:sortDf}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\index{Datensatz!sortieren}
+Datensätze werden ebenso wie Matrizen mit \lstinline!order()!\index[func]{order()@\lstinline{order()}} sortiert (Abschn.\ \ref{sec:sortMat}).
+\begin{lstlisting}
+> order(<<Vektor>>, na.last=TRUE, decreasing=FALSE)
+\end{lstlisting}
+
+Unter \lstinline!<<Vektor>>! ist die Variable (Spalte) eines Datensatzes anzugeben, die in eine Reihenfolge zu bringen ist. \lstinline!na.last! ist per Voreinstellung auf \lstinline!TRUE! gesetzt und sorgt ggf.\ dafür, dass Indizes fehlender Werte zum Schluss ausgegeben werden. Die Voreinstellung \lstinline!decreasing=FALSE! bewirkt eine aufsteigende Reihenfolge. Zeichenketten werden in alphabetischer Reihenfolge sortiert. Die Reihenfolge bei Faktoren wird dagegen von der Reihenfolge der Stufen bestimmt, die nicht deren alphabetischer Reihenfolge entsprechen muss (Abschn.\ \ref{sec:facLabelOrder}).
+
+\lstinline!order()! gibt einen Indexvektor aus, der die Zeilenindizes des Datensatzes in der Reihenfolge der zu ordnenden Variablenwerte enthält. Soll der gesamte Datensatz in der Reihenfolge dieser Variable angezeigt werden, ist der ausgegebene Indexvektor zum Indizieren der Zeilen des Datensatzes zu benutzen.
+\begin{lstlisting}
+> (idx1 <- order(myDf1$rating))               # sortiere nach rating
+[1] 6 1 11 12 5 8 2 7 9 3 4 10
+
+> head(myDf1[idx1, ])       # erste Zeilen des sortierten Datensatzes
+   id  sex  group  age   IQ  rating
+6   6    f     CG   24  113       0
+1   1    f      T   26  112       1
+11 11    m     CG   20   92       1
+12 12    f      T   21   98       1
+5   5    m     WL   22   82       2
+8   8    m     WL   35   90       2
+\end{lstlisting}
+
+Soll nach zwei Kriterien sortiert werden, weil die Reihenfolge durch eine Variable noch nicht vollständig festgelegt ist, können weitere Datenvektoren in der Rolle von Sortierkriterien als Argumente für \lstinline!order()! angegeben werden.
+\begin{lstlisting}
+# sortiere myDf1 primär nach group und innerhalb jeder Gruppe nach IQ
+> (idx2 <- order(myDf1$group, myDf1$IQ))
+[1] 11 3 6 2 7 12 4 1 10 5 9 8
+
+> head(myDf1[idx2, ])       # erste Zeilen des sortierten Datensatzes
+   id  sex  group  age   IQ  rating
+11 11    m     CG   20   92       1
+3   3    m     CG   25   95       5
+6   6    f     CG   24  113       0
+2   2    m     CG   30  122       3
+7   7    m      T   28   92       3
+12 12    f      T   21   98       1
+\end{lstlisting}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Teilmengen von Daten mit \texttt{subset()} auswählen}
+\label{sec:subset}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\index{Datensatz!Teilmengen auswählen}
+Bei der Analyse eines Datensatzes möchte man häufig eine Auswahl der Daten treffen, etwa nur Personen aus einer bestimmten Gruppe untersuchen, nur Beobachtungsobjekte berücksichtigen, die einen bestimmten Testwert überschreiten, oder aber die Auswertung auf eine Teilgruppe von Variablen beschränken. Die Auswahl von Beobachtungsobjekten auf der einen und Variablen auf der anderen Seite unterscheidet sich dabei konzeptuell nicht voneinander, vielmehr kommen in beiden Fällen die bereits bekannten Strategien zur Indizierung von Objekten zum Tragen.
+
+\index[func]{subset()@\lstinline{subset()}}
+Eine übersichtlichere Methode zur Auswahl von Fällen und Variablen als die in Abschn.\ \ref{sec:dfIndex} vorgestellte Indizierung bietet die Funktion \lstinline!subset()!. Sie gibt einen passenden Datensatz zurück und eignet sich damit in Situationen, in denen eine Auswertungsfunktion einen Datensatz als Argument erwartet -- etwa wenn ein inferenzstatistischer Test nur mit einem Teil der Daten durchgeführt werden soll.
+\begin{lstlisting}
+> subset(x=<<Datensatz>>, subset=<<Indexvektor>>, select=<<Spalten>>)
+\end{lstlisting}
+
+Das Argument \lstinline!subset! ist ein Indexvektor zum Indizieren der Zeilen, der sich häufig aus einem logischen Vergleich der Werte einer Variable mit einem Kriterium ergibt.\footnote{Fehlende Werte behandelt \lstinline!subset()! als \lstinline!FALSE!, sie müssen also nicht extra vom logischen Indexvektor ausgeschlossen werden. Um die Stufen der Faktoren auf die in der Auswahl noch tatsächlich vorhandenen Ausprägungen zu reduzieren, ist\index[func]{droplevels()@\lstinline{droplevels()}} \lstinline!droplevels(<<Datensatz>>)! zu verwenden (Abschn.\ \ref{sec:facChangeLevels}).} Analog dient das Argument \lstinline!select! dazu, eine Teilmenge der Spalten auszuwählen, wofür ein Vektor mit auszugebenden Spaltenindizes oder -namen benötigt wird. Dabei müssen Variablennamen ausnahmsweise nicht in Anführungszeichen stehen. Fehlen konkrete Indexvektoren für \lstinline!subset! oder \lstinline!select!, werden alle Zeilen bzw.\ Spalten ausgegeben. Innerhalb von \lstinline!subset()! sind die Variablennamen des Datensatzes bekannt, ihnen muss also im Ausdruck zur Bildung eines Indexvektors nicht \lstinline!<<Datensatz>>$! vorangestellt werden.
+\begin{lstlisting}
+> subset(myDf1, select=c(group, IQ))        # Variablen group und IQ
+   group  IQ
+1      T 112
+2     CG 122
+3     CG  95
+4      T 102
+5     WL  82
+6     CG 113
+7      T  92
+8     WL  90
+9     WL  88
+10    WL  81
+11    CG  92
+12     T  98
+
+> subset(myDf1, sex == "f")                 # Daten weibliche Personen
+   id sex group age  IQ rating
+1   1   f     T  26 112      1
+6   6   f    CG  24 113      0
+12 12   f     T  21  98      1
+
+> subset(myDf1, id == rating)               # Wert id = Wert rating
+  id sex group age  IQ rating
+1  1   f     T  26 112      1
+\end{lstlisting}
+
+Um alle bis auf einige Variablen auszugeben, eignet sich ein negatives Vorzeichen vor dem numerischen Index oder vor dem Namen der wegzulassenden Variablen.
+\begin{lstlisting}
+> subset(myDf1, sex == "f", select=-sex)
+   id group age  IQ rating
+1   1     T  26 112      1
+6   6    CG  24 113      0
+12 12     T  21  98      1
+\end{lstlisting}
+
+Alle Variablen, deren Namen einem bestimmten Muster entsprechen, können mit den in Abschn.\ \ref{sec:grep} vorgestellten Funktionen zur Suche nach Zeichenfolgen ausgewählt werden.
+\begin{lstlisting}
+> dfTemp <- myDf1               # kopiere myDf1
+
+# neue Variablennamen, so dass sich zwei Gruppen von Variablen ergeben
+> (names(dfTemp) <- paste(rep(c("A", "B"), each=3), 100:102, sep=""))
+[1] "A100" "A101" "A102" "B100" "B101" "B102"
+
+# Index der mit B beginnende Variablen
+> (colIdx <- grep("^B.*$", names(dfTemp)))
+[1] 4 5 6
+
+> subset(dfTemp, B100 > 25, select=colIdx)
+   B100 B101 B102
+1    26  112    1
+2    30  122    3
+4    34  102    5
+7    28   92    3
+8    35   90    2
+10   29   81    5
+\end{lstlisting}
+
+Mit \lstinline!subset()! ist auch die Auswahl nach mehreren Kriterien gleichzeitig möglich, indem \lstinline!<<Indexvektor>>! durch entsprechend erweiterte logische Ausdrücke gebildet wird. Dabei kann es der Fall sein, dass mehrere Bedingungen gleichzeitig erfüllt sein müssen (logisches UND, \lstinline!&!), oder es ausreicht, wenn bereits eines von mehreren Kriterien erfüllt ist (logisches ODER, \lstinline!|!).
+\begin{lstlisting}
+# alle männlichen Personen mit einem Rating größer als 2
+> subset(myDf1, (sex == "m") & (rating > 2))
+   id sex group age  IQ rating
+2   2   m    CG  30 122      3
+3   3   m    CG  25  95      5
+4   4   m     T  34 102      5
+7   7   m     T  28  92      3
+9   9   m    WL  23  88      3
+10 10   m    WL  29  81      5
+
+# alle Personen mit einem eher hohen ODER eher niedrigen IQ-Wert
+> subset(myDf1, (IQ < 90) | (IQ > 110))
+   id sex group age  IQ rating
+1   1   f     T  26 112      1
+2   2   m    CG  30 122      3
+5   5   m    WL  22  82      2
+6   6   f    CG  24 113      0
+9   9   m    WL  23  88      3
+10 10   m    WL  29  81      5
+\end{lstlisting}
+
+\index[func]{\%in\%@\texttt{\%in\%}}
+\index[func]{is.element()@\lstinline{is.element()}}
+Für die Auswahl von Fällen, deren Wert auf einer Variable aus einer Menge bestimmter Werte stammen soll (logisches ODER), gibt es eine weitere Möglichkeit: Mit dem Operator \lstinline!<<Menge1>> %in% <<Menge2>>! als Kurzform von \lstinline!is.element()! kann ebenfalls ein logischer Indexvektor zur Verwendung in \lstinline!subset()! gebildet werden. Dabei prüft \lstinline!<<Menge1>> %in% <<Menge2>>! für jedes Element von \lstinline!<<Menge1>>!, ob es auch in \lstinline!<<Menge2>>! vorhanden ist und gibt einen logischen Vektor mit den einzelnen Ergebnissen aus.
+\begin{lstlisting}
+# Personen aus Wartelisten- ODER Kontrollgruppe
+> subset(myDf1, group %in% c("CG", "WL"))
+   id sex group age  IQ rating
+2   2   m    CG  30 122      3
+3   3   m    CG  25  95      5
+5   5   m    WL  22  82      2
+6   6   f    CG  24 113      0
+8   8   m    WL  35  90      2
+9   9   m    WL  23  88      3
+10 10   m    WL  29  81      5
+11 11   m    CG  20  92      1
+\end{lstlisting}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Doppelte und fehlende Werte behandeln}
+\label{sec:naDf}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\index{Daten!Qualität}
+\index{Datensatz!doppelte Werte}
+\index{Daten!doppelte Werte}
+Doppelte Werte können in Datensätzen etwa auftreten, nachdem sich teilweise überschneidende Daten aus unterschiedlichen Quellen in einem Datensatz integriert wurden. Alle später auftretenden Duplikate mehrfach vorhandener Zeilen werden durch\index[func]{duplicated()@\lstinline{duplicated()}} \lstinline!duplicated(<<Datensatz>>)! identifiziert und durch\index[func]{unique()@\lstinline{unique()}} \lstinline!unique(<<Datensatz>>)! ausgeschlossen (Abschn.\ \ref{sec:unique}). Lediglich die jeweils erste Ausfertigung bleibt so erhalten.
+\begin{lstlisting}
+# Datensatz mit doppelten Werten herstellen
+> myDfDouble <- rbind(myDf1, myDf1[sample(1:nrow(myDf1), 4), ])
+
+# doppelte Zeilen identifizieren (alle Ausfertigungen)
+> duplicated(myDfDouble) | duplicated(myDfDouble, fromLast=TRUE)
+[1] FALSE FALSE FALSE TRUE FALSE TRUE FALSE TRUE FALSE TRUE FALSE
+[12] FALSE TRUE TRUE TRUE TRUE
+
+> myDfUnique <- unique(myDfDouble)    # doppelte Zeilen ausschließen
+> any(duplicated(myDfUnique))         # Kontrolle: noch doppelte?
+[1] FALSE
+\end{lstlisting}
+
+\index{Datensatz!fehlende Werte}
+\index{Daten!fehlende Werte}
+Fehlende Werte werden in Datensätzen weitgehend wie in Matrizen behandelt (Abschn.\ \ref{sec:naMat}). Auch hier muss also \lstinline!is.na()! benutzt werden, um das Vorhandensein fehlender Werte zu prüfen.
+\begin{lstlisting}
+> myDfNA           <- myDf1
+> myDfNA$IQ[4]     <- NA
+> myDfNA$rating[5] <- NA
+> is.na(myDfNA)[1:5, c("age", "IQ", "rating")]
+    age     IQ  rating
+1 FALSE  FALSE   FALSE
+2 FALSE  FALSE   FALSE
+3 FALSE  FALSE   FALSE
+4 FALSE   TRUE   FALSE
+5 FALSE  FALSE    TRUE
+
+# prüfe jede Variable, ob sie mindestens ein NA enthält
+> apply(is.na(myDfNA), 2, any)
+   id    sex  group    age    IQ  rating
+FALSE  FALSE  FALSE  FALSE  TRUE    TRUE
+\end{lstlisting}
+
+Eine weitere Funktion zur Behandlung fehlender Werte ist\index[func]{complete.cases()@\lstinline{complete.cases()}} \lstinline!complete.cases(<<Datensatz>>)!. Sie liefert einen logischen Indexvektor zurück, der für jedes Beobachtungsobjekt (jede Zeile) angibt, ob fehlende Werte vorliegen. Die vollständigen Fälle, oder die Fälle mit fehlenden Werten können mit \lstinline!subset()! ausgegeben werden. Für die Zeilen mit fehlenden Werten ist dabei der Indexvektor aus der logischen Negation des Ergebnisses von \lstinline!complete.cases()! zu bilden.
+\begin{lstlisting}
+> complete.cases(myDfNA)
+[1] TRUE TRUE TRUE FALSE FALSE TRUE TRUE TRUE TRUE TRUE TRUE TRUE
+
+# zähle vollständige und unvollständige Zeilen
+> table(complete.cases(myDfNA))
+FALSE  TRUE 
+    2    10
+
+> subset(myDfNA, !complete.cases(myDfNA)) # Zeilen mit fehlenden Werten
+  id  sex  group  age  IQ  rating
+4  4    m      T   34  NA       5
+5  5    m     WL   22  82      NA
+\end{lstlisting}
+
+Weiterhin können wie bei Matrizen alle Zeilen mit \lstinline!na.omit()!\index[func]{na.omit()@\lstinline{na.omit()}} gelöscht werden, in denen Werte fehlen.
+\begin{lstlisting}
+> head(na.omit(myDfNA))                    # nur vollständige Zeilen
+  id  sex  group  age   IQ  rating
+1  1    f      T   26  112       1
+2  2    m     CG   30  122       3
+3  3    m     CG   25   95       5
+6  6    f     CG   24  113       0
+7  7    m      T   28   92       3
+8  8    m     WL   35   90       2
+\end{lstlisting}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Datensätze teilen}
+\label{sec:split}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\index{Datensatz!teilen}
+\index[func]{split()@\lstinline{split()}}
+Wenn die Beobachtungen (Zeilen) eines Datensatzes in durch die Stufen eines Faktors festgelegte Gruppen aufgeteilt werden sollen, kann dies mit \lstinline!split()! geschehen.
+\begin{lstlisting}
+> split(x=<<Datensatz>>, f=<<Faktor>>)
+\end{lstlisting}
+
+Für jede Zeile des Datensatzes \lstinline!x! muss der Faktor \lstinline!f! die Gruppenzugehörigkeit angeben und deshalb die Länge \lstinline!nrow(x)! besitzen. Auch wenn \lstinline!f! Teil des Datensatzes ist, muss der Faktor vollständig mit \lstinline!<<Datensatz>>$<<Faktor>>! angegeben werden. Sollen die Zeilen des Datensatzes in Gruppen aufgeteilt werden, die sich aus der Kombination der Stufen zweier Faktoren ergeben, sind diese wie bei \lstinline!tapply()! in eine Liste einzuschließen (Abschn.\ \ref{sec:tapply}). In diesem Fall sorgt das Argument \lstinline!drop=TRUE! dafür, dass nur jene Stufen-Kombinationen berücksichtigt werden, für die auch Beobachtungen vorhanden sind.
+
+Das Ergebnis ist eine Liste, die für jede sich aus den Stufen von \lstinline!f! ergebende Gruppe eine Komponente in Form eines Datensatzes besitzt. Diese Datensätze können etwa dazu dienen, Auswertungen getrennt nach Gruppen vorzunehmen (Abschn.\ \ref{sec:aggregate}).
+\begin{lstlisting}
+> split(myDf1, myDf1$group)
+$CG
+   id  sex  group  age   IQ  rating
+2   2    m     CG   30  122       3
+3   3    m     CG   25   95       5
+6   6    f     CG   24  113       0
+11 11    m     CG   20   92       1
+
+$T
+   id  sex  group  age   IQ  rating
+1   1    f      T   26  112       1
+4   4    m      T   34  102       5
+7   7    m      T   28   92       3
+12 12    f      T   21   98       1
+
+$WL
+   id  sex  group  age   IQ  rating
+5   5    m     WL   22   82       2
+8   8    m     WL   35   90       2
+9   9    m     WL   23   88       3
+10 10    m     WL   29   81       5
+
+# teile Beobachtungen nach sex und group auf
+> split(myDf1, list(myDf1$sex, myDf1$group))        # ...
+\end{lstlisting}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Datensätze zeilen- oder spaltenweise verbinden}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\index{Datensatz!verbinden}
+Wenn zwei oder mehr Datensätze \lstinline!df! vorliegen, die hinsichtlich ihrer Variablen identisch sind, so fügt die Funktion \lstinline!rbind(<<df1>>, <<df2>>, ...)!\index[func]{rbind()@\lstinline{rbind()}} die Datensätze analog zum Vorgehen bei Matrizen zusammen, indem sie sie untereinander anordnet. Auf diese Weise könnten z.\,B.\ die Daten mehrerer Teilstichproben kombiniert werden, an denen dieselben Variablen erhoben wurden.\footnote{\lstinline!bind_rows()!\index[func]{bind_rows()@\lstinline{bind_rows()}} aus dem Paket\index[pack]{dplyr@\lstinline{dplyr}} \lstinline!dplyr! kann auch Datensätze miteinander verbinden, die sich bzgl.\ der Variablen unterscheiden. Teilweise nicht vorhandene Beobachtungen für Variablen werden dafür auf \lstinline!NA! gesetzt.} Wenn die Datensätze Gruppierungsfaktoren enthalten, ist zunächst sicherzustellen, dass alle dieselben Faktorstufen in derselben Reihenfolge besitzen (Abschn.\ \ref{sec:facChangeLevels}, \ref{sec:facLabelOrder}).
+\begin{lstlisting}
+> (dfNew <- data.frame(id=13:15, group=c("CG", "WL", "T"),
++                      sex=c("f", "f", "m"), age=c(18, 31, 21),
++                      IQ=c(116, 101, 99), rating=c(4, 4, 1)))
+  id  sex  group  age   IQ  rating
+1 13    f     CG   18  116       4
+2 14    f     WL   31  101       4
+3 15    m      T   21   99       1
+
+> dfComb <- rbind(myDf1, dfNew)
+> dfComb[11:15, ]
+   id  sex  group  age   IQ  rating
+11 11    m     CG   20   92       1
+12 12    f      T   21   98       1
+13 13    f     CG   18  116       4
+14 14    f     WL   31  101       4
+15 15    m      T   21   99       1
+\end{lstlisting}
+
+Beim Zusammenfügen mehrerer Datensätze besteht die Gefahr, Fälle doppelt aufzunehmen, wenn es Überschneidungen hinsichtlich der Beobachtungsobjekte gibt. \lstinline!duplicated()! und \lstinline!unique()! eignen sich dazu, eindeutige bzw.\ mehrfach vorkommende Zeilen eines Datensatzes zu identifizieren (Abschn.\ \ref{sec:naDf}).
+
+Liegen von denselben Beobachtungsobjekten zwei Datensätze \lstinline!df1! und \lstinline!df2! aus unterschiedlichen Variablen vor, können diese analog zum Anhängen einzelner Variablen an einen Datensatz mit \lstinline!cbind(df1, df2)!\index[func]{cbind()@\lstinline{cbind()}} oder \lstinline!data.frame(df1, df2)!\index[func]{data.frame()@\lstinline{data.frame()}} so kombiniert werden, dass die Variablen nebeneinander angeordnet sind. Dabei ist sicherzustellen, dass die zu demselben Beobachtungsobjekt gehörenden Daten in derselben Zeile jedes Datensatzes stehen.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Datensätze mit \texttt{merge()} zusammenführen}
+\label{sec:merge}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Um flexibel zwei Datensätze zusammenzuführen, die sich nur teilweise in den Variablen oder in den Beobachtungsobjekten entsprechen, kann \lstinline!merge()!\index[func]{merge()@\lstinline{merge()}} zum Einsatz kommen.
+\begin{lstlisting}
+> merge(x=<<Datensatz1>>, y=<<Datensatz2>>,
++       by.x, by.y, by, all.x, all.y, all)
+\end{lstlisting}
+
+Zunächst sei die Situation betrachtet, dass die unter \lstinline!x! und \lstinline!y! angegebenen Datensätze Daten derselben Beobachtungsobjekte beinhalten, die über eine eindeutige ID identifiziert sind.\footnote{Dabei zu beachtende Aspekte der Datenqualität bespricht Abschnitt \ref{sec:tidyData}. Hinweise für den Fall uneindeutiger IDs geben Abschn.\ \ref{sec:stringMan}, Fußnote \ref{ftn:adist} und Abschn.\ \ref{sec:tidyData}, Fußnote \ref{ftn:recLink}.} Dabei sollen einige Variablen bereits in beiden, andere Variablen hingegen nur in jeweils einem der beiden Datensätze vorhanden sein. Die in beiden Datensätzen gleichzeitig enthaltenen Variablen enthalten dann dieselbe Information, da die Daten von denselben Beobachtungsobjekten stammen. Ohne weitere Argumente ist das Ergebnis von \lstinline!merge()! ein Datensatz, der jede der in \lstinline!x! und \lstinline!y! vorkommenden Variablen nur einmal enthält, identische Spalten werden also nur einmal aufgenommen.\footnote{Zur Identifizierung gleicher Variablen werden die Spaltennamen mittels \lstinline!intersect(names(x), names(y))! herangezogen. Bei Gruppierungsfaktoren ist es wichtig, dass sie in beiden Datensätzen dieselben Stufen in derselben Reihenfolge besitzen.}
+
+Beispiel sei ein Datensatz mit je zwei Messungen eines Merkmals an drei Personen mit eindeutiger ID. In einem zweiten Datensatz sind für jede ID die Informationen festgehalten, die konstant über die Messwiederholungen sind -- hier das Geschlecht und eine Gruppenzugehörigkeit.\footnote{Diese Datenstruktur entspricht einer \emph{normalisierten} Datenbank mit mehreren tables zur Vermeidung von Redundanzen.}
+\begin{lstlisting}
+# Datensatz mit 2 Messwerten pro ID
+> (IDDV <- data.frame(ID=factor(rep(1:3, each=2)),
++                     DV=round(rnorm(6, mean=100, sd=15))))
+  ID  DV
+1  1  93
+2  1 105
+3  2 112
+4  2 101
+5  3 109
+6  3 101
+
+# Datensatz mit Informationen, die pro ID konstant sind
+> (IV <- data.frame(ID=factor(1:3),
++                   IV=factor(c("A", "B", "A")),
++                   sex=factor(c("f", "f", "m"))))
+  ID IV sex
+1  1  A   f
+2  2  B   f
+3  3  A   m
+\end{lstlisting}
+
+Als Ziel soll ein Datensatz erstellt werden, der die pro Person konstanten und veränderlichen Variablen integriert, wobei die Zuordnung von Informationen über die ID geschieht. Die pro Person über die Messwiederholungen konstanten Werte werden dabei von \lstinline!merge()! automatisch passend oft wiederholt.
+\begin{lstlisting}
+> merge(IDDV, IV)
+  ID  DV IV sex
+1  1  93  A   f
+2  1 105  A   f
+3  2 112  B   f
+4  2 101  B   f
+5  3 109  A   m
+6  3 101  A   m
+\end{lstlisting}
+
+Verfügen \lstinline!x! und \lstinline!y! im Prinzip über dieselben Variablen, jedoch mit abweichender Bezeichnung, kann über die Argumente \lstinline!by.x! und \lstinline!by.y! manuell festgelegt werden, welche ihrer Variablen übereinstimmen und deshalb nur einmal aufgenommen werden sollen. Als Wert für \lstinline!by.x! und \lstinline!by.y! muss jeweils ein Vektor mit Namen oder Indizes der übereinstimmenden Spalten eingesetzt werden. Alternativ kann dies auch ein logischer Vektor sein, der für jede Spalte von \lstinline!x! (im Fall von \lstinline!by.x!) bzw.\ jede Spalte von \lstinline!y! (im Fall von \lstinline!by.y!) angibt, ob sie eine auch im jeweils anderen Datensatz vorkommende Variable darstellt. Beide Argumente \lstinline!by.x! und \lstinline!by.y! müssen gleichzeitig verwendet werden und müssen dieselbe Anzahl von gleichen Spalten bezeichnen. Haben beide Datensätze insgesamt dieselbe Anzahl von Spalten, kann auch auf das Argument \lstinline!by! zurückgegriffen werden, das sich dann auf die Spalten beider Datensätze gleichzeitig bezieht.
+
+Im folgenden Beispiel soll die Spalte der Initialen künstlich als nicht übereinstimmende Variable gekennzeichnet werden, indem das zweite Element des an \lstinline!by.x! und \lstinline!by.y! übergebenen Vektors auf \lstinline!FALSE! gesetzt wird.
+\begin{lstlisting}
+> (dfA <- data.frame(ID=1:4, initials=c("AB", "CD", "EF", "GH"),
++                    IV1=c("-", "-", "+", "+"), DV1=c(10, 19, 11, 14)))
+  ID  initials  IV1  DV1
+1  1        AB    -   10
+2  2        CD    -   19
+3  3        EF    +   11
+4  4        GH    +   14
+
+> (dfB <- data.frame(ID=1:4, initials=c("AB", "CD", "EF", "GH"),
++                    IV2=c("A", "B", "A", "B"), DV2=c(91, 89, 92, 79)))
+  ID  initials  IV2  DV2
+1  1        AB    A   91
+2  2        CD    B   89
+3  3        EF    A   92
+4  4        GH    B   79
+
+> merge(dfA, dfB, by.x=c(TRUE, FALSE, FALSE, FALSE),
++                 by.y=c(TRUE, FALSE, FALSE, FALSE))
+  ID  initials.x  IV1  DV1  initials.y  IV2  DV2
+1  1          AB    -   10          AB    A   91
+2  2          CD    -   19          CD    B   89
+3  3          EF    +   11          EF    A   92
+4  4          GH    +   14          GH    B   79
+\end{lstlisting}
+
+Berücksichtigt werden bei dieser Art des Zusammenfügens nur Zeilen, bei denen die in beiden Datensätzen vorkommenden Variablen identische Werte aufweisen -- im Kontext von Datenbanken wird dieses Verhalten als \emph{inner join} bezeichnet.\footnote{Details zu verschiedenen join Operationen inkl.\ sehr anschaulicher Visualisierungen geben \citeA[Kap.~10]{Wickham2016a}: \url{http://r4ds.had.co.nz/relational-data.html}} Dabei werden alle Zeilen entfernt, deren Werte für die gemeinsamen Variablen zwischen den Datensätzen abweichen. Werden mit \lstinline!by! Spalten als übereinstimmend gekennzeichnet, für die tatsächlich aber keine Zeile identische Werte aufweist, ist das Ergebnis deshalb ein leerer Datensatz.
+\begin{lstlisting}
+> (dfC <- data.frame(ID=3:6, initials=c("EF", "GH", "IJ", "KL"),
++                    IV2=c("A", "B", "A", "B"), DV2=c(92, 79, 101, 81)))
+  ID  initials  IV2  DV2
+1  3        EF    A   92
+2  4        GH    B   79
+3  5        IJ    A  101
+4  6        KL    B   81
+
+> merge(dfA, dfC)
+  ID  initials  IV1  DV1  IV2  DV2
+1  3        EF    +   11    A   92
+2  4        GH    +   14    B   79
+\end{lstlisting}
+
+Um das Weglassen solcher Zeilen zu verhindern, können die Argumente \lstinline!all.x! bzw.\ \lstinline!all.y! auf \lstinline!TRUE! gesetzt werden. \lstinline!all.x! bewirkt dann, dass alle Zeilen in \lstinline!x!, die auf den übereinstimmenden Variablen andere Werte als in \lstinline!y! haben, ins Ergebnis aufgenommen werden (im Kontext von Datenbanken ein \emph{left outer join}). Die in \lstinline!y! (aber nicht in \lstinline!x!) enthaltenen Variablen werden für diese Zeilen auf \lstinline!NA! gesetzt. Für das Argument \lstinline!all.y! gilt dies analog (bei Datenbanken ein \emph{right outer join}). Das Argument \lstinline!all=TRUE! steht kurz für \lstinline!all.x=TRUE! in Kombination mit \lstinline!all.y=TRUE! (bei Datenbanken ein \emph{full outer join}).
+
+Im Beispiel sind die Werte bzgl.\ der übereinstimmenden Variablen in den ersten beiden Zeilen von \lstinline!dfC! identisch mit jenen in \lstinline!dfA!\@. Darüber hinaus enthält \lstinline!dfC! jedoch auch zwei Zeilen mit Werten, die sich auf den übereinstimmenden Variablen von jenen in \lstinline!dfA! unterscheiden. Um diese Zeilen im Ergebnis von \lstinline!merge()! einzuschließen, muss deshalb \lstinline!all.y=TRUE! gesetzt werden.
+\begin{lstlisting}
+> merge(dfA, dfC, all.y=TRUE)
+  ID  initials   IV1  DV1  IV2  DV2
+1  3        EF     +   11    A   92
+2  4        GH     +   14    B   79
+3  5        IJ  <NA>   NA    A  101
+4  6        KL  <NA>   NA    B   81
+\end{lstlisting}
+
+Analoges gilt für das Einschließen der ersten beiden Zeilen von \lstinline!dfA!. Diese beiden Zeilen haben andere Werte auf den übereinstimmenden Variablen als die Zeilen in \lstinline!dfC!\@. Damit sie im Ergebnis auftauchen, muss \lstinline!all.x=TRUE! gesetzt werden.
+\begin{lstlisting}
+> merge(dfA, dfC, all.x=TRUE, all.y=TRUE)
+  ID  initials   IV1  DV1   IV2  DV2
+1  1        AB     -   10  <NA>   NA
+2  2        CD     -   19  <NA>   NA
+3  3        EF     +   11     A   92
+4  4        GH     +   14     B   79
+5  5        IJ  <NA>   NA     A  101
+6  6        KL  <NA>   NA     B   81
+\end{lstlisting}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Organisationsform einfacher Datensätze ändern}
+\label{sec:stack}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\index{Datensatz!umformen}
+\index{Datensatz!Aufbau}
+Bisweilen weicht der Aufbau eines Datensatzes von dem beschriebenen ab, etwa wenn sich Daten derselben, in verschiedenen Bedingungen erhobene Variablen (AVn) in unterschiedlichen Spalten befinden, die mit den Bedingungen korrespondieren. Wurde in jeder Bedingung eine andere Menge von Personen beobachtet, enthält eine Zeile dann nicht mehr die Daten einer einzelnen Person. Um diese Organisationsform in die übliche zu überführen, eignet sich \lstinline!stack()!\index[func]{stack()@\lstinline{stack()}}: Ziel ist es also, eine Zeile pro Person, eine Spalte für die Werte der AV in allen Bedingungen und eine Spalte für die zu jedem Wert gehörende Stufe des Gruppierungsfaktors (UV) zu erhalten.
+\begin{lstlisting}
+> stack(x=<<Liste>>, select=<<Spalten>>)
+\end{lstlisting}
+
+Unter \lstinline!x! ist eine Liste mit benannten Komponenten (meist ein Datensatz) anzugeben, deren zu reorganisierende Variablen über das Argument \lstinline!select! bestimmt werden. Das Argument erwartet einen Vektor mit Spaltenindizes oder Variablennamen. Das Ergebnis ist ein Datensatz, in dessen erster Variable \lstinline!values! sich alle Werte der AV befinden. Diese Variable entsteht, indem die ursprünglichen Spalten wie durch den Befehl \lstinline!c(<<Spalte1>>, <<Spalte2>>, ...)! aneinander gehängt werden. Die zweite Variable \lstinline!ind! ist ein Faktor, dessen Stufen codieren, aus welcher Spalte von \lstinline!x! ein einzelner Wert der Variable \lstinline!values! stammt. Hierzu werden die Variablennamen von \lstinline!x! herangezogen.
+\begin{lstlisting}
+> Nj     <- 4
+> vec1   <- sample(1:10, Nj, replace=TRUE)
+> vec2   <- sample(1:10, Nj, replace=TRUE)
+> vec3   <- sample(1:10, Nj, replace=TRUE)
+> dfTemp <- data.frame(cond1=vec1, cond2=vec2, cond3=vec3)
+> (res   <- stack(dfTemp, select=c("cond1", "cond3")))
+  values    ind
+1      3  cond1
+2      2  cond1
+3      4  cond1
+4      3  cond1
+5      6  cond3
+6      8  cond3
+7      7  cond3
+8      3  cond3
+
+> str(res)
+'data.frame': 8 obs. of 2 variables:
+$ values: int  3 2 4 3 6 8 7 3
+$ ind   : Factor w/ 2 levels "cond1","cond3": 1 1 1 1 2 2 2 2
+\end{lstlisting}
+
+Das Ergebnis von \lstinline!stack()! wird durch \lstinline!unstack()!\index[func]{unstack()@\lstinline{unstack()}} umgekehrt. Diese Funktion transformiert also einen Datensatz, der aus einer Variable mit den Werten der AV und einer Variable mit den zugehörigen Faktorstufen besteht, in einen Datensatz mit so vielen Spalten wie Faktorstufen. Dabei beinhaltet jede Spalte die zu einer Stufe gehörenden Werte der AV\@. Das Ergebnis von \lstinline!unstack()! ist nur dann ein Datensatz, wenn alle Faktorstufen gleich häufig vorkommen, wenn also die resultierenden Variablen dieselbe Länge aufweisen. Andernfalls ist das Ergebnis eine Liste.
+\begin{lstlisting}
+> unstack(x=<<Datensatz>>, form=<<Modellformel>>)
+
+> unstack(res)
+  cond1  cond3
+1     3      6
+2     2      8
+3     4      7
+4     3      3
+\end{lstlisting}
+
+Kommen im Datensatz \lstinline!x! mehrere AVn und UVn vor, so kann über eine an das Argument \lstinline!form! zu übergebende \emph{Modellformel} \lstinline!<<AV>> ~ <<UV>>! festgelegt werden, welche AV ausgewählt und nach welcher UV die Trennung der Werte der AV vorgenommen werden soll (Abschn.\ \ref{sec:formula}).
+\begin{lstlisting}
+# füge zwei neue Variablen zum Datensatz res hinzu
+> res$IVnew <- factor(sample(rep(c("A", "B"), Nj), 2*Nj, replace=FALSE))
+> res$DVnew <- sample(100:200, 2*Nj)
+> unstack(res, DVnew ~ IVnew)
+    A    B
+1 183  193
+2 129  115
+3 142  140
+4 194  134
+\end{lstlisting}
+
+Die Organisationsformen eines Datensatzes, zwischen denen \lstinline!stack()! und \lstinline!unstack()! wechseln, werden im Kontext von Daten aus Messwiederholungen als \emph{Long}-Format\index{Datensatz!Long-Format}\index{Long-Format|see{Datensatz}} und \emph{Wide}-Format\index{Datensatz!Wide-Format}\index{Wide-Format|see{Datensatz}} bezeichnet. Häufig sind die Datensätze dann jedoch zu komplex, um noch mit diesen Funktionen bearbeitet werden zu können. Für solche Situationen ist die im folgenden Abschnitt beschriebene Funktion \lstinline!reshape()! geeignet.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Organisationsform komplexer Datensätze ändern}
+\label{sec:reshape}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\index{Datensatz!Aufbau}
+\index{Datensatz!umformen}
+Wurden an denselben Beobachtungsobjekten zu verschiedenen Messzeitpunkten Daten derselben AV erhoben, können die Werte jeweils eines Messzeitpunkts als zu einer eigenen Variable gehörend betrachtet werden. In einem Datensatz findet sich jede dieser Variablen dann in einer separaten Spalte. Diese Organisationsform folgt dem bisher dargestellten Prinzip, dass pro Zeile die Daten jeweils eines Objekts aus verschiedenen Variablen stehen. Eine solche Strukturierung wird als Wide-Format\index{Datensatz!Wide-Format|textbf} bezeichnet, weil der Datensatz durch mehr Messzeitpunkte an Spalten gewinnt, also breiter wird. Das Wide-Format entspricht einer multivariaten Betrachtungsweise von Daten aus Messwiederholungen (Abschn.\ \ref{sec:AnovaRBp}, \ref{sec:multRBp}). Es setzt voraus, dass die Objekte zu denselben Zeitpunkten beobachtet wurden und damit der Messzeitpunkt pro Spalte konstant ist.
+
+Für die univariat formulierte Analyse von abhängigen Daten (Abschn.\ \ref{sec:RBp}) ist jedoch oft die Organisation im\index{Datensatz!Long-Format|textbf} Long-Format notwendig. Die zu den verschiedenen Messzeitpunkten gehörenden Werte eines Beobachtungsobjekts stehen hier in separaten Zeilen. Auf diese Weise beinhalten mehrere Zeilen Daten desselben Beobachtungsobjekts. Der Name des Long-Formats leitet sich daraus ab, dass mehr Messzeitpunkte zu mehr Zeilen führen, der Datensatz also länger wird. Wichtig bei Verwendung dieses Formats ist zum einen das Vorhandensein eines Faktors, der codiert, von welchem Objekt eine Beobachtung stammt. Diese Variable ist dann jeweils über so viele Zeilen konstant, wie es Messzeitpunkte gibt. Zum anderen muss ein Faktor existieren, der den Messzeitpunkt codiert. Das Long-Format eignet sich auch für Situationen, in denen mehrere Objekte zu verschiedenen Zeitpunkten unterschiedlich häufig beobachtet wurden.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection{Vorgehen bei einem Messwiederholungsfaktor}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Im Beispiel sei an vier Personen eine AV zu drei Messzeitpunkten erhoben worden. Bei zwei der Personen sei dies in Bedingung $A$, bei den anderen beiden in Bedingung $B$ einer Manipulation geschehen. Damit liegen zwei UVn vor, zum einen als Intra-Gruppen Faktor der Messzeitpunkt, zum anderen ein Zwischen-Gruppen Faktor (\emph{Split-Plot} Design, Abschn.\ \ref{sec:SPFpq}). Zunächst soll demonstriert werden, wie sich das Long-Format manuell aus gegebenen Vektoren herstellen lässt. Soll mit einem solchen Datensatz etwa eine univariate Varianzanalyse mit Messwiederholung gerechnet werden, muss sowohl die Personen- bzw.\ Blockzugehörigkeit eines Messwertes als auch der Messzeitpunkt jeweils in einem Objekt der Klasse \lstinline!factor! gespeichert sein.
+\begin{lstlisting}
+> Nj    <- 2                                  # Gruppengröße
+> P     <- 2                                  # Anzahl Gruppen
+> Q     <- 3                                  # Anzahl Messzeitpunkte
+> id    <- 1:(P*Nj)                           # Blockzugehörigkeit
+> DV_t1 <- round(rnorm(P*Nj, -1, 1), 2)       # AV zu t1
+> DV_t2 <- round(rnorm(P*Nj,  0, 1), 2)       # AV zu t2
+> DV_t3 <- round(rnorm(P*Nj,  1, 1), 2)       # AV zu t3
+> IVbtw <- factor(rep(c("A", "B"), Nj))       # Gruppe: between
+
+# Datensatz im Wide-Format
+> (dfWide <- data.frame(id, IVbtw, DV_t1, DV_t2, DV_t3))
+  id  IVbtw  DV_t1  DV_t2  DV_t3
+1  1      A  -1.64   0.01   1.31
+2  2      B  -0.81  -1.23   1.59
+3  3      A  -1.43  -0.80   0.68
+4  4      B  -1.79  -0.13  -0.14
+
+# Variablen für Long-Format
+> idL    <- factor(rep(id, Q))                # Faktor ID-Code
+> DVl    <- c(DV_t1, DV_t2, DV_t3)            # gemeinsamer AV-Vektor
+> IVwth  <- factor(rep(1:3, each=P*Nj))       # Zeitpunkt: within
+> IVbtwL <- rep(IVbtw, times=Q)               # Gruppe: between
+
+# Datensatz im Long-Format
+> dfLong <- data.frame(id=idL, IVbtw=IVbtwL, IVwth=IVwth, DV=DVl)
+> dfLong[order(dfLong$id), ]                  # sortierte Ausgabe
+   id  IVbtw  IVwth     DV
+1   1      A      1  -1.64
+5   1      A      2   0.01
+9   1      A      3   1.31
+2   2      B      1  -0.81
+6   2      B      2  -1.23
+10  2      B      3   1.59
+3   3      A      1  -1.43
+7   3      A      2  -0.80
+11  3      A      3   0.68
+4   4      B      1  -1.79
+8   4      B      2  -0.13
+12  4      B      3  -0.14
+\end{lstlisting}
+
+\lstinline!reshape()!\index[func]{reshape()@\lstinline{reshape()}} bietet die Möglichkeit, einen Datensatz ohne manuelle Zwischenschritte zwischen Wide- und Long-Format zu transformieren.\footnote{Das \lstinline!tidyr!\index[pack]{tidyr@\lstinline{tidyr}} Paket \cite{Wickham2014d} stellt weitere spezialisierte Möglichkeiten zur Transformation zwischen beiden Organisationsformen bereit.}
+\begin{lstlisting}
+> reshape(data=<<Datensatz>>, varying, timevar="time",
++         idvar="id", direction=c("wide", "long"), v.names="<<Name>>")
+\end{lstlisting}
+
+\begin{itemize}
+\item Zunächst wird der Datensatz unter \lstinline!data! eingefügt. Um ihn vom Wide- ins Long-Format zu transformieren, muss das Argument \lstinline!direction="long"! gesetzt werden.
+\item Daneben ist unter \lstinline!varying! anzugeben, welche Variablen im Wide-Format dieselbe AV zu unterschiedlichen Messzeitpunkten repräsentieren. Die Variablen werden im Long-Format über unterschiedliche Ausprägungen der neu gebildeten Variable \lstinline!time! identifiziert, deren Name über das Argument \lstinline!timevar! auch selbst festgelegt werden kann. \lstinline!varying! benötigt eine Liste, deren Komponenten Vektoren mit Variablennamen oder Spaltenindizes sind. Jeder Vektor gibt dabei eine Gruppe von Variablen an, die jeweils zu einer AV gehören.\footnote{Im Fall zweier AVn, für die jeweils eine Gruppe von zwei Spalten im Wide-Format vorhanden ist, könnte das Argument also \lstinline!varying=list(c(\"DV1_t1\", \"DV1_t2\"), c(\"DV2_t1\", \"DV2_t2\"))! lauten.}
+\item Besitzt der Datensatz eine Variable, die codiert, von welcher Person ein Wert stammt, kann sie im Argument \lstinline!idvar! genannt werden. Andernfalls wird eine solche Variable auf Basis der Zeilenindizes gebildet und trägt den Namen \lstinline!id!. Auch andere Variablen von \lstinline!data!, die pro Messzeitpunkt zwischen den Personen variieren, gelten als \lstinline!idvar!, dies trifft etwa auf die Ausprägung von Zwischen-Gruppen Faktoren zu. Im Fall mehrerer solcher Variablen sind diese als Vektor von Variablennamen anzugeben.
+\item Der Name der Variable im Long-Format mit den Werten der AV kann über das Argument \lstinline!v.names! bestimmt werden.
+\end{itemize}
+
+\begin{lstlisting}
+> resLong <- reshape(dfWide, varying=c("DV_t1", "DV_t2", "DV_t3"),
++                    direction="long", idvar=c("id", "IVbtw"),
++                    v.names="DV")
+
+# erste Zeilen der sortierten Ausgabe, identisch zu dfLong
+> head(resLong[order(resLong$id), ])
+      id IVbtw time    DV
+1.A.1  1     A    1 -1.68
+1.A.2  1     A    2  0.78
+1.A.3  1     A    3  2.73
+2.B.1  2     B    1 -2.52
+2.B.2  2     B    2  0.69
+2.B.3  2     B    3  0.80
+\end{lstlisting}
+
+Die Variablen in der Rolle von \lstinline!idvar! und \lstinline!time! sollten Objekte der Klasse \lstinline!factor! sein. Da \lstinline!reshape()! die Variablen aber als numerische Vektoren generiert, müssen sie ggf.\ manuell umgewandelt werden mit:
+\begin{itemize}
+\item \lstinline!<<Datensatz>>$<<Variable>> <- factor(<<Datensatz>>$<<Variable>>)!
+\end{itemize}
+
+Ist der Datensatz vom Long- ins Wide-Format zu transformieren, muss \lstinline!direction="wide"! gesetzt werden. Für das Argument \lstinline!v.names! wird jene Variable genannt, die die Werte der AV im Long-Format über alle Messzeitpunkte hinweg speichert. Diese Variable wird im Wide-Format auf mehrere Spalten aufgeteilt, die den Messzeitpunkten entsprechen. Dafür ist unter \lstinline!timevar! anzugeben, welche Variable den Messzeitpunkt codiert. Unter \lstinline!idvar! sind jene Variablen zu nennen, deren Werte die Daten der AV eines Objekts zuordnen bzw.\ pro Messzeitpunkt über die Objekte variieren, etwa weil sie die Ausprägung von Zwischen-Gruppen Faktoren darstellen.
+\begin{lstlisting}
+> reshape(dfLong, v.names="DV", timevar="IVwth",
++         idvar=c("id", "IVbtw"), direction="wide")
+  id  IVbtw   DV.1   DV.2   DV.3
+1  1      A  -1.64   0.01   1.31
+2  2      B  -0.81  -1.23   1.59
+3  3      A  -1.43  -0.80   0.68
+4  4      B  -1.79  -0.13  -0.14
+\end{lstlisting}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection{Vorgehen bei mehreren Messwiederholungsfaktoren}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Ist eine AV an denselben Objekten mehrfach in den kombinierten Bedingungen zweier Intra-Gruppen Faktoren erhoben worden (Abschn.\ \ref{sec:RBFpq}), ist das einfachste Vorgehen zum Wechsel vom Wide- ins Long-Format, zunächst beide Faktoren mit\index[func]{interaction()@\lstinline{interaction()}} \lstinline!interaction()! in einen einzigen Faktor zu umzuwandeln, der alle möglichen Stufenkombinationen enthält. Dann lässt sich wie oben beschrieben fortfahren. Alternativ ist \lstinline!reshape()! zweimal anzuwenden. Im ersten Schritt werden die zu unterschiedlichen Bedingungen des ersten Faktors gehörenden Spalten zusammengefasst, im zweiten Schritt diejenigen des zweiten.
+
+Im Beispiel seien an vier Personen in jeder Stufenkombination der UV1 mit drei und der UV2 mit zwei Messzeitpunkten Werte einer AV erhoben worden.
+\begin{lstlisting}
+> N    <- 4                                       # Anzahl Personen
+> id   <- 1:N                                     # ID-Code
+> t_11 <- round(rnorm(N,  8,  2), 2)              # AV zu t1-1
+> t_12 <- round(rnorm(N, 10,  2), 2)              # AV zu t1-2
+> t_21 <- round(rnorm(N, 13,  2), 2)              # AV zu t2-1
+> t_22 <- round(rnorm(N, 15,  2), 2)              # AV zu t2-2
+> t_31 <- round(rnorm(N, 13,  2), 2)              # AV zu t3-1
+> t_32 <- round(rnorm(N, 15,  2), 2)              # AV zu t3-2
+
+# Datensatz im Wide-Format
+> dfW <- data.frame(id, t_11, t_12, t_21, t_22, t_31, t_32)
+
+# Transformation ins Long-Format bzgl. IV1
+> (dfL1 <- reshape(dfW, direction="long", timevar="IV1",
++       varying=list(c("t_11", "t_21", "t_31"),
++                    c("t_12", "t_22", "t_32")),
++       idvar="id", v.names=c("IV2-1", "IV2-2")))
+    IV1  IV2-1  IV2-2  id
+1.1   1  11.59  10.27   1
+2.1   1   7.28  10.63   2
+3.1   1   8.43   9.74   3
+4.1   1   5.05  12.58   4
+1.2   2  11.96  15.27   1
+2.2   2  14.97  11.47   2
+3.2   2  11.96  11.39   3
+4.2   2  19.12  15.45   4
+1.3   3  14.40  16.18   1
+2.3   3  13.48  12.06   2
+3.3   3  17.34  11.62   3
+4.3   3  12.55  14.76   4
+\end{lstlisting}
+
+Da \lstinline!IV1! nun wie \lstinline!id! pro Messzeitpunkt von \lstinline!IV2! über die Personen variiert, muss die Variable im zweiten Schritt ebenfalls unter \lstinline!idvar! genannt werden.
+\begin{lstlisting}
+> dfL2 <- reshape(dfL1, varying=c("IV2-1", "IV2-2"),
++                 direction="long", timevar="IV2",
++                 idvar=c("id", "IV1"), v.names="DV")
+
+> head(dfL2)                            # erste Einträge von dfL2
+      id  IV1  IV2     DV
+1.1.1  1    1    1   9.26
+2.1.1  2    1    1   8.93
+3.1.1  3    1    1   8.12
+4.1.1  4    1    1   3.57
+1.2.1  1    2    1  13.78
+2.2.1  2    2    1  15.85
+\end{lstlisting}
+
+Auch die umgekehrte Transformation vom Long- ins Wide-Format benötigt zwei Schritte, wenn zwei Intra-Gruppen Faktoren vorhanden sind.
+\begin{lstlisting}
+# Schritt 1: Stufen der IV2 in Spalten aufteilen
+> dfW1 <- reshape(dfL2, v.names="DV", timevar="IV2",
++                 idvar=c("id", "IV1"), direction="wide")
+
+# Schritt 2: Stufen der IV1 in Spalten aufteilen
+> dfW2 <- reshape(dfW1, v.names=c("DV.1", "DV.2"),
++                 timevar="IV1", idvar="id", direction="wide")
+
+# Vergleich mit ursprünglichem Datensatz im Wide-Format
+> all.equal(dfW, dfW2, check.attributes=FALSE)
+[1] TRUE
+\end{lstlisting}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Daten aggregieren}
+\label{sec:dfAggregate}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Die folgenden Abschnitte stellen dar, wie allgemein Funktionen auf Variablen aus Datensätzen angewendet werden können. Häufig sind zudem Daten nach Gruppen aufzuteilen, für diese dann Kennwerte zu berechnen und letztere wieder zusammenzuführen.\footnote{Das Paket \lstinline!dplyr!\index[pack]{dplyr@\lstinline{dplyr}} enthält spezialisierte Funktionen, die diese Arbeitsschritte systematisieren und besonders bequem durchführbar machen.}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Funktionen auf Variablen anwenden}
+\label{sec:sapply}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\index{Datensatz!Funktionen anwenden}
+\lstinline!lapply()!\index[func]{lapply()@\lstinline{lapply()}} (\emph{list apply}) verallgemeinert die Funktionsweise von \lstinline!apply()! auf Listen und Datensätze, um eine Funktion auf deren Komponenten, also Variablen anzuwenden. Hier entfällt die Angabe, ob die Funktion auf Zeilen oder Spalten angewendet werden soll -- es sind immer die Komponenten der Liste, entsprechend die Variablen bzw.\ Spalten eines Datensatzes.
+\begin{lstlisting}
+> lapply(X=<<Liste>>, FUN=<<Funktion>>, ...)
+\end{lstlisting}
+
+Das Ergebnis von \lstinline!lapply()! ist eine Liste mit ebenso vielen Komponenten wie sie die Liste \lstinline!X! enthält. Ist \lstinline!FUN! nur sinnvoll auf numerische Variablen anwendbar, können diese etwa zunächst mit \lstinline!subset(..., select=<<Indizes>>)! extrahiert werden.
+\begin{lstlisting}
+# Mittelwerte der numerischen Variablen
+> numDf   <- subset(myDf1, select=c(age, IQ, rating))
+> (myList <- lapply(numDf, mean))
+$age
+[1] 26.41667
+
+$IQ
+[1] 97.25
+
+$rating
+[1] 2.583333
+\end{lstlisting}
+
+\lstinline!sapply()!\index[func]{sapply()@\lstinline{sapply()}} (\emph{simplified apply}) arbeitet wie \lstinline!lapply()!, gibt aber nach Möglichkeit keine Liste, sondern einen einfacher zu verarbeitenden Vektor mit benannten Elementen aus. Gibt \lstinline!FUN! pro Aufruf mehr als einen Wert zurück, ist das Ergebnis eine Matrix, deren Spalten aus diesen Werten gebildet sind.
+\begin{lstlisting}
+# range der numerischen Variablen
+> sapply(numDf, range)
+     age   IQ  rating
+[1,]  20   82       0
+[2,]  35  122       5
+\end{lstlisting}
+
+Durch die Ausgabe eines Vektors eignet sich \lstinline!sapply()! z.\,B.\ dazu, aus einem Datensatz jene Variablen zu extrahieren, die eine bestimmte Bedingung erfüllen -- etwa einen numerischen Datentyp besitzen. Der Ergebnisvektor kann später zur Indizierung der Spalten Verwendung finden.\footnote{\lstinline!sapply()! ist auch für jene Fälle nützlich, in denen auf jedes Element eines Vektors eine Funktion angewendet werden soll, diese Funktion aber nicht vektorisiert ist -- d.\,h.\ als Argument nur einen einzelnen Wert, nicht aber Vektoren akzeptiert. In diesem Fall betrachtet \lstinline!sapply()! jedes Element des Vektors als eigene Variable, die nur einen Wert beinhaltet.}
+\begin{lstlisting}
+> (numIdx <- sapply(myDf1, is.numeric))     # numerische Variable?
+  id    sex  group   age    IQ  rating
+TRUE  FALSE  FALSE  TRUE  TRUE    TRUE
+
+> dataNum <- subset(myDf1, select=numIdx)   # nur numerische Variablen
+> head(dataNum)
+  id  age   IQ  rating
+1  1   26  112       1
+2  2   30  122       3
+3  3   25   95       5
+4  4   34  102       5
+5  5   22   82       2
+6  6   24  113       0
+\end{lstlisting}
+
+Eine vereinfachte Form von \lstinline!sapply()! ist als \lstinline!replicate()!\index[func]{replicate()@\lstinline{replicate()}} Funktion verfügbar, die lediglich dafür sorgt, dass derselbe Ausdruck \lstinline!expr! mehrfach (\lstinline!n! mal) wiederholt wird. Die Ausgabe erfolgt als Matrix mit \lstinline!n! Spalten und so vielen Zeilen, wie \lstinline!expr! pro Ausführung Werte erzeugt.
+\begin{lstlisting}
+> replicate(n=<<Anzahl>>, expr=<<Befehl>>)
+
+> replicate(6, round(rnorm(4), 2))
+      [,1]   [,2]  [,3]   [,4]   [,5]   [,6]
+[1,] -0.31  -0.17  0.35  -0.46  -1.23  -2.39
+[2,]  0.73  -1.12  0.60  -0.61  -0.07   0.58
+[3,] -0.16   0.64  0.46  -1.21   0.20  -0.81
+[4,]  0.87   0.49  0.04  -1.38   0.05   1.83
+\end{lstlisting}
+
+Mit \lstinline!do.call()!\index[func]{do.call()@\lstinline{do.call()}} ist eine etwas andere automatisierte Anwendung einer Funktion auf die Komponenten einer Liste bzw.\ auf die Variablen eines Datensatzes möglich. Während \lstinline!lapply()! eine Funktion so häufig aufruft, wie Variablen vorhanden sind und dabei jeweils eine Variable als Argument übergibt, geschieht dies bei \lstinline!do.call()! nur einmal, dafür aber mit mehreren Argumenten.
+\begin{lstlisting}
+> do.call(what="<<Funktionsname>>", args=<<Liste>>)
+\end{lstlisting}
+
+Unter \lstinline!what! ist die aufzurufende Funktion zu nennen, unter \lstinline!args! deren Argumente in Form einer Liste, wobei jede Komponente von \lstinline!args! ein Funktionsargument liefert. Ist von vornherein bekannt, welche und wie viele Argumente \lstinline!what! erhalten soll, könnte \lstinline!do.call()! auch durch einen einfachen Aufruf von \lstinline!<<Funktion>>(<<Liste>>[[1]], <<Liste>>[[2]], ...)! ersetzt werden, nachdem die Argumente als Liste zusammengestellt wurden. Der Vorteil der Konstruktion eines Funktionsaufrufs aus dem Funktionsnamen einerseits und den Argumenten andererseits tritt jedoch dann zutage, wenn sich Art oder Anzahl der Argumente erst zur Laufzeit der Befehle herausstellen -- etwa weil die Liste selbst erst mit vorangehenden Befehlen dynamisch erzeugt wurde.
+
+Aus einer von \lstinline!lapply()! zurückgegebenen Liste ließe sich damit wie folgt ein Vektor machen, wie ihn auch \lstinline!sapply()! zurückgibt:
+\begin{lstlisting}
+# äquivalent zu
+# c(id=myList[[1]], age=myList[[2]], IQ=myList[[3]], rating=myList[[4]])
+> do.call("c", myList)
+      id        age         IQ    rating
+6.500000  26.416667  97.250000  2.583333
+\end{lstlisting}
+
+Sind die Komponenten von \lstinline!args! benannt, behalten sie ihren Namen bei der Verwendung als Argument für die unter \lstinline!what! genannte Funktion bei. Damit lassen sich beliebige Funktionsaufrufe samt zu übergebender Daten und weiterer Optionen konstruieren: Alle späteren Argumente werden dafür als Komponenten in einer Liste gespeichert, wobei die Komponenten die Namen erhalten, die die Argumente der Funktion \lstinline!what! tragen.
+\begin{lstlisting}
+> work  <- factor(sample(c("home", "office"), 20, replace=TRUE))
+> hiLo  <- factor(sample(c("hi", "lo"),       20, replace=TRUE))
+> group <- factor(sample(c("A", "B"),         20, replace=TRUE))
+> tab   <- table(work, hiLo, group)    # 3D-Kreuztabelle der Faktoren
+
+# wandle 3D-Kreuztabelle mit ftable um -> lege fest, welche Faktoren
+# in Zeilen (row.vars), welche in Spalten (col.vars) stehen sollen
+> argLst <- list(tab, row.vars="work", col.vars=c("hiLo", "group"))
+> do.call("ftable", argLst)
+     hiLo    hi     lo
+     group  A  B   A  B
+work
+home        1  3   1  3
+office      2  3   2  5
+\end{lstlisting}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Funktionen für mehrere Variablen anwenden}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\index{Datensatz!Funktionen anwenden}
+\lstinline!lapply()! und \lstinline!sapply()! wenden Funktionen auf Variablen eines Datensatzes an, die nur die Daten jeweils einer Variable als Basis für Berechnungen nutzen. \lstinline!mapply()!\index[func]{mapply()@\lstinline{mapply()}} verallgemeinert dieses Prinzip auf Funktionen, die aus mehr als einer einzelnen Variable Kennwerte berechnen. Dies ist insbesondere für viele inferenzstatistische Tests der Fall, die etwa in zwei Variablen vorliegende Daten aus zwei Stichproben hinsichtlich verschiedener Kriterien vergleichen.
+\begin{lstlisting}
+> mapply(FUN=<<Funktion>>, <<Datensatz1>>, <<Datensatz2>>, ...,
++        MoreArgs=<<Liste mit Optionen für FUN>>)
+\end{lstlisting}
+
+Die anzuwendende Funktion ist als erstes Argument \lstinline!FUN! zu nennen. Es folgen so viele Datensätze, wie \lstinline!FUN! Eingangsgrößen benötigt. Im Beispiel einer Funktion für zwei Variablen verrechnet die Funktion schrittweise zunächst die erste Variable des ersten zusammen mit der ersten Variable des zweiten Datensatzes, dann die zweite Variable des ersten zusammen mit der zweiten Variable des zweiten Datensatzes, etc. Sollen an \lstinline!FUN! weitere Argumente übergeben werden, kann dies mit dem Argument \lstinline!MoreArgs! in Form einer Liste geschehen.
+
+Im Beispiel soll ein $t$-Test für zwei unabhängige Stichproben für jeweils alle Variablen-Paare zweier Datensätze berechnet werden (Abschn.\ \ref{sec:tTest}). Dabei soll im $t$-Test eine gerichtete Hypothese getestet (\lstinline!alternative="less"!) und von Varianzhomogenität ausgegangen werden (\lstinline!var.equal=TRUE!). Die Ausgabe wird hier verkürzt dargestellt.
+\begin{lstlisting}
+> N     <- 100
+> x1    <- rnorm(N, 10, 10)         # Variablen für ersten Datensatz
+> y1    <- rnorm(N, 10, 10)
+> x2    <- x1 + rnorm(N, 5, 4)      # Variablen für zweiten Datensatz
+> y2    <- y1 + rnorm(N, 10, 4)
+> myDf2 <- data.frame(x1, y1)
+> myDf3 <- data.frame(x2, y2)
+> mapply(t.test, myDf2, myDf3, MoreArgs=list(alternative="less",
++                                            var.equal=TRUE))
+            x1
+statistic   -1.925841
+parameter   198
+p.value     0.02777827
+alternative "less"
+method      "Two Sample t-test"                              # ...
+
+            y1
+statistic   -33.75330
+parameter   198
+p.value     2.291449e-84
+alternative "less"
+method      "Two Sample t-test"                              # ...
+\end{lstlisting}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Funktionen getrennt nach Gruppen anwenden}
+\label{sec:aggregate}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\index{Datensatz!Funktionen anwenden}
+Nachdem Datensätze mit \lstinline!split()! geteilt wurden, liegen die Daten aus den Bedingungen separat vor und können deshalb getrennt verarbeitet werden, etwa zur Berechnung von Kennwerten pro Gruppe. Hierfür eignen sich die Funktionen \lstinline!lapply()! und \lstinline!sapply()!, die dieselbe Operation für jede Komponente einer Liste durchführen. Sind nur getrennt nach Gruppen zu berechnende Kennwerte einzelner Variablen von Interesse, ist jedoch \lstinline!tapply()! das einfachere Mittel.
+\begin{lstlisting}
+# berechne Mittelwerte von IQ getrennt nach Gruppen
+> (splitRes <- split(myDf1, myDf1$group))           # ...
+> sapply(splitRes, function(x) mean(x$IQ))
+    CG      T     WL
+105.50 101.00  85.25
+
+> tapply(myDf1$IQ, myDf1$group, mean)               # Kontrolle ...
+\end{lstlisting}
+
+Um für Variablen eines Datensatzes Kennwerte nicht nur über alle Beobachtungen hinweg, sondern getrennt nach Gruppen zu berechnen, sind auch\index[func]{aggregate()@\lstinline{aggregate()}} \lstinline!aggregate()! und \lstinline!by()!\index[func]{by()@\lstinline{by()}} vorhanden.
+\begin{lstlisting}
+> aggregate(x=<<Datensatz>>, by=<<Liste mit Faktoren>>,
++           FUN=<<Funktion>>, ...)
+
+> by(data=<<Datensatz>>, INDICES=<<Liste mit Faktoren>>,
++    FUN=<<Funktion>>, ...)
+\end{lstlisting}
+
+Dabei wird ein Kennwert für die Variablen des unter \lstinline!x! bzw.\ \lstinline!data! anzugebenden Datensatzes berechnet. Die Argumente \lstinline!by! bzw.\ \lstinline!INDICES! kontrollieren, in welche Gruppen die Beobachtungen dabei eingeteilt werden. Anzugeben ist eine Liste, die als Komponenten Gruppierungsfaktoren der Länge \lstinline!nrow(x)! bzw.\ \lstinline!nrow(data)! enthält. Mit dem Argument \lstinline!FUN! wird die Funktion spezifiziert, die auf die gebildeten Gruppen in jeder Variable angewendet werden soll. Die in \lstinline!by()! für \lstinline!FUN! verwendete Funktion muss einen Datensatz als Argument akzeptieren, während \lstinline!FUN! in \lstinline!aggregate()! intern mit einem einzelnen Vektor aufgerufen wird. \lstinline!aggregate()! und \lstinline!by()! ähneln der Funktion \lstinline!tapply()!, unterscheiden sich jedoch von ihr durch die Gruppenbildung und anschließende Funktionsanwendung auf mehrere Variablen gleichzeitig.
+
+\lstinline!FUN! wird auf alle Variablen des übergebenen Datensatzes pro Gruppe angewendet, auch wenn für einzelne von ihnen, etwa Faktoren, die Berechnung numerischer Kennwerte nicht möglich oder nicht sinnvoll ist. Um dies von vornherein zu verhindern, ist der Datensatz auf eine geeignete Teilmenge seiner Variablen zu beschränken.
+\begin{lstlisting}
+# pro Bedingungskombination: Mittelwert für Alter, IQ und Rating
+> numDf <- subset(myDf1, select=c("age", "IQ", "rating"))
+> aggregate(numDf, list(myDf1$sex, myDf1$group), mean)
+  Group.1  Group.2    age      IQ  rating
+1       m       CG  25.00  103.00       3
+2       f       CG  24.00  113.00       0
+3       m        T  31.00   97.00       4
+4       f        T  23.50  105.00       1
+5       m       WL  27.25   85.25       3
+\end{lstlisting}
+
+Als Alternative zu den Optionen \lstinline!x! und \lstinline!by! erlaubt es \lstinline!aggregate()! auch, die zu analysierenden Variablen und Gruppierungsfaktoren als (ggf.\ multivariat formulierte) Modellformel zu definieren (Abschn.\ \ref{sec:formula}). Die Variablen, für die der mit \lstinline!FUN! bezeichnete Kennwert zu berechnen ist, stehen dabei links von der Tilde \lstinline!~!, die Gruppierungsfaktoren durch ein \lstinline!+! verbunden rechts von ihr. Die Variablen können mit ihrem einfachen Namen bezeichnet werden, sofern der sie enthaltende Datensatz für das Argument \lstinline!data! genannt ist. Den Kennwert für alle Daten erhält man, wenn rechts der Tilde nur \lstinline!~ 1! steht.
+\begin{lstlisting}
+# äquivalent ...
+> aggregate(cbind(age, IQ, rating) ~ sex + group, FUN=mean, data=myDf1)
+
+# Gesamtmittelwert jeweils von age, IQ und rating
+> aggregate(cbind(age, IQ, rating) ~ 1, FUN=mean, data=myDf1)
+       age    IQ   rating
+1 26.41667 97.25 2.583333
+\end{lstlisting}
+
+Während das Ergebnis von \lstinline!aggregate()! ein Datensatz ist, erfolgt die Ausgabe von \lstinline!by()! als Objekt der Klasse \lstinline!by!, das im Fall eines einzelnen Gruppierungsfaktors eine Liste, sonst ein array ist. Da \lstinline!mean()! keinen Datensatz als Argument akzeptiert, wird für \lstinline!FUN! hier eine selbst definierte Funktion verwendet (vgl.\ \ref{sec:function}).
+\begin{lstlisting}
+# pro Bedingungskombination: Mittelwert für Alter, IQ und Rating
+> by(numDf, list(myDf1$sex, myDf1$group),
++    FUN=function(x) sapply(x, mean))
+: f
+: CG
+   age     IQ rating
+    24    113      0
+----------------------------------------------------------------------
+: m
+: CG
+   age     IQ rating
+    25    103      3
+# ...                                     # gekürzte Ausgabe
+\end{lstlisting}

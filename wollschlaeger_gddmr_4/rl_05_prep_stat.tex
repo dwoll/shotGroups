@@ -1,0 +1,278 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\chapter{Hilfsmittel für die Inferenzstatistik}
+\label{sec:prepStat}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Bevor in den kommenden Kapiteln Funktionen zur inferenzstatistischen Datenanalyse besprochen werden, ist es notwendig Hilfsmittel vorzustellen, auf die viele dieser Funktionen zurückgreifen.\footnote{Dieses Buch behandelt nur die Umsetzung frequentistischer Verfahren. Für Bayes\index{Bayes Datenanalyse} Datenanalyse \cite{Kruschke2015,McElreath2015} vgl.\ den Abschnitt \myURL{Bayesian Inference} der CRAN Task Views \cite{CRANtvBayes} -- insbesondere die Pakete \lstinline!rstanarm!\index[pack]{rstanarm@\lstinline{rstanarm}} \cite{Gabry2016} und \lstinline!brms!\index[pack]{brms@\lstinline{brms}} \cite{Buerkner2016}.} Dazu gehören die Syntax zur Formulierung linearer Modelle sowie einige Familien statistischer Verteilungen von Zufallsvariablen, die bereits bei der Erstellung zufälliger Werte aufgetaucht sind (Abschn.\ \ref{sec:randNum}). Zunächst ist die Bedeutung wichtiger inhaltlicher Begriffe zu klären, die im Kontext inferenzstatistischer Tests häufig auftauchen.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Wichtige Begriffe inferenzstatistischer Tests}
+\label{sec:infStatDef}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Die Terminologie bei der Darstellung inferenzstatistischer Tests ist in der Literatur nicht einheitlich, deswegen soll der folgende Abschnitt präzisieren, mit welcher Bedeutung zentrale Begriffe im weiteren Verlauf des Buches verwendet werden. Die inhaltlichen Zusammenhänge der Logik schließender Statistik seien dabei als bekannt vorausgesetzt \cite{Eid2010}.
+
+\index{H0@$\text{H}_{0}, \text{H}_{1}$}
+Die \emph{Nullhypothese}, deren Konsistenz mit beobachteten Daten ein Test prüft, soll im folgenden mit $\text{H}_{0}$ abgekürzt werden, die \emph{Alternativhypothese} entsprechend mit $\text{H}_{1}$. Die \emph{Teststatistik} ist eine Zufallsvariable, deren Verteilung unter Gültigkeit der $\text{H}_{0}$ mit spezifischen Zusatzannahmen bekannt ist. Die Wahrscheinlichkeit dafür, dass sie Werte in beliebigen Intervallen annimmt, lässt sich dann über ihre Verteilungsfunktion berechnen. Theoretische Parameter einer Verteilung sollen i.\,d.\,R.\ mit griechischen Buchstaben (etwa $\mu$ für den Erwartungswert), empirische Kennwerte mit lateinischen Buchstaben benannt werden (etwa $M$ für den Mittelwert). Besitzen empirische Schätzer keinen eigenen lateinischen Buchstaben, wird für sie der griechische Buchstabe des zu schätzenden Parameters mit einem Circumflex versehen (etwa $\hat{\epsilon}$). Im Interesse einfacherer Formulierungen wird im folgenden nicht streng zwischen einer empirischen Variable und der zugehörigen Zufallsvariable im statistischen Sinn unterschieden.
+
+\index{Verteilung!p-Wert@$p$-Wert}
+\index{Verteilung!kritischer Wert}
+Die Wahrscheinlichkeit unter Gültigkeit der $\text{H}_{0}$, dass die Teststatistik Werte annimmt, die i.\,S.\ der $\text{H}_{1}$ mindestens so extrem wie der beobachtete sind, heißt $p$-\emph{Wert}.\footnote{Handelt es sich um eine zusammengesetzte $\text{H}_{0}$ -- etwa bei gerichteter $\text{H}_{1}$, ist hier immer die $\text{H}_{0}$ gemeint, die am dichtesten an der $\text{H}_{1}$ liegt.} Der \emph{kritische Wert} eines Tests soll den Wert bezeichnen, den die Teststatistik überschreiten muss, damit die Entscheidung für die $\text{H}_{1}$ ausfällt. Abweichend davon wird in der Literatur auch der mindestens zu erreichende Wert als der kritische bezeichnet, also der erste Wert des Ablehnungsbereichs der $\text{H}_{0}$. Dieser Unterschied in der Bezeichnungskonvention ist nur für diskrete Verteilungen relevant.
+
+\index{alpha-Fehler@$\alpha$-Fehler}
+\index{beta-Fehler@$\beta$-Fehler}
+Der Fehler, sich bei tatsächlicher Gültigkeit der $\text{H}_{0}$ für die $\text{H}_{1}$ zu entscheiden, ist der \emph{Fehler erster Art} oder auch $\alpha$-\emph{Fehler}. Der Fehler, die $\text{H}_{0}$ bei tatsächlicher Gültigkeit der $\text{H}_{1}$ nicht zu verwerfen, wird als $\beta$-\emph{Fehler} bezeichnet. Wenn zur sprachlichen Vereinfachung von der Größe oder Höhe eines Fehlers die Rede ist, soll immer die Wahrscheinlichkeit für das Eingehen eines solchen Fehlers gemeint sein. Als $\alpha$-\emph{Niveau} (auch einfach: $\alpha$) wird die maximale Wahrscheinlichkeit eines Fehlers erster Art bezeichnet, die man bei Konstruktion einer Entscheidungsregel für den Test (Wahl des kritischen Wertes) einzugehen bereit ist. Ein statistischer Test fällt dann signifikant aus, wenn der $p$-Wert kleiner als das gesetzte $\alpha$-Niveau ist. Die\index{power} \emph{power} oder\index{Teststärke|see{power}} \emph{Teststärke} eines Tests ist die Wahrscheinlichkeit unter Gültigkeit der $\text{H}_{1}$, dass die Teststatistik Werte größer als der kritische Wert annimmt.\footnote{In dieser Darstellung werden die unterschiedlichen Ansätze von Fisher sowie von Neyman und Pearson vermischt. Während für Fisher der $p$-Wert entsprechend des Likelihood-Prinzips ein Maß für die lokale Evidenz vorliegender Daten gegen die $\text{H}_{0}$ ist, begrenzen Neyman und Pearson die langfristige Fehlerrate erster Art der häufig angewendeten Entscheidungsregel für die Wahl zwischen $\text{H}_{0}$ und $\text{H}_{1}$ auf $\alpha$.}
+
+\index{Vertrauensintervall|see{Konfidenzintervall}}
+\index{Konfidenzintervall}
+Mit dem \emph{Vertrauensintervall} (VI) bzw.\ \emph{Konfidenzintervall} zur Wahrscheinlichkeit $1-\alpha$ für einen theoretischen Parameter $\theta$ ist ein offenes Intervall $(a, b)$ gemeint: Die durch eine konkrete Formel zu spezifizierende Konstruktionsmethode liefert mit einer Wahrscheinlichkeit von $1-\alpha$ Grenzen $a$ und $b$, so dass $\theta$ im zugehörigen Intervall liegt ($a < \theta < b$). Ein statistischer Test zum Niveau $\alpha$ ist genau dann signifikant, wenn das zugehörige $1-\alpha$ Vertrauensintervall den Wert des theoretischen Parameters unter $\text{H}_{0}$ nicht enthält.
+
+Wenn sich ein Test sowohl gerichtet als auch ungerichtet durchführen lässt, bietet R beim Aufruf der Auswertungsfunktion eine Option zur Angabe, ob es sich um eine zweiseitige bzw.\ um welche einseitige $\text{H}_{1}$ (links- oder rechtsseitig) es sich handelt. Der ausgegebene $p$-Wert berücksichtigt die Art der Fragestellung und ist deshalb immer direkt mit dem gewählten $\alpha$-Niveau zu vergleichen. Genauso werden Konfidenzintervalle für geschätzte Parameter entsprechend der Richtung der Fragestellung berechnet: Im Fall einer zweiseitigen Fragestellung wird das zweiseitige, im Fall einer einseitigen Fragestellung das passende einseitige Konfidenzintervall gebildet.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\newpage
+\section{Lineare Modelle formulieren}
+\label{sec:formula}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\index{Modellformel}
+\index{AV}
+\index{UV}
+Manche Funktionen in R erwarten als Argument die symbolische Formulierung eines linearen statistischen Modells, dessen Passung für die zu analysierenden Daten getestet werden soll. Eine solche Modellformel besitzt die Klasse \lstinline!formula!\index[func]{formula@\lstinline{formula}} und beschreibt, wie der systematische Anteil von Werten einer Zielvariable (abhängige Variable, AV) aus Werten einer oder mehrerer Prädiktoren (unabhängige Variablen, UVn) theoretisch hervorgeht.\footnote{Modellformeln verwenden die \emph{Wilkinson-Rogers-Notation} (\citeNP{Wilkinson73}; für Details vgl.\ \lstinline!?formula!). Im Sinne des allgemeinen linearen Modells beschreibt die rechte Seite einer Modellformel die spaltenweise Zusammensetzung der\index{allgemeines lineares Modell!Designmatrix} Designmatrix, die \lstinline!model.matrix(<<Modellformel>>)!\index[func]{model.matrix()@\lstinline{model.matrix()}} für ein konkretes Modell ausgibt (Abschn.\ \ref{sec:multALM} und \citeNP[p.~144~ff.]{Venables2002}). Bei einem multivariaten Modell können auch mehrere AVn vorhanden sein.} Die Annahme der prinzipiellen Gültigkeit eines linearen Modells über das Zustandekommen von Variablenwerten steht hinter vielen statistischen Verfahren, etwa der linearen Regression, Varianz- oder Kovarianzanalyse. Ein Formelobjekt wird wie folgt erstellt:
+\begin{lstlisting}
+> <<modellierte Variable>> ~ <<lineares Modell>>
+\end{lstlisting}
+
+Links der Tilde\index[func]{~@\lstinline{~}} \lstinline!~! steht die Variable, deren systematischer Anteil sich laut Modellvorstellung aus anderen Variablen ergeben soll. Die modellierenden Variablen werden in Form einzelner Terme rechts der \lstinline!~! aufgeführt. Im konkreten Fall werden für alle Terme die Namen von Datenvektoren oder Faktoren derselben Länge eingesetzt.
+
+Im Modell der einfachen linearen Regression (Kap.\ \ref{sec:regression}) sollen sich etwa die Werte des Kriteriums aus Werten des quantitativen Prädiktors ergeben, hier hat die Modellformel also die Form \lstinline!<<Kriterium>> ~ <<Prädiktor>>!. In der Varianzanalyse (Abschn.\ \ref{sec:CRp}) hat die AV die Rolle der modellierten und die kategorialen UVn die Rolle der modellierenden Variablen. Hier hat die Modellformel die Form \lstinline!<<AV>> ~ <<UV>>!. Um R die Möglichkeit zu geben, beide Fälle zu unterscheiden, müssen im Fall der Regression die Prädiktoren numerische Vektoren sein, die UVn in der Varianzanalyse dagegen Objekte der Klasse \lstinline!factor!.
+
+Es können mehrere, in der Modellformel durch \lstinline!+! getrennte Vorhersageterme in ein statistisches Modell eingehen. Ein einzelner Vorhersageterm kann dabei entweder aus einer Variable oder aber aus der Kombination von Variablen i.\,S.\ ihrer statistischen Interaktion bestehen. Die Beziehung zwischen den zu berücksichtigenden Variablen wird durch Symbole ausgedrückt, die sonst numerische Operatoren darstellen, rechts der \lstinline!~! in einer Modellformel aber eine andere Bedeutung tragen. An Möglichkeiten, Variablen in einem Modell zu berücksichtigen, gibt es u.\,a.\ die in Tab.\ \ref{tab:formula} aufgeführten.
+
+\begin{longtable}{p{1.5cm}p{3cm}p{8cm}}
+%\begin{table}[ht]
+%\centering
+\caption{Notation für die Modellformel linearer Modelle}
+\label{tab:formula}
+\endfirsthead
+%\begin{tabular}{p{2.4cm}p{3.5cm}p{6.6cm}}
+\caption[]{(Forts.)}\\\hline
+\endhead
+\hline
+\sffamily Operator & \sffamily übliche Bedeutung & \sffamily Bedeutung in einer Modellformel\\\hline\hline
+\lstinline!+!\index[func]{+@\lstinline{+}} & Addition & den folgenden Vorhersageterm hinzufügen\\
+\lstinline!-!\index[func]{-@\lstinline{-}} & Subtraktion & den folgenden Vorhersageterm ausschließen\\
+\lstinline!<<A>>:<<B>>!\index[func]{:@\lstinline{:}} & Sequenz & Interaktion $A \times B$ als Vorhersageterm\\
+\lstinline!<<A>>*<<B>>!\index[func]{*@\lstinline{*}} & Multiplikation & Kurzform für \lstinline!A + B + A:B! (alle additiven und Interaktionseffekte)\\
+\lstinline!^!\index[func]{^@\lstinline{^}} & potenzieren & Begrenzung des Grads zu berücksichtigender Interaktionen\\
+\lstinline!<<A>>/<<B>>!\index[func]{/@\lstinline{/}} & Division & bei Verschachtelung von $A$ in $B$ (genestetes Design): Kurzform für \lstinline!A + A:B!\\
+\lstinline!1!\index[func]{1, -1@\lstinline{1, -1}} & $1$ & absoluter Term (Gesamterwartungswert). Implizit vorhanden, wenn nicht durch \lstinline!-1! ausgeschlossen\\
+\lstinline!.!\index[func]{.@\lstinline{.}} & ~ & bei Verwendung eines Datensatzes: alle vorhandenen Variablen, bis auf die bereits explizit verwendeten\\
+\lstinline!.! & ~ & bei Veränderung eines Modells: alle bisherigen Terme\\\hline
+%\end{tabular}
+%\end{table}
+\end{longtable}
+
+Als Beispiel gebe es eine kontinuierliche AV $Y$, drei quantitative Prädiktoren $X_{1}, X_{2}, X_{3}$ sowie zwei Faktoren $F_{1}, F_{2}$. Neben den additiven Effekten der Terme können auch ihre Interaktionseffekte berücksichtigt werden. Zudem beinhaltet das Modell i.\,d.\,R.\ einen absoluten Term (den $y$-Achsenabschnitt der Vorhersagegerade im Fall der einfachen linearen Regression), der aber auch unterdrückt werden kann. Mit der Kombination von quantitativen Prädiktoren und Faktoren können etwa folgende lineare Modelle spezifiziert werden.
+\begin{lstlisting}
+> Y ~ X1               # einfache lineare Regression von Y auf X1
+> Y ~ X1 + X2 - 1      # multiple lineare Regression von Y auf X1 und X2
+                       # ohne absoluten Term (y-Achsenabschnitt)
+> Y ~ F1               # einfaktorielle Varianzanalyse
+> Y ~ F1 + F2 + F1:F2  # zweifaktorielle Varianzanalyse
+                       # mit beiden Haupteffekten und der Interaktion
+> Y ~ X1 + F1          # Kovarianzanalyse mit Kovariate X1 und Faktor F1
+> Y ~ X1*X2            # multiple lineare Regression von Y auf X1 und X2
+                       # sowie auf den Interaktionsterm von X1 und X2
+> Y ~ (X1 + X2 + X3)^2 # Regression von Y auf alle additiven Effekte
+                       # sowie alle Interaktionseffekte bis zum 1. Grad:
+                       # Y ~ X1 + X2 + X3 + X1:X2 + X1:X3 + X2:X3
+\end{lstlisting}
+
+Die sich ergebenden Vorhersageterme einer Modellformel sowie weitere Informationen zum Modell können mit der Funktion \lstinline!terms(<<Modellformel>>)!\index[func]{terms()@\lstinline{terms()}} erfragt werden, deren Ausgabe hier gekürzt ist.
+\begin{lstlisting}
+> terms(Y ~ X1*X2*X3)                                         # ...
+[1] "X1" "X2" "X3" "X1:X2" "X1:X3" "X2:X3" "X1:X2:X3"
+
+> terms(Y ~ (X1 + X2 + X3)^2 - X1 - X2:X3)                    # ...
+[1] "X2" "X3" "X1:X2" "X1:X3"
+\end{lstlisting}
+
+Innerhalb einer Modellformel können die Terme selbst das Ergebnis der Anwendung von Funktionen auf Variablen sein. Soll etwa nicht $Y$ als Kriterium durch $X$ als Prädiktor vorhergesagt werden, sondern der Logarithmus von $Y$ durch den Betrag von $X$, lautet die Modellformel \lstinline!log(Y) ~ abs(X)!. Sollen hierbei innerhalb einer Modellformel Operatoren in ihrer arithmetischen Bedeutung zur Transformation von Variablen verwendet werden, muss der entsprechende Term in \lstinline!I(<<Transformation>>)!\index[func]{I()@\lstinline{I()}} eingeschlossen werden. Um etwa das Doppelte von $X$ als Prädiktor für $Y$ zu verwenden, lautet die Modellformel damit \lstinline!Y ~ I(2*X)!.\footnote{Orthogonale Polynome eines numerischen Prädiktors erzeugt \lstinline!poly()!\index[func]{poly()@\lstinline{poly()}}. Für splines s.\ das im Basisumfang von R enthaltene Paket\index[pack]{splines@\lstinline{splines}} \lstinline!splines! mit den Funktionen \lstinline!ns()!\index[func]{ns()@\lstinline{ns()}} und\index{splines} und \lstinline!bs()!\index[func]{bs()@\lstinline{bs()}}.}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Funktionen von Zufallsvariablen}
+\label{sec:randVarFuncs}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\index{Zufallsvariablen}
+Mit R lassen sich die Werte von häufig benötigten Dichte- bzw.\ Wahrscheinlichkeitsfunktionen, Verteilungsfunktionen und deren Umkehrfunktionen an beliebigen Stellen bestimmen.\footnote{Für weitere Verteilungen vgl.\ \lstinline!?Distributions! sowie den Abschnitt \emph{Probability Distributions} der CRAN Task Views \cite{CRANtvProbDistr}.} Dies erübrigt es, etwa für $p$-Werte oder kritische Werte Tabellen konsultieren und bei nicht tabellierten Werten für Wahrscheinlichkeiten oder Freiheitsgrade zwischen angegebenen Werten interpolieren zu müssen. Tabelle \ref{tab:randVarFuncs} gibt Auskunft über einige der hierfür verfügbaren Funktionsfamilien sowie über ihre Argumente und deren Voreinstellungen. Für ihre Verwendung zur Erzeugung von Zufallszahlen s.\ Abschn.\ \ref{sec:randNum}.
+\index{Wilcoxon-Vorzeichen-Rang-Verteilung|see{Verteilung}}
+\index{Verteilung!Gleichverteilung}
+\index{Verteilung!Binomialverteilung}
+\index{Verteilung!Normalverteilung}
+\index{Verteilung!$t$-Verteilung}
+\index{Verteilung!$\chi^{2}$-Verteilung}
+\index{Verteilung!$F$-Verteilung}
+\index{Verteilung!Hypergeometrische Verteilung}
+\index{Verteilung!Poisson-Verteilung}
+\index{Verteilung!Wilcoxon-Vorzeichen-Rang-Verteilung}
+
+\begin{longtable}{p{2.2cm}p{5.9cm}p{4.4cm}}
+%\begin{table}[ht]
+%\centering
+\caption{Vordefinierte Funktionen von Zufallsvariablen}
+\label{tab:randVarFuncs}
+%\begin{tabular}{p{2.2cm}p{6.2cm}p{4.8cm}}
+\endfirsthead
+\caption[]{(Forts.)}\\\hline
+\endhead
+\hline
+\sffamily Familienname & \sffamily Funktion & \sffamily Argumente \& Voreinstellung\\\hline\hline
+\lstinline!binom! & Binomialverteilung & \lstinline!size, prob!\\
+\lstinline!chisq! & $\chi^{2}$-Verteilung & \lstinline!df, ncp=0!\\
+\lstinline!exp! & Exponentialverteilung & \lstinline!rate=1!\\
+\lstinline!f! & $F$-Verteilung & \lstinline!df1, df2, ncp=0!\\
+\lstinline!gamma! & $\Gamma$-Funktion & \lstinline!shape, rate=1!, \lstinline[breaklines=false]!scale=1/rate!\\
+\lstinline!hyper! & Hypergeometrische Verteilung & \lstinline!m, n, k!\\
+\lstinline!logis! & Logistische Verteilung & \lstinline!location=0, scale=1!\\
+\lstinline!multinom! & Multinomialverteilung & \lstinline!size, prob!\\
+\lstinline!norm! & Normalverteilung\footnote{Für multivariate $t$- und Normalverteilungen vgl.\ das Paket\index[pack]{mvtnorm@\lstinline{mvtnorm}|textbf} \lstinline!mvtnorm! \cite{Genz2009, Genz2009b}.} & \lstinline!mean=0, sd=1!\\
+\lstinline!pois! & Poisson-Verteilung & \lstinline!lambda!\\
+\lstinline!signrank! & Wilcoxon-Vorzeichen-Rangverteilung & \lstinline!x, n!\\
+\lstinline!t! & $t$-Verteilung & \lstinline!df, ncp=0!\\
+\lstinline!unif! & Gleichverteilung & \lstinline!min=0, max=1!\\
+\lstinline!weibull! & Weibull-Verteilung & \lstinline!shape, scale=1!\\
+\lstinline!wilcox! & Wilcoxon-Rangsummenverteilung & \lstinline!m, n!\\\hline
+%\end{tabular}
+%\end{table}
+\end{longtable}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Dichtefunktion}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\index{Verteilung!Wahrscheinlichkeitsfunktion}
+\index{Verteilung!Dichtefunktion}
+Mit Funktionen, deren Namen nach dem Muster \lstinline!d<<Funktionsfamilie>>! aufgebaut sind, lassen sich die Werte der Dichtefunktionen\footnote{Im Fall diskreter (z.\,B.\ binomialverteilter) Variablen die Wahrscheinlichkeitsfunktion. Zusätzlich existiert mit \lstinline!pbirthday()!\index[func]{pbirthday()@\lstinline{pbirthday()}} eine Funktion zur Berechnung der Wahrscheinlichkeit, dass in einer Menge mit $n$ Elementen \lstinline!coincident! viele denselben Wert auf einer kategorialen Variable mit \lstinline!classes! vielen, gleich wahrscheinlichen Stufen haben. Mit \lstinline!classes=365! und \lstinline!coincident=2! ist dies die Wahrscheinlichkeit, dass zwei Personen am selben Tag Geburtstag haben.} der in Tab.\ \ref{tab:randVarFuncs} genannten Funktionsfamilien bestimmen. Mit dem Argument \lstinline!x! wird angegeben, für welche Stelle der Wert der Dichtefunktion berechnet werden soll. Dies kann auch ein Vektor sein -- dann wird für jedes Element von \lstinline!x! der Wert der Dichtefunktion bestimmt. Die Bedeutung der übrigen Argumente ist identisch zu jener bei den zugehörigen Funktionen zum Generieren von Zufallszahlen (Abschn.\ \ref{sec:randNum}).
+\index[func]{dbinom()@\lstinline{dbinom()}}
+\index[func]{dnorm()@\lstinline{dnorm()}}
+\index[func]{dchisq()@\lstinline{dchisq()}}
+\index[func]{dt()@\lstinline{dt()}}
+\index[func]{df()@\lstinline{df()}}
+\begin{lstlisting}
+> dbinom(x, size, prob)                           # Binomialverteilung
+>  dnorm(x, mean=0, sd=1)                         # Normalverteilung
+> dchisq(x, df,       ncp=0)                      # chi^2-Verteilung
+>     dt(x, df,       ncp=0)                      # t-Verteilung
+>     df(x, df1, df2, ncp=0)                      # F-Verteilung
+\end{lstlisting}
+
+Die Wahrscheinlichkeit, beim zehnfachen Werfen einer fairen Münze genau siebenmal Kopf als Ergebnis zu erhalten, ergibt sich beispielsweise so:
+\begin{lstlisting}
+> dbinom(7, size=10, prob=0.5)
+[1] 0.1171875
+
+> choose(10, 7) * 0.5^7 * (1-0.5)^(10-7)          # manuelle Kontrolle
+[1] 0.1171875
+\end{lstlisting}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Verteilungsfunktion}
+\label{sec:distrFunc}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\index{Verteilung!Verteilungsfunktion}
+Die Werte der zu einer Dichte- bzw.\ Wahrscheinlichkeitsfunktion gehörenden Verteilungsfunktion lassen sich mit Funktionen berechnen, deren Namen nach dem Muster \lstinline!p<<Funktionsfamilie>>! aufgebaut sind. Mit dem Argument \lstinline!q! wird angegeben, für welche Stelle der Wert der Verteilungsfunktion berechnet werden soll. In der Voreinstellung sorgt das Argument \lstinline!lower.tail=TRUE! dafür, dass der Rückgabewert an einer Stelle $q$ die Wahrscheinlichkeit angibt, dass die zugehörige Zufallsvariable Werte $\leq q$ annimmt. Die Gegenwahrscheinlichkeit (Werte $> q$) wird mit dem Argument \lstinline!lower.tail=FALSE! berechnet.\footnote{\label{ftn:distrFuncDiscr}Bei der Verwendung von Verteilungsfunktionen diskreter (z.\,B.\ binomialverteilter) Variablen ist zu beachten, dass die Funktion die Wahrscheinlichkeit dafür berechnet, dass die zugehörige Zufallsvariable Werte $\leq q$ annimmt -- die Grenze $q$ also mit eingeschlossen ist. Für die Berechnung der Wahrscheinlichkeit, dass die Variable Werte $\geq q$ annimmt, ist als erstes Argument deshalb $q-1$ zu übergeben, andernfalls würde nur die Wahrscheinlichkeit für Werte $> q$ bestimmt.}
+\index[func]{pbinom()@\lstinline{pbinom()}}
+\index[func]{pnorm()@\lstinline{pnorm()}}
+\index[func]{pchisq()@\lstinline{pchisq()}}
+\index[func]{pt()@\lstinline{pt()}}
+\index[func]{pf()@\lstinline{pf()}}
+\begin{lstlisting}
+> pbinom(q, size, prob,      lower.tail=TRUE)     # Binomialverteilung
+>  pnorm(q, mean=0, sd=1,    lower.tail=TRUE)     # Normalverteilung
+> pchisq(q, df,       ncp=0, lower.tail=TRUE)     # chi^2-Verteilung
+>     pt(q, df,       ncp=0, lower.tail=TRUE)     # F-Verteilung
+>     pf(q, df1, df2, ncp=0, lower.tail=TRUE)     # F-Verteilung
+
+> pbinom(7, size=10, prob=0.5)  # Verteilungsfunktion Binomialverteilung
+[1] 0.9453125
+
+> sum(dbinom(0:7, size=10, prob=0.5))       # Kontrolle über W-Funktion
+[1] 0.9453125
+
+> pnorm(c(-Inf, 0, Inf), mean=0, sd=1)      # Standardnormalverteilung
+[1] 0.0 0.5 1.0
+
+# Standardnormalverteilung: Fläche unter Dichtefunktion rechts von 1.645
+> pnorm(1.645, mean=0, sd=1, lower.tail=FALSE)
+[1] 0.04998491
+
+# äquivalent: 1-(Fläche unter Dichtefunktion links von 1.645)
+> 1-pnorm(1.645, mean=0, sd=1, lower.tail=TRUE)
+[1] 0.04998491
+\end{lstlisting}
+
+Mit der Verteilungsfunktion lässt sich auch die Wahrscheinlichkeit dafür berechnen, dass die zugehörige Variable Werte innerhalb eines bestimmten Intervalls annimmt: Dazu ist der Wert der unteren Intervallgrenze von jenem der oberen zu subtrahieren.
+\begin{lstlisting}
+# Standardnormalverteilung: Wkt. für Werte im Intervall mu +- sd
+> m <- 100                                        # Erwartungswert
+> s <- 15                                         # Standardabweichung
+> diff(pnorm(c(m-s, m+s), mean=m, sd=s))
+[1] 0.6826895
+\end{lstlisting}
+
+Nützlich\index{Verteilung!p-Wert@$p$-Wert} ist die Verteilungsfunktion insbesondere für die manuelle Berechnung des $p$-Wertes in inferenzstatistischen Tests: Ist $q$ der Wert einer stetigen Teststatistik, liefert \lstinline!1-p<<Familie>>(q, ...)! ebenso den zugehörigen $p$-Wert des rechtsseitigen Tests wie \lstinline!p<<Familie>>(q, ..., lower.tail=FALSE)! (Fußnote \ref{ftn:distrFuncDiscr}).
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Quantilfunktion}
+\label{sec:quantFunc}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\index{Verteilung!Quantilfunktion}
+Die Werte der zu einer Dichte- bzw.\ Wahrscheinlichkeitsfunktion gehörenden Quantilfunktion lassen sich mit Funktionen berechnen, deren Namen nach dem Muster \lstinline!q<<Funktionsfamilie>>! aufgebaut sind. Mit dem Argument \lstinline!p! wird angegeben, für welche Wahrscheinlichkeit der Quantilwert berechnet werden soll. Das Ergebnis ist die Zahl, die in der zugehörigen Dichtefunktion die Fläche $p$ links (Argument \lstinline!lower.tail=TRUE!) bzw.\ rechts (\lstinline!lower.tail=FALSE!) abschneidet. Anders formuliert ist das Ergebnis der Wert, für den die zugehörige Verteilungsfunktion den Wert $p$ annimmt.\footnote{Bei diskreten Verteilungen (z.\,B.\ Binomialverteilung) ist das Ergebnis bei \lstinline!lower.tail=TRUE! der kleinste Wert, der in der zugehörigen Wahrscheinlichkeitsfunktion mindestens $p$ links abschneidet. Bei \lstinline!lower.tail=FALSE! ist das Ergebnis entsprechend der größte Wert, der mindestens $p$ rechts abschneidet.} Die Quantilfunktion ist also die Umkehrfunktion der Verteilungsfunktion.
+\index[func]{qbinom()@\lstinline{qbinom()}}
+\index[func]{qnorm()@\lstinline{qnorm()}}
+\index[func]{qchisq()@\lstinline{qchisq()}}
+\index[func]{qt()@\lstinline{qt()}}
+\index[func]{qf()@\lstinline{qf()}}
+\begin{lstlisting}
+> qbinom(p, size, prob,      lower.tail=TRUE)     # Binomialverteilung
+>  qnorm(p, mean=0, sd=1,    lower.tail=TRUE)     # Normalverteilung
+> qchisq(p, df,       ncp=0, lower.tail=TRUE)     # chi^2-Verteilung
+>     qt(p, df,       ncp=0, lower.tail=TRUE)     # t-Verteilung
+>     qf(p, df1, df2, ncp=0, lower.tail=TRUE)     # F-Verteilung
+\end{lstlisting}
+
+\index{Verteilung!kritischer Wert}
+Die Quantilfunktion lässt sich nutzen, um kritische Werte für inferenzstatistische Tests zu bestimmen. Dies erübrigt es Tabellen zu konsultieren und die damit verbundene Notwendigkeit zur Interpolation bei nicht tabellierten Werten für Wahrscheinlichkeiten oder Freiheitsgrade.
+\begin{lstlisting}
+> qnorm(pnorm(0))           # qnorm() ist Umkehrfunktion von pnorm()
+[1] 0
+
+> qnorm(1-(0.05/2), 0, 1)   # krit. Wert zweiseitiger z-Test, alpha=0.05
+[1] 1.959964
+
+# krit. Wert zweiseitiger z-Test, alpha=0.05
+> qnorm(0.05/2, 0, 1, lower.tail=FALSE)
+[1] 1.959964
+
+# krit. Wert einseitiger t-Test, alpha=0.01, df=18
+> qt(0.01, 18, 0, lower.tail=FALSE)
+[1] 2.552380
+\end{lstlisting}

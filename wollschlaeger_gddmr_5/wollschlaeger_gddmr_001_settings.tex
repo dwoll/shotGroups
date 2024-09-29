@@ -1,0 +1,75 @@
+%\ifpdf
+\graphicspath{{graphics_pdf/}}
+%\graphicspath{{graphics_pdf_sw/}}
+%\usepackage[final,babel,activate=true]{microtype}
+\usepackage[%pdftex,%
+plainpages=false,%
+unicode=true,%
+pdfpagelabels=true,%
+colorlinks=true,%
+linkcolor=blue,%
+citecolor=blue,%
+filecolor=blue,%
+urlcolor=blue,%
+%colorlinks=false,%
+pdftitle={Grundlagen der Datenanalyse mit R},%
+pdfauthor={Daniel Wollschläger},%
+pdfsubject={Eine anwendungsorientierte Einführung},%
+pdfkeywords={R, Psychologie, Statistik, Datenauswertung}%
+]{hyperref}
+%\pdfinfo{
+%   /Author (Daniel Wollschläger)
+%   /Title  (Grundlagen der Datenanalyse mit R)
+%   /Subject (Eine anwendungsorientierte Einführung)
+%   /Keywords (R, Psychologie, Statistik, Datenauswertung)
+%}
+%\else
+%\usepackage{hyperref}
+%\graphicspath{{graphics_eps/}}
+%\fi
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% for package listings
+\lstloadlanguages{R}
+
+\lstset{%
+language=R,%
+basicstyle=\ttfamily\upshape\mdseries,%
+keywordstyle=\ttfamily\upshape\mdseries,%
+commentstyle=\ttfamily\upshape\mdseries,%
+stringstyle=\ttfamily\upshape\mdseries,%
+identifierstyle=\ttfamily\upshape\mdseries,%
+columns=flexible,%
+keepspaces=true,%
+tabsize=4,%
+numbers=none,%
+extendedchars=true,%
+breaklines=true,%
+breakatwhitespace=true,
+breakindent=0pt,%
+breakautoindent=false,%
+prebreak=\makebox[0pt][l]{\tiny$\searrow$},%
+postbreak=\makebox[0pt][r]{\tiny$\rightarrow$},%
+showspaces=false,%
+showstringspaces=false,%
+literate={<<}{{$\langle$}}{1}{>>}{{$\rangle$}}{1},%
+showtabs=false}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newcommand*\myURL[1]{\texttt{#1}}
+\newcommand*{\euler}{{\mathrm{e}}}
+%\newcommand*{\kronecker}{\raisebox{1pt}{\ensuremath{\:\otimes\:}}}
+
+% larger vertical table-spacing
+\renewcommand{\arraystretch}{1.2}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newindex{default}{idx}{ind}{Index}
+\newindex{func}{idxF}{indF}{\textsf{R}-Funktionen, Klassen und Schlüsselwörter}
+\newindex{pack}{idxP}{indP}{Zusatzpakete}

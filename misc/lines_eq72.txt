@@ -1,0 +1,6 @@
+> dfNew <- data.frame(sex=factor(c('f','f'), levels=levels(dfSurv$sex)),
+> dfNew <- data.frame(sex=factor(c('m','m'), levels=levels(dfSurv$sex)),
+> binom.test(hits, draws, p=pH0, alternative='greater', conf.level=0.95)
+alternative hypothesis: true probability of success is greater than 0.25
+> diagN   <- rep(c('isHealthy', 'isIll'), c(8,2)) # Diagnose für Gesunde
+> MSobs   <-  anObs['obsFac',    'Mean Sq'] # Effekt Objekt 1fakt. ANOVA

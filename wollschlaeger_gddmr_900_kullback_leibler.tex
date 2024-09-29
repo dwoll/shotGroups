@@ -1,0 +1,14 @@
+\index{Kullback-Leibler-Divergenz}
+Alternativ lässt sich der Umstand nutzen, dass $H$ eine lineare Funktion der aus der Informationstheorie stammenden diskreten Kullback-Leibler-Divergenz $KL$ der beobachteten Häufigkeiten zur Gleichverteilung ist. $KL$ ist allgemein ein Maß für die relative Entropie zweier durch Klassenwahrscheinlichkeiten $f_{j}$ und $g_{j}$ gegebener Verteilungen und berechnet sich als $KL = \sum{f_{j} \cdot \ln{\nicefrac{f_{j}}{g_{j}}}}$. Im Falle der Gleichverteilung ist $g_{j} = \nicefrac{1}{P}$, so dass sich umgeformt $KL_{eq} = \ln{P} + \sum{f_{j} \cdot \ln{f_{j}}}$ ergibt. Somit gilt $H = -\nicefrac{1}{\ln{P}} \cdot KL_{eq} + 1$. $KL$ lässt sich mit der aus dem Paket\index{flexmix@\lstinline{flexmix}} \lstinline!flexmix! \cite{Grun2008} stammenden Funktion\index{KLdiv()@\lstinline{KLdiv()}} \lstinline!KLdiv()! berechnen, die als Argument eine Matrix mit den relativen Häufigkeiten in den Spalten erwartet.
+\begin{lstlisting}
+# KL von beobachteten relativen Häufigkeiten zur Gleichverteilung
+> Gj <- rep(1/P, P)                           # Gleichverteilung
+> library(flexmix)                            # für KLdiv()
+> KLdiv(cbind(Fj, Gj))                        # Kullback-Leibler-Divergenz
+\end{lstlisting}
+
+Die Ausgabe von \lstinline!KLdiv()! ist eine Matrix, in der die (nicht symmetrische) Kullback-Leibler-Divergenz von $f$ zu $g$ in der zweiten Spalte der ersten Zeile steht, jene von $g$ zu $f$ in der ersten Spalte der zweiten Zeile. Da \lstinline!KLdiv()! relative Häufigkeiten von $0$ intern auf einen sehr kleinen Mindestwert setzt, stimmt das Ergebnis nicht exakt mit dem manuell berechneten überein.
+\begin{lstlisting}
+> (KLeq <- log(P) + sum(Fj[keep] * log(Fj[keep])))          # manuelle Kontrolle
+> (H <- -(1/log(P)) * KLeq + 1)               # relativer Informationsgehalt
+\end{lstlisting}

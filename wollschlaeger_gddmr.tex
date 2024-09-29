@@ -1,0 +1,124 @@
+\documentclass[%
+11pt,%
+paper=a4,%
+parskip=half,%
+cleardoublepage=empty,%
+chapterprefix=true,%
+headings=normal,%
+BCOR=0mm,%
+DIV=12,%
+numbers=noendperiod,%
+twoside=false]{scrbook}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%% for XeLaTeX
+\usepackage{fontspec}
+\usepackage{polyglossia}
+%\selectlanguage{german}
+\setmainlanguage[babelshorthands=true]{german}
+\setdefaultlanguage{german}
+%% for pdfLaTeX
+%\usepackage[utf8]{inputenc}
+%\usepackage[T1]{fontenc}
+%\usepackage[ngerman]{babel}
+
+\usepackage{lmodern}
+%%%\usepackage[sc]{mathpazo}
+\usepackage{scrhack} 
+%\usepackage{ifpdf}
+\usepackage{longtable}
+\usepackage{url}
+\usepackage{listings}
+\usepackage{upquote}
+\usepackage{bm}
+\usepackage{index}
+\usepackage{enumitem}
+%%%\usepackage{nicefrac}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{graphicx}
+%%%\usepackage{hyperref}               % in settings
+%%%\usepackage{microtype}              % in settings
+
+\input{wollschlaeger_gddmr_001_settings}
+
+\usepackage[nosectionbib]{apacite}     % after hyperref
+%\usepackage{endnotes}
+%\let\footnotes=\endnotes
+
+%\usepackage{amsbsy}
+%\usepackage{unicode-math}
+%%\setmathfont{GFS Neohellenic Math}
+%%\setmathfont{Asana Math}
+%\setmathfont{XITS Math}
+%\setmainfont{DejaVu Serif}
+%\setmathfont{TeX Gyre DejaVu Math}
+%$\sigma \quad \boldsymbol{\sigma}$ \\
+%$\Sigma \quad \boldsymbol{\Sigma}$ \\
+%$\hat{\alpha} \quad \boldsymbol{\hat{\alpha}}$ \\
+%$\sigma \quad \symbf{\sigma}$ \\
+%$\Sigma \quad \symbf{\Sigma}$ \\
+%$\hat{\alpha} \quad \symbf{\hat{\alpha}}$
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\title{Grundlagen der Datenanalyse mit R}
+\subtitle{Eine anwendungsorientierte Einführung}
+\author{Daniel Wollschläger}
+\date{\today}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+\maketitle
+\clearpage
+\pagenumbering{roman}
+\setcounter{page}{1}
+\frontmatter
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\include{wollschlaeger_gddmr_100_preface}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\tableofcontents
+\clearpage
+\mainmatter
+\pagenumbering{arabic}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\include{wollschlaeger_gddmr_101_first_steps}
+\include{wollschlaeger_gddmr_102_basics}
+\include{wollschlaeger_gddmr_103_dataframes}
+\include{wollschlaeger_gddmr_104_manage}
+\include{wollschlaeger_gddmr_105_prep_stat}
+\include{wollschlaeger_gddmr_106_regression}
+\include{wollschlaeger_gddmr_107_anova}
+\include{wollschlaeger_gddmr_108_glm}
+\include{wollschlaeger_gddmr_109_survival}
+\include{wollschlaeger_gddmr_110_nonparam}
+\include{wollschlaeger_gddmr_111_resampling}
+\include{wollschlaeger_gddmr_112_multivariate}
+\include{wollschlaeger_gddmr_113_crossval}
+\include{wollschlaeger_gddmr_114_graphics}
+\include{wollschlaeger_gddmr_115_ggplot2}
+\include{wollschlaeger_gddmr_116_numerical}
+\include{wollschlaeger_gddmr_117_programming}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%% \printendnotes
+
+\backmatter
+\bibliographystyle{apacite}
+\renewcommand{\BAvailFrom}{URL\ }
+\renewcommand{\APACrefURL}{URL\ }
+\bibliography{wollschlaeger_gddmr_000}
+
+\printindex
+\printindex[func]
+\printindex[pack]
+
+\end{document}

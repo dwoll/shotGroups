@@ -1,0 +1,655 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\chapter{Befehle und Daten verwalten}
+\label{sec:manage}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Für Datenanalysen, die über wenige Teilschritte hinausgehen, ist die interaktive Arbeitsweise direkt auf der Konsole meist nicht sinnvoll. Stattdessen lässt sich die Auswertung automatisieren, indem alle Befehle zunächst zeilenweise in eine als \emph{Skript} bezeichnete Textdatei geschrieben werden, die dann ihrerseits von R komplett oder in Teilen ausgeführt wird. Analoges gilt für die Verwaltung empirischer Daten: Gewöhnlich werden diese nicht von Hand auf der Konsole eingegeben, sondern in separaten Dateien gespeichert -- sei es in R, in Programmen zur Tabellenkalkulation oder in anderen Statistikpaketen. Siehe Abschn.\ \ref{sec:files} für die Form der Pfadangaben zu Dateien in den folgenden Abschnitten.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Befehlssequenzen im Editor bearbeiten}
+\label{sec:scripting}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\index{Skript}\index{Editor}\index{Befehlsskript|see{Skript}}
+Um Befehlsskripte zu erstellen, bietet RStudio einen Texteditor, der sich mit \emph{File: New File: R Script} öffnen lässt und daraufhin bereit für die Eingabe von Befehlszeilen ist. Der Texteditor erstellt automatisch zu jeder öffnenden Klammer eine passende schließende und hebt R-Befehle farblich hervor (\emph{syntax-highlighting}). Mit der\index{Tastaturkurzel@Tastaturkürzel} Tastenkombination \myURL{Strg+r} wird der Befehl in derjenigen Zeile von R ausgeführt, in der sich der Cursor gerade befindet (icon \emph{Run}). Um in einem Schritt mehrere Befehlszeilen auswerten zu lassen, markiert man diese und führt sie ebenfalls mit \myURL{Strg+r} aus. Um das komplette Skript in Gänze ausführen zu lassen, kann das icon \emph{Source} verwendet werden. Verursacht einer der auszuführenden Befehle eine Fehlermeldung, unterbricht dies die Verarbeitung, ggf.\ folgende Befehle werden dann also nicht ausgewertet. Einfache Warnungen werden dagegen gesammelt am Schluss aller Ausgaben genannt. Befehlsskripte lassen sich über \emph{File: Save as...} speichern und über \emph{File: Open File...} laden.
+
+In externen Dateien gespeicherte Skripte lassen sich in der Konsole mit \lstinline!source("<<Dateiname>>")!\index[func]{source()@\lstinline{source()}} einlesen, wobei R die enthaltenen Befehle ausführt.\footnote{Es ist nicht notwendig, R im interaktiven Modus zu starten, um ein Befehlsskript ausführen zu lassen, dafür existiert auch ein\index{Batch-Modus} \emph{Batch-Modus}, vgl.\ \lstinline!?Rscript!.} Befindet sich die Skriptdatei nicht im aktiven Arbeitsverzeichnis, muss der vollständige Pfad zum Skript zusätzlich zu seinem Namen mit angegeben werden, z.\,B.\ \lstinline!source("c:/work/r/skript.r")!.\footnote{Wird das einzulesende Skript nicht gefunden, ist zunächst mit \lstinline!dir()!\index[func]{dir()@\lstinline{dir()}} zu prüfen, ob das von R durchsuchte Verzeichnis (ohne explizite Angabe eines Pfades ist es das mit \lstinline!getwd()! angezeigte Arbeitsverzeichnis) auch tatsächlich das Skript enthält.} Wird dabei das Argument \lstinline!echo=TRUE! gesetzt, werden die im Skript enthaltenen Befehle selbst mit auf der Konsole ausgegeben, andernfalls erscheint nur die Ausgabe dieser Befehle.
+
+Es bieten sich u.\,a.\ folgende Vorteile, mit in Textdateien gespeicherten Skripten zu arbeiten:
+
+\begin{itemize}
+\item Der Überblick über alle auszuführenden Befehle wird erleichtert, zudem können die Auswertungsschritte gedanklich nachvollzogen werden.
+\item Komplexe Auswertungen lassen sich in kleinere Teilschritte zerlegen. Diese können einzeln nacheinander oder in Teilsequenzen ausgeführt werden, um Zwischenergebnisse auf ihre Richtigkeit zu prüfen.
+\item Man kann ein einmal erstelltes Skript immer wieder ausführen lassen. Dies ist insbesondere bei der Fehlersuche und bei nachträglichen Veränderungswünschen, etwa an Grafiken, hilfreich: Anders als z.\,B.\ in Programmen zur Tabellenkalkulation müssen so im Fall von anderen Überschriften oder Achsenskalierungen nicht viele schon bestehende Grafiken mit immer denselben Schritten einzeln geändert werden. Stattdessen reicht es aus, das Skript einmal zu ändern und neu auszuführen, um die angepassten Grafiken zu erhalten.
+\item Ein für die Auswertung eines Datensatzes erstelltes Skript lässt sich häufig mit nur geringen Änderungen für die Analyse anderer Datensätze anpassen. Diese Wiederverwendbarkeit einmal geleisteter Arbeit ist bei rein grafisch zu bedienenden Programmen nicht gegeben und spart auf längere Sicht Zeit. Zudem vermeidet eine solche Vorgehensweise Fehler, wenn geprüfte und bewährte Befehlssequenzen kopiert werden können.
+\item Ein erstelltes Skript  dokumentiert gleichzeitig die Auswertungsschritte und garantiert damit die Reproduzierbarkeit der gewonnenen Ergebnisse statistischer Analysen.
+\item Skripte lassen sich zusammen mit dem Datensatz, für dessen Auswertung sie gedacht sind, an Dritte weitergeben. Neben dem Aspekt der so möglichen Arbeitsteilung kann der Auswertungsvorgang von anderen Personen auf diese Weise nachvollzogen und kontrolliert werden. Dies ist i.\,S.\ einer größeren Auswertungsobjektivität sinnvoll.\footnote{Da R mit\index[func]{shell()@\lstinline{shell()}} \lstinline!shell()! auch auf Funktionen des Betriebssystems zugreifen kann, sollten aus Sicherheitsgründen nur geprüfte Skripte aus vertrauenswürdiger Quelle ausgeführt werden.}
+\item Zudem\index[func]{"\#@\texttt{\#}} lassen sich von R nicht als Befehl interpretierte Kommentare einfügen, z.\,B.\ um die Bedeutung der Befehlssequenzen zu erläutern. Kommentare\index{Kommentar} sind dabei alle Zeilen bzw.\ Teile von Zeilen, die mit einem \lstinline!#! Symbol beginnen. Ihre Verwendung ist empfehlenswert, damit auch andere Personen schnell erfassen können, was Befehle bedeuten oder bewirken sollen. Aber auch für den Autor des Skripts selbst sind Kommentare hilfreich, wenn es längere Zeit nach Erstellen geprüft oder für eine andere Situation angepasst werden soll.
+\end{itemize}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Daten importieren und exportieren}
+\label{sec:dataImport}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\index{Daten!Import / Export}
+\index{Daten!eingeben}
+\index{Daten!speichern}
+\index{Eingabe|see{Daten}}
+Empirische Daten können auf verschiedenen Wegen in R verfügbar gemacht werden. Zunächst ist es möglich, Werte durch Zuweisungen etwa in Vektoren zu speichern und diese dann zu Datensätzen zusammenzufügen. Bequemer und übersichtlicher ist die Benutzung des in R integrierten Dateneditors (Abschn.\ \ref{sec:editData}). Häufig liegen Datensätze aber auch in Form von mit anderen Programmen erstellten Dateien vor (Abschn.\ \ref{sec:dataExchange}). R bietet die Möglichkeit, auf verschiedenste Datenformate zuzugreifen und in diesen auch wieder Daten abzulegen. Immer sollte dabei überprüft werden, ob die Daten auch tatsächlich korrekt transferiert wurden. Zudem empfiehlt es sich, nie mit den Originaldaten selbst zu arbeiten. Stattdessen sollten immer nur Kopien eines Referenz-Datensatzes verwendet werden, um diesen gegen unbeabsichtigte Veränderungen zu schützen. Dateneingabe sowie der Datenaustausch mit anderen Programmen werden vertieft im Manual {\quotedblbase}R Data Import/Export{\textquotedblleft} \cite{RDevelopmentCoreTeam2008b} behandelt.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Daten im Editor eingeben}
+\label{sec:editData}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\index{Daten!Dateneditor}
+Bereits im workspace vorhandene Datensätze oder einzelne Variablen können unter Windows und MacOS über den in R integrierten Dateneditor geändert werden, der mit \lstinline!edit(<<Objekt>>)!\index[func]{edit()@\lstinline{edit()}} aufgerufen wird. Innerhalb des Editors können Zellen mit der Maus ausgewählt und dann durch entsprechende Tastatureingaben mit Werten gefüllt werden -- eine leere Zelle steht dabei für einen fehlenden Wert. Ebenso lassen sich durch einen Klick auf die Spaltenköpfe Name und Datentyp der Variablen neu festlegen. Während der Dateneditor geöffnet ist, bleibt die Konsole für Eingaben blockiert. Beim Schließen des Dateneditors liefert \lstinline!edit()! als Rückgabewert das Objekt mit allen ggf.\ geänderten Werten. Wichtig ist, dieses zurückgelieferte Objekt dem zu ändernden Objekt beim Aufruf zuzuweisen, damit die Änderungen auch gespeichert werden. Wurde dies vergessen, ist der geänderte Datensatz noch als \lstinline!.Last.value!\index[func]{.Last.value@\lstinline{.Last.value}} vorhanden, solange kein neuer output erzeugt wird.
+
+Der Befehl \lstinline!fix(<<Objekt>>)!\index[func]{fix()@\lstinline{fix()}} ähnelt \lstinline!edit()!, fasst das Speichern des bearbeiteten Objekts aber bereits mit ein und ist daher meist zu bevorzugen. Aus diesem Grund lassen sich mit \lstinline!fix()! auch keine neuen Datensätze erstellen, wie dies mit \lstinline!edit(data.frame())! über den Umweg eines verschachtelt im Aufruf erzeugten leeren Datensatzes möglich ist.
+\begin{lstlisting}
+> myDf <- data.frame(IV=factor(rep(c("A", "B"), 5)), DV=rnorm(10))
+> myDf <- edit(myDf)          # Zuweisung des Ergebnisses erforderlich
+> fix(myDf)                   # Zuweisung nicht erforderlich
+> newDf <- edit(data.frame()) # editiere leeren Datensatz
+\end{lstlisting}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Datentabellen im Textformat}
+\label{sec:readTable}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\index{Daten!Import / Export!Textformat}
+Für jeden Import in R sollten Daten so organisiert sein, dass sich die Variablen in den Spalten und die Werte jeweils eines Beobachtungsobjekts in den Zeilen befinden. Für alle Variablen sollten gleich viele Beobachtungen vorliegen, so dass sich insgesamt eine rechteckige Datenmatrix ergibt. Bei fehlenden Werten ist es am günstigsten, sie konsistent mit einem expliziten Code zu kennzeichnen, der selbst kein möglicher Wert ist. Weiter ist darauf zu achten, dass Variablennamen den R-Konventionen entsprechen und beispielsweise kein \lstinline!#!, \lstinline!%!, \lstinline!'! oder Leerzeichen enthalten (Abschn.\ \ref{sec:objectNames}).
+
+Mit \lstinline!read.table()!\index[func]{read.table()@\lstinline{read.table()}} werden in Textform vorliegende Daten geladen und in einem Objekt der Klasse \lstinline!data.frame! ausgegeben. Wichtige Argumente von \lstinline!read.table()! sind in Tab.\ \ref{tab:readTable} dargestellt. RStudio vereinfacht den Import von Textdaten über das Menü \emph{Tools: Import Dataset}.
+
+\begin{longtable}{p{3.2cm}p{9.3cm}}
+\caption{Wichtige Argumente von \lstinline!read.table()!
+\label{tab:readTable}}\\
+\endfirsthead
+\caption[]{(Forts.)}\\\hline
+\endhead
+\hline
+\sffamily Argument & \sffamily Bedeutung\\\hline\hline
+\lstinline!file! & (ggf.\ Pfad und) Name der einzulesenden Quelle bzw.\ des zu schreibenden Ziels (meist eine Datei), in Anführungszeichen gesetzt\footnote{Werden die einzulesenden Daten von R nicht gefunden, ist zunächst mit \lstinline!dir()! zu prüfen, ob das von R durchsuchte Verzeichnis (ohne explizite Angabe eines Pfades ist es das mit \lstinline!getwd()! angezeigte Arbeitsverzeichnis) auch jenes ist, das die Datei enthält.}\\
+\lstinline!header! & Wenn in der einzulesenden Quelle Spaltennamen vorhanden sind, muss \lstinline!header=TRUE! gesetzt werden (Voreinstellung ist \lstinline!FALSE!)\\
+\lstinline!sep! & Trennzeichen zwischen zwei Spalten in \lstinline!file!. Voreinstellung ist jeglicher zusammenhängender whitespace (Leerzeichen oder Tabulatoren), unabhängig davon, wie viele davon aufeinander folgen. Andere häufig verwendete Werte sind das Komma (\lstinline!","!) oder das Tabulatorzeichen (\lstinline!"\t"!)\footnote{Sobald für das Argument \lstinline!sep! ein selbst gewählter Wert wie \lstinline!\"\\t\"! vergeben wird, ändert sich die Bedeutung dieses Zeichens: Tauchen in der Datei dann etwa zwei Tabulatoren hintereinander auf, interpretiert R dies als eine leere Zelle der Datenmatrix, also als fehlenden Wert. Ebenso gelten zwei nur durch ein Leerzeichen getrennte Werte nicht mehr als zwei Zellen.}\\
+\lstinline!strip.white! & Bestimmt, ob whitespace vor bzw.\ nach einem Wert entfernt werden soll. In der Voreinstellung \lstinline!FALSE! geschieht dies bei numerischen Werten, nicht aber bei Zeichenketten. Sollte auf \lstinline!TRUE! gesetzt werden, wenn auch bei \lstinline!sep! von der Voreinstellung abgewichen wird\\
+\lstinline!dec! & Das in der Datei verwendete Dezimaltrennzeichen, Voreinstellung ist der Punkt (\lstinline!dec="."!)\\
+\lstinline!colClasses! & Vektor, der für jede Spalte der einzulesenden Quelle den Datentyp angibt, z.\,B.\ \lstinline[breaklines=false]!c("numeric", "logical", ...)!. Mit \lstinline!NULL! können Spalten auch übersprungen, also vom Import ausgeschlossen werden, es müssen aber für alle Spalten Angaben vorhanden sein. In der Voreinstellung \lstinline!NA! bestimmt R selbst die Datentypen, was bei großen Datenmengen langsamer ist\\
+\lstinline!na.strings! & Vektor mit den zur Codierung fehlender Werte verwendeten Zeichenketten. Voreinstellung ist \lstinline!"NA"!\\
+\lstinline!stringsAsFactors!\index{Zeichenketten!Umwandlung in Faktor} & Variablen mit Zeichenketten als Werten werden automatisch in Gruppierungsfaktoren (\lstinline!factor!) konvertiert (Voreinstellung \lstinline!TRUE!). Sollen solche Variablen als \lstinline!character! Vektoren gespeichert werden, ist das Argument auf \lstinline!FALSE! zu setzen (Abschn.\ \ref{sec:dfDataTypes})\\\hline
+\end{longtable}
+
+Für das Argument \lstinline!file! können nicht nur lokal gespeicherte Dateien angegeben werden: Die Funktion liest unter Windows mit \lstinline!file="clipboard"! auch Werte aus der\index{Daten!Import / Export!Zwischenablage}\index{Zwischenablage} Zwischenablage, die dort in einem anderen Programm etwa mit \myURL{Strg+c} hineinkopiert wurden.\footnote{\label{ftn:pbpaste}Unter MacOS ist \lstinline!file=pipe("pbpaste")! zu verwenden.} Ebenso liest sie wie \lstinline!scan()!\index[func]{scan()@\lstinline{scan()}} Daten von der Konsole, wenn \lstinline!file=stdin()! verwendet wird.
+\begin{lstlisting}
+> (xDf <- read.table(file=stdin(), header=TRUE))
+0: id group rating
+1: 1 A 3
+2: 2 A 1
+3: 3 B 5
+4:
+  id  group  rating
+1  1      A       3
+2  2      A       1
+3  3      B       5
+\end{lstlisting}
+
+Online verfügbare Dateien können mit \lstinline!file=url("<<URL>>")! direkt von einem Webserver\index{Daten!Import / Export!online} geladen werden.\footnote{Statt einer Datei akzeptieren die meisten Funktionen für das Argument \lstinline!file! allgemein eine\index{connection} \emph{connection}, bei der es sich etwa auch um die Verbindung zu einem Vektor von Zeichenketten handeln\index[func]{textConnection()@\lstinline{textConnection()}} kann, vgl.\ \lstinline!?textConnection!.} Anders als in Webbrowsern muss dabei der Protokollteil der Adresse (etwa \lstinline!http://! oder \lstinline!ftp://!) explizit genannt werden, also z.\,B.\
+\begin{itemize}
+\item \lstinline!file=url("http://www.server.de/datei.txt")!
+\end{itemize}
+Der Abschnitt \myURL{Web Technologies and Services} der CRAN Task Views \cite{CRANtvWebTech} stellt Pakete und Funktionen vor, um Daten direkt aus Webseiten zu extrahieren.
+
+\index{Daten!Import / Export!Textformat}
+Zum Speichern von Objekten in Textdateien dient\index[func]{write.table()@\lstinline{write.table()}} \lstinline!write.table()!.
+\begin{lstlisting}
+> write.table(x=<<Objekt>>, file="<<Dateiname>>", sep=" ", dec=".",
++             row.names=TRUE, col.names=TRUE, quote=TRUE)
+\end{lstlisting}
+
+Die Funktion akzeptiert als Argumente u.\,a.\ \lstinline!file!, \lstinline!sep! und \lstinline!dec! mit derselben Bedeutung wie bei \lstinline!read.table()! (Tab.\ \ref{tab:readTable}). Statt in eine Datei kann \lstinline!write.table()! mit \lstinline!file="clipboard"! eine begrenzte Menge von Daten auch in die Zwischenablage\index{Zwischenablage}\index{Daten!Import / Export!Zwischenablage} schreiben, woraufhin sie in anderen Programmen mit \myURL{Strg+v} eingefügt werden können. Über die Argumente \lstinline!row.names! und \lstinline!col.names! wird festgelegt, ob Zeilen- und Spaltennamen mit in die Datei geschrieben werden sollen (Voreinstellung für beide ist \lstinline!TRUE!). Zeichenketten werden in der Ausgabe in Anführungszeichen gesetzt, sofern nicht das Argument \lstinline!quote=FALSE! gesetzt wird.
+
+Wenn z.\,B.\ der Datensatz \lstinline!myDf! im aktuellen Arbeitsverzeichnis in Textform gespeichert und später wieder eingelesen werden soll, so lauten die Befehle:
+\begin{lstlisting}
+> write.table(myDf, file="data.txt", row.names=FALSE)
+> myDf <- read.table("data.txt", header=TRUE)
+> str(myDf)
+'data.frame': 10 obs. of 2 variables:
+$ IV: Factor w/ 2 levels "A","B": 1 2 1 2 1 2 1 2 1 2
+$ DV: num 0.425 -1.224 -0.572 -0.738 -1.753 ...
+\end{lstlisting}
+
+Das von \lstinline!read.table()! ausgegebene Objekt besitzt die Klasse \lstinline!data.frame!, selbst wenn mit \lstinline!write.table()! eine Matrix gespeichert wurde. Ist dies unerwünscht, muss der Datensatz explizit z.\,B.\ mit \lstinline!as.matrix(<<Objekt>>)! in eine andere Klasse konvertiert werden.
+
+Für Daten in Textform aus sehr großen Dateien arbeiten \lstinline!fread()!\index[func]{fread()@\lstinline{fread()}} und \lstinline!fwrite()!\index[func]{fwrite()@\lstinline{fwrite()}} aus dem Paket \lstinline!data.table!\index[pack]{data.table@\lstinline{data.table}} deutlich schneller als \lstinline!read.table()! und \lstinline!write.table()!. Verbesserungen verspricht auch das Paket \lstinline!readr!\index[pack]{readr@\lstinline{readr}} \cite{Wickham2015c}.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{R-Objekte}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\index{Daten!Import / Export!R-Format}
+Eine andere Möglichkeit zur Verwaltung von Objekten in externen Dateien bieten \lstinline!save(<<Daten>>, file="<<Dateiname>>")!\index[func]{save()@\lstinline{save()}} zum Speichern und \lstinline!load(file="<<Dateiname>>")!\index[func]{load()@\lstinline{load()}} zum Öffnen. Unter \lstinline!<<Daten>>! können dabei verschiedene Objekte durch Komma getrennt angegeben werden. Alternativ lässt sich das Argument \lstinline!list! verwenden, das einen Vektor mit den Namen der zu speichernden Objekte akzeptiert. \lstinline!list=ls()! würde also alle sichtbaren Objekte des workspace übergeben.
+
+Die Daten werden in einem R-spezifischen, aber plattformunabhängigen Format gespeichert, bei dem Namen und Klassen der gespeicherten Objekte erhalten bleiben. Deshalb ist es nicht notwendig, das Ergebnis von \lstinline!load()! einem Objekt zuzuweisen; die gespeicherten Objekte werden unter ihrem Namen wiederhergestellt. \lstinline!save.image(file=".RData")!\index[func]{save.image()@\lstinline{save.image()}} speichert alle Objekte des aktuellen workspace.
+\begin{lstlisting}
+> save(myDf, file="data.RData") # speichere myDf im Arbeitsverzeichnis
+> load("data.RData")            # lies myDf wieder ein
+\end{lstlisting}
+
+\index{Daten!Import / Export!Textformat}
+Ähnlich wie \lstinline!save()! Objekte in einem binären Format speichert, schreibt \lstinline!dump("<<Objekt>>", file="<<Dateiname>>")!\index[func]{dump()@\lstinline{dump()}} die Inhalte von Objekten in eine Textdatei mit R-Befehlen, die sich auch durch gewöhnliche Texteditoren bearbeiten lässt. Auf diese Weise erzeugte Dateien lassen sich mit \lstinline!source(file="<<Dateiname>>")!\index{Daten!Import / Export!Textformat}\index[func]{source()@\lstinline{source()}} einlesen.
+\begin{lstlisting}
+> dump("myDf", file="dumpMyDf.txt")
+> source("dumpMyDf.txt")
+\end{lstlisting}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Daten mit anderen Programmen austauschen}
+\label{sec:dataExchange}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\index{Daten!Import / Export!andere Programme}
+Wenn Daten mit anderen Programmen ausgetauscht werden sollen -- etwa weil die Daten nicht in R eingegeben wurden, so ist der Datentransfer oft in Form von reinen Textdateien möglich. Diese Methode ist auch recht sicher, da sich die Daten jederzeit mit einem Texteditor inspizieren lassen und der korrekte Transfer in allen Stufen kontrolliert werden kann. In diesem Fall kommen in R meist \lstinline!read.table()! und \lstinline!write.table()! zum Einsatz.
+
+Beim Im- und Export von Daten in Dateiformaten kommerzieller Programme besteht dagegen oft die Schwierigkeit, dass die Formate nicht öffentlich dokumentiert und auch versionsabhängigen Änderungen unterworfen sind. Wie genau Daten aus diesen Formaten gelesen und geschrieben werden können, ist deshalb mitunter für die Entwickler der entsprechenden R-Funktionen sicher zu ermitteln. Beim Austausch von Daten über proprietäre Formate ist aus diesem Grund Vorsicht geboten -- bevorzugt sollten einfach strukturierte Datensätze verwendet werden.\footnote{Für den Transfer zwischen vielen hier nicht erwähnten Programmen existieren Zusatzpakete, die sich auf CRAN finden lassen (Abschn.\ \ref{sec:packages}). Das Programm Stat/Transfer \cite{CircleSystems2014} ist eine kommerzielle Lösung, um Daten zwischen R, Tabellenkalkulationen, SAS, Stata und einigen anderen Formaten auszutauschen.}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection{Programme zur Tabellenkalkulation}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Wurde ein Programm zur Tabellenkalkulation\index{Tabellenkalkulation} (etwa Microsoft Excel\index{Excel} oder OpenOffice\index{OpenOffice} Calc) zur Dateneingabe benutzt, so ist der Datentransfer am einfachsten, wenn die Daten von dort in eine Textdatei exportiert werden, wobei als Spalten-Trennzeichen der Tabulator verwendet wird. Der Transfer von Datumsangaben ist dabei jedoch fehlerträchtig. Dezimaltrennzeichen\index{Zahlen!Dezimaltrennzeichen} ist in Programmen zur Tabellenkalkulation für Deutschland das Komma.\footnote{Sofern dies nicht in den Ländereinstellungen der Windows Systemsteuerung geändert wurde.} Um eine mit diesen Einstellungen exportierte Datei mit Spaltennamen in der ersten Zeile in R zu laden, wäre ein geeigneter Aufruf von \lstinline!read.table()!:
+\begin{lstlisting}
+> myDf <- read.table(file="<<Dateiname>>", header=TRUE, sep="\t", dec=",")
+\end{lstlisting}
+
+Programme zur Tabellenkalkulation verwenden in der Voreinstellung meist den Tabulator als Spaltentrennzeichen, ein Austausch kleinerer Datenmengen ohne Umweg über eine externe Datei ist unter Windows also auch wie folgt möglich: Zunächst wird in der Tabellenkalkulation der gewünschte Datenbereich inkl.\ der Variablennamen in der ersten Zeile markiert und mit \myURL{Strg+c} in die Zwischenablage\index{Zwischenablage} kopiert. In R können die Daten dann so eingelesen werden:
+\begin{lstlisting}
+> myDf <- read.table(file="clipboard", header=TRUE, sep="\t", dec=",")
+\end{lstlisting}
+
+Um einen Datensatz aus R heraus wieder einem anderen Programm verfügbar zu machen, wird er in demselben Format gespeichert -- entweder in einer Datei oder bei sehr kleinen Datensätzen in der Zwischenablage. Im anderen Programm können die Daten aus der Zwischenablage dann mit \myURL{Strg+v} eingefügt werden.
+\begin{lstlisting}
+> write.table(x=<<Datensatz>>, file="clipboard", sep="\t", dec=",",
++             row.names=FALSE)
+\end{lstlisting}
+
+Für Excel\index{Excel} stellt RExcel ein \emph{add-in} zur Verfügung, das dafür sorgt, dass R-Funktionen direkt aus Excel heraus benutzbar sind \cite{Heiberger2009, Neuwirth2010b}. Zudem ermöglicht es einen Datenaustausch ohne den Umweg eines Exports ins Textformat, indem es in R Funktionen zum Lesen und Schreiben von \lstinline[language=]!<<Dateiname>>.xlsx! Dateien bereitstellt. Um Excel-Dateien in R zu verwenden, eignen sich die Pakete \lstinline!readxl!\index[pack]{readxl@\lstinline{readxl}} \cite{Wickham2015a} und \lstinline!openxlsx!\index[pack]{openxlsx@\lstinline{openxlsx}} \cite{Walker2015}. Generell empfiehlt es sich, aus Excel zu importierende Daten dort so anzuordnen, dass sie in der ersten Zeile und Spalte des ersten Tabellenblattes beginnen, wobei die Spaltennamen in der ersten Zeile stehen.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection{SPSS, Stata und SAS}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\index{SPSS}
+SPSS verfügt mit den \emph{Essentials for R} über eine nachträglich installierbare Erweiterung, mit der R-Befehle direkt in SPSS ausgewertet werden können. Auf diese Weise lassen sich dort nicht nur in R verwaltete Datensätze nutzen, sondern auch ganze Auswertungsschritte bis hin zur Erstellung von Diagrammen in R-Syntax durchführen. Genauso erlaubt es die Erweiterung, mit SPSS erstellte Datensätze im R-Format zu exportieren. Einige der im folgenden beschriebenen Einschränkungen, die andere Methoden des Datenaustauschs mit sich bringen, treffen auf die genannte Erweiterung nicht zu, was sie zur bevorzugten Methode der gemeinsamen Verwendung von SPSS und R macht.\footnote{Für einen detaillierten Vergleich der Arbeit mit R, SAS und SPSS vgl.\ \citeA{Muenchen2008} sowie \citeA{Kleinman2014}, die auch den Datenaustausch zwischen diesen Programmen behandeln.}
+
+SPSS-Datensätze können in R mit Funktionen gelesen und geschrieben werden, die das Paket \lstinline!foreign! \cite{Rcoremembers2009}\index[pack]{foreign@\lstinline{foreign}} bereitstellt.\footnote{Eine Alternative, auch für Dateien aus SAS und Stata, ist das Paket\index[pack]{haven@\lstinline{haven}} \lstinline!haven! \cite{Wickham2015b}.} So liest die \lstinline!read.spss()!\index[func]{read.spss()@\lstinline{read.spss()}} Funktion \lstinline[language=]!<<Dateiname>>.sav! Dateien.\footnote{\lstinline!spss.get()!\index[func]{spss.get()@\lstinline{spss.get()}} aus dem Paket \lstinline!Hmisc!\index[pack]{Hmisc@\lstinline{Hmisc}|textbf} \cite{HarrellJr2008a} verwendet \lstinline!read.spss()! mit geeigneteren Voreinstellungen und verbessert den Import von Datumsangaben und Variablen-Labels.}
+\begin{lstlisting}
+> read.spss(file="<<Dateiname>>", use.value.labels=TRUE,
++           to.data.frame=FALSE, trim.factor.names=FALSE)
+\end{lstlisting}
+
+Variablen, deren Werte in SPSS vollständig mit labels versehen sind, konvertiert \lstinline!read.spss()! in Faktoren, sofern nicht \lstinline!use.value.labels=FALSE! gesetzt wird. In der Voreinstellung ist das Ergebnis ein Objekt der Klasse \lstinline!list!, was durch das Argument \lstinline!to.data.frame=TRUE! geändert werden kann. Mit \lstinline!trim.factor.names=TRUE! wird erreicht, dass Bezeichnungen von Faktorstufen auf ihre tatsächliche Länge gekürzt werden -- andernfalls können sie ungewollt $256$ Zeichen umfassen. Wurden in SPSS auch labels für die Variablen vergeben, tauchen diese nach dem Import als Vektor im Attribut \lstinline!variable.labels! des erstellten Objekts auf und können etwa über \lstinline!attr(<<Objekt>>, "variable.labels")! gelesen und verändert werden.
+
+Sollen in R bearbeitete Datensätze SPSS verfügbar gemacht werden, ist \lstinline!write.foreign()!\index[func]{write.foreign()@\lstinline{write.foreign()}} aus dem Paket \lstinline!foreign! zu benutzen.
+\begin{lstlisting}
+> write.foreign(df=<<Datensatz>>, datafile="<<Dateiname>>",
++               codefile="<<Dateiname>>", package="SPSS")
+\end{lstlisting}
+
+Hierbei ist unter \lstinline!datafile! der Name der Textdatei anzugeben, in der sich die eigentlichen Daten befinden sollen. Der für \lstinline!codefile! einzutragende Name bezeichnet die SPSS Syntax-Datei mit der Endung \lstinline[language=]!sps! mit jenen Befehlen, die in SPSS zum Einlesen dieser Daten dienen. Der erste von R in diese Datei geschriebene Befehl bezeichnet dabei den Namen der Daten-Datei -- häufig empfiehlt es sich, ihm im Syntax-Editor von SPSS den vollständigen Dateipfad voranzustellen, damit SPSS die Datei in jedem Fall findet. Zudem kann SPSS Textdateien einlesen, wie sie mit \lstinline!write.table(..., row.names=FALSE, sep="\t", dec=",")! erstellt werden.
+
+Beim Import von Daten in SPSS ist darauf zu achten, dass die Variablen letztlich das richtige Format (numerisch oder Text) sowie den richtigen Skalentyp (nominal, ordinal oder metrisch) erhalten. Weiterhin orientiert sich SPSS in seiner Wahl des Dezimaltrennzeichens\index{Dezimaltrennzeichen} an einer internen Ländereinstellung. Falls erforderlich lässt sich das Dezimaltrennzeichen in SPSS vor dem Import mit dem Befehl \lstinline[language=]!SET DECIMAL=COMMA.! bzw.\ \lstinline[language=]!SET DECIMAL=DOT.! wählen. Die gesamte SPSS-Ländereinstellung kann man mit \lstinline[language=]!SET LOCALE=GERMAN.! bzw.\ \lstinline[language=]!SET LOCALE=ENGLISH.! ändern, was sich auch auf das Dezimaltrennzeichen auswirkt. Sollten Umlaute beim Import Probleme bereiten, können sie bereits in R mit Befehlen wie \lstinline!<<Variable>> <- gsub("ä", "ae", <<Variable>>)!\index[func]{gsub()@\lstinline{gsub()}} ersetzt werden. Andernfalls erläutert die SPSS Hilfe zu den allgemeinen Optionen, wie Daten- und Syntaxdateien in unterschiedlichen Zeichencodierungen eingelesen werden können.
+
+Auch für Stata gibt es die Möglichkeit, Daten mit R\index{Stata} zu teilen, wofür ebenfalls Funktionen aus dem \lstinline!foreign! Paket dienen (für Details vgl.\ \citeNP{Muenchen2010}): \lstinline!read.dta()!\index[func]{read.dta()@\lstinline{read.dta()}} liest \lstinline[language=]!<<Dateiname>>.dta! Dateien, \lstinline!write.foreign(..., package="Stata")!\index[func]{write.foreign()@\lstinline{write.foreign()}} schreibt sie. Der Austausch mit SAS\index{SAS} geschieht mit Dateien im XPORT-Format analog über \lstinline!read.xport()!\index[func]{read.xport()@\lstinline{read.xport()}} und \lstinline!write.foreign(..., package="SAS")! (für Details vgl.\ \citeNP{Kleinman2014}). Das Paket \lstinline!Hmisc!\index[pack]{Hmisc@\lstinline{Hmisc}} stellt mit \lstinline!stata.get()!\index[func]{stata.get()@\lstinline{stata.get()}} und \lstinline!sasxport.get()!\index[func]{sasxport.get()@\lstinline{sasxport.get()}} Funktionen mit geeigneteren Voreinstellungen zum Lesen von Dateien beider Programme bereit.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection{Datenbanken}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\index{Datenbank|see{Daten}}
+\index{Daten!Import / Export!Datenbank}
+In R lassen sich Daten aus Datenbanken vieler verschiedener Formate direkt lesen und schreiben.\footnote{Für eine detaillierte Beschreibung der Verwendung von Datenbanken vgl.\ \citeA{Adler2009} und \citeA{Spector2008}.} Dies bietet sich etwa bei extrem großen Datensätzen an, die zuviel Arbeitsspeicher belegen würden, wenn man sie als Ganzes in R öffnen wollte (Abschn.\ \ref{sec:performance}). Zunächst muss dafür eine Verbindung zur Datenbank hergestellt werden. Daraufhin lassen sich SQL-Kommandos wie \lstinline!SELECT! in der üblichen Syntax anwenden, um Daten zwischen Datenbank und R auszutauschen. Das sonst notwendige Semikolon am Ende eines SQL-Befehls ist dabei optional. Die Grundlagen von SQL erläutern die folgenden Webseiten:
+
+\url{http://www.1keydata.com/sql/}\\
+\url{http://sqlzoo.net/}
+
+Für die Verbindung zu einer Datenbank kommen zwei Schnittstellen in Frage. Zum einen ist dies die\index{ODBC} ODBC-Schnittstelle (\emph{Open DataBase Connectivity}), für die ein \emph{client} vom Paket \lstinline!RODBC!\index[pack]{RODBC@\lstinline{RODBC}} \cite{Ripley2012} bereitgestellt wird. Separat für verschiedene Datenbanktypen implementieren zum anderen Zusatzpakete dieselbe Schnittstelle, die das Paket \lstinline!DBI!\index[pack]{DBI@\lstinline{DBI}} \cite{RSIGDB2014} definiert. Dazu zählen etwa MySQL-, PostgreSQL- oder SQLite-Datenbanken. Gegenüber der ODBC-Schnittstelle ist die DBI-basierte Schnittstelle meist leistungsfähiger.
+
+ODBC ist plattformunabhängig und eignet sich für Datenbanken unterschiedlichen Typs sowie für\index{Excel} Excel-Dateien. Dafür ist es auf Seiten des Betriebssystems zunächst notwendig, für die Datenbank bzw.\ Excel-Datei einen \emph{data source name} (DSN) als Namen der Verbindung zu erstellen. Übernimmt dies ein Datenbank-Server nicht automatisch selbst, kann dafür unter Windows \emph{ODBC-Datenquellen} aus der Gruppe \emph{Verwaltung} der Systemsteuerung verwendet werden. Je nach eingesetzter R-Version muss die Verbindung für 32bit- oder 64bit-Clients ausgelegt sein. \lstinline!vignette("RODBC")! erläutert weitere Besonderheiten, etwa für verschiedene Datenbank-Typen, und gibt Hinweise zur Installation von Treibern sowie zum Erstellen von DSNs.
+
+Die Verwaltung der ODBC-Verbindung selbst erfolgt über Befehle mit Namen\index[func]{odbc()@\lstinline{odbc<<Befehl>>()}} \lstinline!odbc<<Befehl>>()!: \lstinline!odbcConnect<<Variante>>("<<DSN>>")! dient zum Öffnen und \lstinline!odbcClose(<<DB-Verbindung>>)! zum Schließen der Verbindung, \lstinline!odbcGetInfo(<<DB-Verbindung>>)! liefert Details zur Verbindung. Für SQL-Kommandos zum Lesen und Speichern von Daten aus der verbundenen Datenbank stehen Funktionen mit Namen \index[func]{sql()@\lstinline{sql<<Befehl>>()}} \lstinline!sql<<Befehl>>()! zur Verfügung: \lstinline!sqlTables(<<DB-Verbindung>>)! gibt eine Übersicht der vorhandenen tables aus, \lstinline!sqlFetch(<<DB-Verbindung>>, "<<table-Name>>")! speichert ein table als R-Datensatz.
+
+Im Beispiel soll eine Datenbankverbindung zur Excel-Datei mit vorher eingetragenem DSN \myURL{data.xls} geöffnet werden, die u.\,a.\ das Tabellenblatt \myURL{sheet1} enthält. In diesem Tabellenblatt befinden sich drei Spalten mit jeweils einem Variablennamen in der ersten und Daten von fünf Beobachtungen in den folgenden Zeilen.
+\begin{lstlisting}
+# Datenbankverbindung zu Excel-Datei im Schreib-Lese-Modus öffnen
+# data.xls ist der vorher angelegte DSN
+> library(RODBC)        # für odbc<<Befehl>>(), sql<<Befehl>>()
+> xlsCon <- odbcConnectExcel2007("data.xls", readOnly=FALSE)
+> odbcGetInfo(xlsCon)   # Verbindungsinformationen ...
+> sqlTables(xlsCon)     # Tabellenblätter auflisten (Spalte TABLE_NAME)
+                  TABLE_CAT TABLE_SCHEM TABLE_NAME   TABLE_TYPE REMARKS
+1 <<Pfad xls Datei>>\\data        <NA>       sheet1$ SYSTEM TABLE    <NA>
+2 <<Pfad xls Datei>>\\data        <NA>       sheet2$ SYSTEM TABLE    <NA>
+3 <<Pfad xls Datei>>\\data        <NA>       sheet3$ SYSTEM TABLE    <NA>
+
+> (myDfXls <- sqlFetch(xlsCon, "sheet1"))   # sheet1 in R speichern
+  VpNr  IV  DV
+1    1   A   4
+2    2   A   6
+3    3   B   7
+4    4   B   8
+5    5   A  11
+\end{lstlisting}
+
+In SQL-Kommandos mit \lstinline!sqlQuery(<<DB-Verbindung>>, "<<SQL-Befehl>>")! ist bei Excel-Dateien zu beachten, dass den ursprünglichen Namen der Tabellenblätter im zugehörigen table-Namen ein \lstinline!$! anzuhängen und der Name in \lstinline![]! einzuschließen ist.
+\begin{lstlisting}
+# zeige nur bestimmte Variablen an, sortiere Ausgabe
+> sqlQuery(xlsCon, "SELECT IV, DV FROM [sheet1$] ORDER BY IV")
+  IV  DV
+1  A  11
+2  A   6
+3  A   4
+4  B   8
+5  B   7
+
+# wähle Fälle nach verbundenen Kriterien für IV und DV aus
+> sqlQuery(xlsCon, "SELECT * FROM [sheet1$] WHERE IV = 'A' AND DV < 10")
+  VpNr  IV  DV
+1    1   A   4
+2    2   A   6
+\end{lstlisting}
+
+Die Datentypen, die in einer Datenbank implementiert sind, entsprechen nicht genau den in R vorhandenen. Für einen zuverlässigen Austausch sollten nur ganzzahlige oder Gleitkommazahlen sowie Zeichenketten als Daten ausgetauscht werden. Andere R-Klassen (Datumsangaben, Faktoren) sind ggf.\ entsprechend umzuwandeln, ehe sie mit \lstinline!sqlSave(<<DB-Verbindung>>, <<Datensatz>>, "<<table-Name>>")! gespeichert werden.
+\begin{lstlisting}
+> myDfXls$newDV <- rnorm(nrow(myDfXls))     # Variable hinzufügen
+
+# Datensatz in table newSheet sichern -> in Excel = neues Tabellenblatt
+> sqlSave(xlsCon, myDfXls, tablename="newSheet")
+> odbcClose(xlsCon)                         # DB-Verbindung schließen
+\end{lstlisting}
+
+Als Beispiel für eine Datenbank-Verbindung über die DBI-Schnittstelle soll mit dem Paket \lstinline!RSQLite!\index[pack]{RSQLite@\lstinline{RSQLite}} \cite{James2013a} zunächst eine SQLite-Datenbank neu erstellt werden, um darin einen R-Datensatz als table abzuspeichern. SQLite-Datenbanken zeichnen sich dadurch aus, dass die Datenbank eine Datei ist und kein separater Datenbank-Server lokal oder im Netzwerk laufen muss. \lstinline!RSQLite! bettet den notwendigen server für eine DB-Datei ein.
+
+\index[func]{db()@\lstinline{db<<Befehl>>()}}
+Nachdem mit \lstinline!dbDriver("<<DB-Typ>>")! ein für SQLite passendes Treiber-Objekt erzeugt wurde, kann die Verbindung zur Datenbank mit \lstinline!dbConnect(<<DB-Treiber>>, "<<DB-Name>>")! hergestellt werden. Existiert die zum übergebenen Datenbank-Namen gehörende Datei noch nicht, wird sie automatisch neu angelegt.
+\begin{lstlisting}
+> library("RSQLite")                # für db<<Funktion>>()
+> drv <- dbDriver("SQLite")         # SQLite-Treiber erzeugen
+> con <- dbConnect(drv, "myDf.db")  # erstelle neue DB in Datei myDf.db
+\end{lstlisting}
+
+\lstinline!dbWriteTable(<<DB-Verbindung>>, name="<<table-Name>>", value=<<Datensatz>>)! speichert den übergebenen R-Datensatz in der verbundenen Datenbank unter dem angegebenen table-Namen. \lstinline!dbListTables(<<DB-Verbindung>>)! gibt einen Vektor mit allen table-Namen der Datenbank zurück. \lstinline!dbListFields(<<DB-Verbindung>>, "<<table-Name>>")! nennt die Spalten-Namen des gewünschten Datenbank-tables.
+\begin{lstlisting}
+# Daten simulieren
+> IQ     <- rnorm(2*50, mean=100, sd=15)
+> rating <- sample(LETTERS[1:3], 2*50, replace=TRUE)
+> sex    <- factor(rep(c("f", "m"), times=50))
+> myDf   <- data.frame(sex, IQ, rating, stringsAsFactors=FALSE)
+
+# Datensatz myDf in table MyDataFrame der Datenbank speichern
+> dbWriteTable(con, name="MyDataFrame", value=myDf, row.names=FALSE)
+[1] TRUE
+
+> dbListTables(con)                       # alle tables der Datenbank
+[1] "MyDataFrame"
+
+> dbListFields(con, "MyDataFrame")        # alle Spalten des table
+[1] "sex"  "IQ"  "rating"
+\end{lstlisting}
+
+\lstinline!dbReadTable(<<DB-Verbindung>>, "<<table-Name>>")! gibt das gewünschte Datenbank-table vollständig als R-Datensatz aus. \lstinline!dbGetQuery(<<DB-Verbindung>>, "<<SQL-Befehl>>")! übermittelt einen SQL-Befehl und liefert das Ergebnis vollständig zurück.
+\begin{lstlisting}
+> out <- dbReadTable(con, "MyDataFrame")  # table vollständig speichern
+> head(out, n=4)                          # Kontrolle
+  sex        IQ rating
+1   f  92.51217      A
+2   m  89.28590      C
+3   f 104.96750      A
+4   m 102.98000      C
+
+# SQL-Kommando: pro Gruppe berechnete Kennwerte (Mittelwert, Summe IQ)
+> dbGetQuery(con, "SELECT sex, AVG(IQ) AS mIQ, SUM(IQ) AS sIQ
++                  FROM MyDataFrame GROUP BY sex")
+  sex       mIQ      sIQ
+1   f 101.23562 5061.781
+2   m  99.34861 4967.430
+\end{lstlisting}
+
+\lstinline!dbSendQuery(<<DB-Verbindung>>, "<<SQL-Befehl>>")!  leitet den übergebenen SQL-Befehl an die Datenbank weiter und gibt ein Objekt zurück, aus dem sich mit \lstinline!dbFetch(<<query>>, n=<<Anzahl>>)! die gewünschte Anzahl an zur Anfrage passenden Zeilen schrittweise lesen lassen. Ob alle Daten ausgelesen wurden, gibt \lstinline!dbHasCompleted(<<query>>)! aus. \lstinline!dbClearResult(<<query>>)! setzt die zum schrittweise Lesen offene query zurück. Dieses Vorgehen ist insbesondere bei sehr umfangreichen Ergebnissen sinnvoll. Siehe Abschn.\ \ref{sec:loops} für die Verwendung von \lstinline!while()!, um einen Befehl so oft zu wiederholen, wie eine bestimmte Nebenbedingung erfüllt ist.
+\begin{lstlisting}
+# IQ und rating für Personen, die rating A vergeben haben
+> res <- dbSendQuery(con, "SELECT IQ, rating
++                          FROM MyDataFrame WHERE rating = 'A'")
+
+# rufe Daten schrittweise solange ab, wie noch nicht alle passenden
+# Zeilen ausgegeben wurden
+> while(!dbHasCompleted(res)) {
++   partial <- dbFetch(res, n=3)            # rufe 3 Zeilen ab
++   print(partial)                          # gib diese Zeilen aus
++ }
+         IQ rating
+1 102.80542      A
+2 114.06305      A
+3  91.76563      A
+
+        IQ rating
+4 120.3715      A
+5 116.5732      A
+6 108.8182      A                           # ...
+
+> dbClearResult(res)                        # query zurücksetzen
+[1] TRUE
+\end{lstlisting}
+
+\lstinline!dbRemoveTable(<<DB-Verbindung>>, "<<table-Name>>")! löscht ein table in der verbundenen Datenbank, \lstinline!dbDisconnect(<<DB-Verbindung>>)! beendet eine Datenbank-Verbindung. Der Rückgabewert beider Funktionen zeigt an, ob der jeweilige Befehl erfolgreich ausgeführt wurde.
+\begin{lstlisting}
+> dbRemoveTable(con, "MyDataFrame")         # table löschen
+[1] TRUE
+
+> dbDisconnect(con)                         # DB-Verbindung trennen
+[1] TRUE
+\end{lstlisting}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Daten in der Konsole einlesen}
+\label{sec:scan}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\index{Daten!Import / Export!Konsole}
+Während es \lstinline!c(<<Wert1>>, <<Wert2>>, ...)! zwar erlaubt, auf der Konsole Vektoren aus Werten zu bilden und auch ganze Datensätze einzugeben, ist dieses Vorgehen aufgrund der ebenfalls einzutippenden Kommata ineffizient. Etwas schneller ist die Dateneingabe mit dem \lstinline!scan()!\index[func]{scan()@\lstinline{scan()}} Befehl, bei dem nur das Leerzeichen als Trennzeichen zwischen den Daten vorhanden sein muss.
+\begin{lstlisting}
+> scan(file="", what="numeric", na.strings="NA", dec=".")
+\end{lstlisting}
+
+Sollen Daten manuell auf der Konsole eingegeben werden, ist das Argument \lstinline!file! bei der Voreinstellung \lstinline!""! zu belassen. Mit \lstinline!scan()! können auch Dateien eingelesen werden, allerdings ist dies bequemer über andere Funktionen möglich (Abschn.\ \ref{sec:readTable}). Das Argument \lstinline!what! benötigt eine Angabe der Form \lstinline!"logical"!, \lstinline!"numeric"! oder \lstinline!"character"!, die Auskunft über den Datentyp der folgenden Werte gibt. Zeichenketten müssen durch die Angabe \lstinline!"character"! nicht mehr in Anführungszeichen eingegeben werden, es sei denn sie beinhalten Leerzeichen. Mit \lstinline!na.strings! wird festgelegt, auf welche Weise fehlende Werte codiert sind. Das Dezimaltrennzeichen der folgenden Werte kann über das Argument \lstinline!dec! definiert werden.
+
+Beim Aufruf ist das Ergebnis von \lstinline!scan()! einem Objekt zuzuweisen, damit die folgenden Daten auch gespeichert werden. Auf den Befehlsaufruf \lstinline!scan()! hin erscheint in der Konsole eine neue Zeile als Signal dafür, dass nun durch Leerzeichen getrennt Werte eingegeben werden können. Eine neue Zeile wird dabei durch Drücken der \myURL{Return} Taste begonnen und zeigt in der ersten Spalte an, der wievielte Wert folgt. Die Eingabe der Werte gilt als abgeschlossen, wenn in einer leeren Zeile die \myURL{Return} Taste gedrückt wird.
+\begin{lstlisting}
+> vec <- scan()
+1: 123 456 789
+4:
+Read 3 items
+
+> charVec <- scan(what="character")
+1: as df ej kl
+5:
+Read 4 items
+\end{lstlisting}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Unstrukturierte Textdateien}
+\label{sec:readLines}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Nicht immer liegen einzulesende Daten bereits in Form einer Tabelle vor, für die sich \lstinline!read.table()! eignet. Mit \lstinline!readLines("<<Pfad>>", n=<<Anzahl>>)!\index[func]{readLines()@\lstinline{readLines()}} können auch unstrukturierte Daten im Textformat eingelesen werden, die noch nicht in rechteckiger Form organisiert sind. Das Ergebnis ist ein Vektor aus Zeichenketten, wobei jedes seiner Elemente jeweils eine Zeile der Datei speichert. Die einzelnen Zeilen können dann mit Methoden zur Manipulation von Zeichenketten weiterverarbeitet werden, die Abschn.\ \ref{sec:stringMan} vorstellt.
+
+Als Besonderheit lässt sich über das Argument \lstinline!n! von \lstinline!readLines()! auch steuern, wie viele Zeilen der Datei gleichzeitig gelesen werden sollen -- in der Voreinstellung die gesamte Datei. Setzt man etwa \lstinline!n=5!, umfasst die Ausgabe des ersten Aufrufs die Zeilen $1$--$5$ in Form von fünf Elementen eines Vektors aus Zeichenketten. Dabei merkt sich \lstinline!readLines()! die Position, an der zuletzt gelesen wurde und setzt beim nächsten Aufruf an dieser Position fort. Ein erneuter Aufruf mit \lstinline!n=4! würde also die Zeilen $6$--$9$ zurückliefern.
+
+Analog speichert \lstinline!writeLines(<<Vektor>>, "<<Datei>>")!\index[func]{writeLines()@\lstinline{writeLines()}} die Inhalte eines Vektors aus Zeichenketten in die angegebene Datei, wobei jedes Element des Vektors in eine separate Zeile geschrieben wird.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Datenqualität sicherstellen}
+\label{sec:tidyData}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Nachdem Daten in R importiert wurden, sollten Sie auf ihre Qualität geprüft werden. Wichtige Kriterien einer hohen Datenqualität sind folgende:
+\begin{itemize}
+\item Einheitlichkeit der Codierung, insbesondere bei
+\begin{itemize}
+\item Angaben zu Datum oder Uhrzeit (Abschn.\ \ref{sec:date}): Aufgrund der Vielzahl national wie international unterschiedlicher Formatierungsmöglichkeiten sind diese Variablen beim Datenaustausch besonders fehlerträchtig.
+\item Eigennamen: Vor allem Umlaute, Bindestriche bei Doppelnamen, mehrere Vornamen, Namenszusätze wie {\quotedblbase}de{\textquotedblleft}, {\quotedblbase}von{\textquotedblleft} sowie Groß- und Kleinschreibung können dafür sorgen, dass Probleme beim Datenimport oder beim Zusammenführen mehrerer Datensätze mit Beobachtungen derselben Personen auftreten. Sie lassen sich mit Methoden zur Verarbeitung von Zeichenketten lösen, die in Abschn.\ \ref{sec:stringMan} beschrieben sind.\footnote{\label{ftn:recLink}Für die Identifizierung fast genau passender Zeichenketten vgl.\ die dortige Fußnote \ref{ftn:adist} sowie allgemein für Ansätze zum \emph{record linkage}\index{record linkage} das Paket\index[pack]{RecordLinkage@\lstinline{RecordLinkage}} \lstinline!RecordLinkage! \cite{Borg2016}.}
+\item Physikalischen Variablen: Hier ist bei der Integration mehrerer Datensätze darauf zu achten, dass dieselben physikalischen Einheiten verwendet werden.
+\end{itemize}
+\item Vollständigkeit: Werden etwa Datensätze mit \lstinline!merge()! zusammengeführt (Abschn.\ \ref{sec:merge}), besteht die Gefahr, dass aufgrund uneinheitlicher Codierung Einträge fälschlicherweise nicht als übereinstimmend gewertet und deshalb Personen vollständig gelöscht werden. Deshalb sollte nach Möglichkeit anhand der Menge der eindeutigen Personen-IDs sichergestellt werden, dass keine Personen bei der Datenaufbereitung verloren gehen -- z.\,B.\ mit \lstinline!all(<<IDs vor>> %in% <<IDs nach>>)! oder mit \lstinline!setdiff(<<IDs vor>>, <<IDs nach>>)!.
+\item Richtigkeit:
+\begin{itemize}
+\item Falsche Werte können etwa aus einer fehlerhaften Messung oder aus Tippfehlern bei der Eingabe herrühren. Deshalb sollte die Verteilung aller Variablen mit deskriptiven Kennwerten ebenso wie mit Diagrammen auf ihre Plausibilität geprüft werden. Relevant sind dabei z.\,B.\ die Verteilungsform, Werte außerhalb des möglichen Messbereichs und Ausreißer. Siehe Abschn.\ \ref{sec:descriptive} für die deskriptive Beschreibung kontinuierlicher Größen sowie Abschn.\ \ref{sec:distDiag} und \ref{sec:3dPlot} für Möglichkeiten, ihre (gemeinsame) Verteilung in Diagrammen zu veranschaulichen. Kategoriale Variablen lassen sich durch ihre (gemeinsamen) Häufigkeitsverteilungen mit den in Abschn.\ \ref{sec:table} erläuterten Mitteln charakterisieren. Die zugehörigen Säulendiagramme sind in Abschn.\ \ref{sec:barplot} beschrieben. Abschnitt \ref{sec:regrDiag} zeigt, wie Extremwerte und Ausreißer im Rahmen der Regressionsdiagnostik identifiziert werden können.
+\item Fehlende Werte werden in verschiedenen Programmen uneinheitlich codiert, etwa mit besonderen Zahlen wie $999$. Fehlende Werte müssen in R auf \lstinline!NA! umcodiert werden, damit sie nicht fälschlicherweise in die Auswertung einbezogen werden (Abschn.\ \ref{sec:na}).
+\end{itemize}
+\item Eindeutigkeit: Ob beim Zusammenführen von Daten aus mehreren Quellen doppelte Fälle auftreten, kann wie in Abschn.\ \ref{sec:naDf} gezeigt untersucht und ggf.\ behoben werden.
+\end{itemize}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Dateien verwalten}
+\label{sec:files}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\index{Verzeichnis!Pfadangabe}
+R verfügt über eine Reihe von Funktionen, die Dateien finden und verändern können, die zum Import oder Export von Daten benötigt werden. Dabei spielen Pfadangaben zu Ordnern und Dateien eine zentrale Rolle.
+
+Obwohl unter Windows üblicherweise der \emph{backslash} \lstinline[language=]!\! in Pfadangaben als Verzeichnistrenner dient, sollte er in R nicht verwendet werden. Stattdessen ist bei allen Pfadangaben wie unter MacOS und Linux bevorzugt der \emph{forward slash} \lstinline[language=]!/! zu benutzen, etwa \lstinline!"c:/work/r/datei.txt"!. Alternativ ist weiterhin der doppelte backslash \lstinline!\\! möglich: \lstinline!"c:\\work\r\datei.txt"!. Pfade können entweder relativ zum aktuellen, von \lstinline!getwd()! ausgegebenen Arbeitsverzeichnis sein (\lstinline!"path/file.txt"!), oder absolut, d.\,h.\ wie beim vorherigen Beispiel beginnend mit dem Laufwerksbuchstaben (Windows) oder dem Stammverzeichnis \lstinline!"/"! (MacOS, Linux).
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Dateien auswählen}
+\label{sec:filesSelect}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\index{Dateien!auflisten}
+Die Pfadangabe einer Datei lässt sich entweder interaktiv oder über ein vorgegebenes Suchmuster bestimmen. Den Namen einer einzelnen Datei erhält man interaktiv über ein Dialogfeld zur Dateiauswahl, das durch \lstinline!file.choose()!\index[func]{file.choose()@\lstinline{file.choose()}} aufgerufen wird. Die Funktion gibt den Namen der ausgewählten Datei inkl.\ des vollständigen Pfades zurück. Eine Variante, die gleichzeitig mehrere Dateien auswählen lässt, existiert nur unter Windows. Dort gibt \lstinline!choose.files()!\index[func]{choose.files()@\lstinline{choose.files()}} einen Vektor von Pfadnamen zu den ausgewählten Dateien zurück.
+
+Mit \lstinline!list.files()!\index[func]{list.files()@\lstinline{list.files()}} können alle Dateien in einem Ordner aufgelistet werden, deren Name zu einem Suchmuster passt.
+\begin{lstlisting}
+> list.files("<<Ordner>>", pattern="<<Suchmuster>>", full.names=FALSE,
++            recursive=FALSE, ignore.case=FALSE)
+\end{lstlisting}
+
+Als erstes Argument ist der Pfad zu einem Ordner anzugeben. \lstinline!pattern! akzeptiert ein Suchmuster in Form eines regulären Ausdrucks (Abschn.\ \ref{sec:grep}), das sich für Dateinamen häufig einfacher mit \lstinline!glob2rx()!\index[func]{glob2rx()@\lstinline{glob2rx()}} über Platzhalter wie \lstinline!*! formulieren lässt (Abschn.\ \ref{sec:substring}). In der Voreinstellung erhält man nur die Namen der Dateien im angegebenen Ordner, die zum Suchmuster passen. Benötigt man den vollständigen Pfad zur Datei, ist \lstinline!full.names=TRUE! zu setzen. Die Argumente \lstinline!recursive! und \lstinline!ignore.case! bestimmen jeweils, ob auch Unterordner durchsucht bzw.\ ob Groß- und Kleinschreibung im Dateinamen beim Abgleich mit dem Suchmuster ignoriert werden sollen.
+\begin{lstlisting}
+# vollständige Pfadnamen für alle Dateien im Verzeichnis d:/files
+# mit der Endung .txt
+> paths <- list.files(path="d:/files", pattern="\\.txt$",
++                     full.names=TRUE)
+
+# lies diese Dateien in eine Liste aus Datensätzen ein
+> DFlist <- lapply(paths, function(f) {
++     read.table(f, header=TRUE, stringsAsFactors=FALSE) })
+
+# verbinde alle Datensätze in der Liste zu einem gemeinsamen Datensatz
+> DFall <- do.call("rbind", DFlist)
+\end{lstlisting}
+
+Alternativ erhält man mit\index[func]{Sys.glob()@\lstinline{Sys.glob()}} \lstinline!Sys.glob("<<Pfad>>")! aus einem vorgegebenen Pfad einen Vektor von Dateinamen, die auf ein bestimmtes Muster passen. Die Pfadangabe gibt sowohl den Pfad als auch das Muster für die Dateinamen vor, wobei bestimmte Platzhalter erlaubt sind: \lstinline!*! steht für eine beliebige Zeichenfolge, \lstinline!?! für ein einzelnes beliebiges Zeichen, \lstinline!.! für das aktuelle Verzeichnis, \lstinline!..! für das Verzeichnis eine Ebene über dem aktuellen Verzeichnis und \lstinline!~! für das Heimverzeichnis des Benutzers. Ob die zurückgegebenen Dateipfade absolut oder relativ zum aktuellen Arbeitsverzeichnis sind, orientiert sich am übergebenen Suchmuster.
+\begin{lstlisting}
+# alle Dateien mit Endung .tex im Parallelordner gddmr_tex
+# relativer Pfad zum derzeitigen Arbeitsverzeichnis
+> texFiles1 <- Sys.glob("../gddmr_tex/*.tex")
+> head(texFiles1, n=4)
+[1] "../gddmr_tex/gddmr.tex"
+[2] "../gddmr_tex/rl_00_preface.tex"
+[3] "../gddmr_tex/rl_00_settings.tex"
+[4] "../gddmr_tex/rl_01_first_steps.tex"
+
+# absoluter Pfad
+> texFiles2 <- Sys.glob("d:/work/gddmr_tex/*.tex")
+> head(texFiles2, n=2)
+[1] "d:/work/gddmr_tex/r_long_tex/gddmr.tex"
+[2] "d:/work/gddmr_tex/r_long_tex/rl_00_preface.tex"
+\end{lstlisting}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Dateipfade manipulieren}
+\label{sec:filesName}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\index{Dateien!Pfad, Name, Endung}
+In der vollständigen Pfadangabe zu einer Datei steht einerseits die Information zum Ordner, der die Datei enthält, andererseits die Information zum Dateinamen sowie ggf.\ ihrer Endung. Diese Informationen lassen sich getrennt aus einem vollständigen Pfad extrahieren.
+
+So gibt \lstinline!basename("<<Dateipfad>>")!\index[func]{basename()@\lstinline{basename()}} nur den Dateinamen aus, entfernt also die Angaben zum Ordner aus der übergebenen Pfadangabe. Als Komplement nennt \lstinline!dirname("<<Dateipfad>>")!\index[func]{dirname()@\lstinline{dirname()}} den Pfad zum Ordner, der eine Datei enthält, entfernt also den Dateinamen. Nur die Dateiendung (ohne Ordner und Dateinamen) erhält man mit \lstinline!tools::file_ext("<<Dateipfad>>")!\index[func]{file_ext()@\lstinline{file_ext()}}. Als Komplement gibt \lstinline!tools::file_path_sans_ext("<<Dateipfad>>")!\index[func]{file_path_sans_ext()@\lstinline{file_path_sans_ext()}} den vollständigen Pfad mit Dateinamen, aber ohne Endung zurück.\footnote{Die beiden letztgenannten Funktionen stammen aus dem im Basisumfang von R enthaltenen Paket \lstinline!tools!, das diese Funktionen jedoch nicht öffentlich macht und deswegen dem Funktionsnamen explizit vorangestellt werden muss (Abschn.\ \ref{sec:debugForeign}).}
+\begin{lstlisting}
+> basename("c:/path/to/file.txt")
+[1] "file.txt"
+
+> dirname("c:/path/to/file.txt")
+[1] "c:/path/to"
+
+> tools::file_ext("c:/path/to/file.txt")
+[1] "txt"
+
+> tools::file_path_sans_ext("c:/path/to/file.txt")
+[1] "c:/path/to/file"
+\end{lstlisting}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Dateien verändern}
+\label{sec:filesManip}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\index{Dateien!manipulieren}
+Die meisten Dateioperationen, die man interaktiv mit einem Dateimanager vornimmt, können mit den folgenden Funktionen automatisiert werden:
+\begin{itemize}
+\item \lstinline!dir.exists("<<Ordnerpfad>>")!\index[func]{dir.exists()@\lstinline{dir.exists()}} prüft, ob der Ordner mit dem angegebenen Pfad bereits existiert und tatsächlich ein Ordner ist.
+\item \lstinline!file.exists("<<Dateipfad>>")!\index[func]{file.exists()@\lstinline{file.exists()}} prüft, ob die Datei mit dem angegebenen Pfad bereits existiert.
+\item \lstinline!file.remove("<<Dateipfad>>")!\index[func]{file.remove()@\lstinline{file.remove()}} löscht die Datei mit dem angegebenen Pfad.
+\item \lstinline!file.copy(from="<<Dateipfad>>", to="<<Dateipfad>>", overwrite=FALES)!\index[func]{file.copy()@\lstinline{file.copy()}} erstellt die Kopie einer Datei \lstinline!from! an der Stelle \lstinline!to!, wobei dort schon unter demselben Namen existierende Dateien nur mit \lstinline!overwrite=TRUE! überschrieben werden.
+\item \lstinline!file.rename(from="<<Dateipfad>>", to="<<Dateipfad>>")!\index[func]{file.rename()@\lstinline{file.rename()}} verschiebt eine Datei \lstinline!from! an die Stelle \lstinline!to!.
+\item \lstinline!file.create("<<Dateipfad>>")!\index[func]{file.create()@\lstinline{file.create()}} erstellt eine leere Datei mit dem übergebenen Pfad.
+\item \lstinline!dir.create("<<Ordnerpfad>>")!\index[func]{dir.create()@\lstinline{dir.create()}} erstellt einen Ordner mit dem übergebenen Pfad.
+\end{itemize}
+
+Mit dem Rückgabewert \lstinline!TRUE! oder \lstinline!FALSE! melden die Funktionen, ob eine Dateioperation erfolgreich durchgeführt werden konnte.
+\begin{lstlisting}
+# neues Verzeichnis newDir relativ zum aktuellen Arbeitsverzeichnis
+> dir.create("newDir")
+> file.create("newDir/newFile.txt")   # neue Datei in newDir
+[1] TRUE
+
+# Kopie der neu erstellten Datei
+> file.copy("newDir/newFile.txt", to="newDir/fileA.txt")
+[1] TRUE
+
+# benenne Kopie um
+> file.rename("newDir/fileA.txt", to="newDir/fileB.txt")
+[1] TRUE
+
+> file.remove("newDir/newFile.txt")   # entferne ursprüngliche Datei
+[1] TRUE
+
+> file.exists("newDir/newFile.txt")   # existiert ursprüngliche Datei?
+[1] FALSE
+
+> file.exists("newDir/fileB.txt")     # existiert umbenannte Kopie?
+[1] TRUE
+\end{lstlisting}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{R Dokumente und Notebooks}
+\label{sec:rmd}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\index{R Dokumente}
+\index{Notebook|see{R Dokumente}}
+\index{markdown|see{R Dokumente}}
+\index{Sweave|see{R Dokumente}}
+
+Mit den Paketen \lstinline!knitr!\index[pack]{knitr@\lstinline{knitr}|textbf} \cite{Xie2012} und \lstinline!rmarkdown!\index[pack]{rmarkdown@\lstinline{rmarkdown}|textbf} \cite{RStudio2014a} lassen sich R-Auswertungen in Dokumente einbetten, die beschreibenden Text, R-Befehle und die zugehörigen Ergebnisse dieser Befehle integrieren. Auch Diagramme werden automatisch in das erstellte Dokument eingefügt. Ziel solcher integrierten Dokumente ist es, die Datenauswertung und Berichterstellung in einem Arbeitsschritt zu vereinen. Datenanalyse kann so effizienter, besser nachvollziehbar, leichter replizierbar und weniger fehleranfällig werden. Umfassende Dokumentation zu \lstinline!knitr! findet man auf der Homepage des Autors, für \lstinline!rmarkdown! ist das RStudio \emph{cheat sheet} beim Einstieg hilfreich.\footnote{\url{http://yihui.name/knitr/}\\\url{https://www.rstudio.com/resources/cheatsheets/}} \citeA{Xie2013} und \citeA{Gandrud2014} geben eine ausführliche Beschreibung.
+
+Der Grundtext von R-Dokumenten wird wie R-Skripte im Textformat geschrieben, wobei Formatierungen, etwa als Überschrift, durch bestimmte Schlüsselsymbole vorzunehmen sind. Die Formatierung kann dabei sehr detailliert -- in \LaTeX-Syntax, Datei mit Endung \lstinline!.Rnw! -- oder mit einfachen Methoden -- im aus interaktiven Webseiten bekannten \emph{markdown}-Format, Datei mit Endung \lstinline!.Rmd! -- erfolgen. Aus demselben Grundtext kann man dabei flexibel ebenso ein PDF oder Word-Dokument wie auch eine HTML-Seite oder Online-Präsentation erzeugen. Dafür ist zusätzlich weitere Software auf dem Computer erforderlich: Für PDF-Dokumente ist eine separate \LaTeX-Installation notwendig, auch wenn der Text im markdown-Format geschrieben ist.\footnote{\url{https://www.latex-project.org/get/}} Für Word-Dokumente wird das freie Programm pandoc \cite{McFarlane2016} benötigt.
+
+Ein Grundtext mit R Befehlen wird durch folgende Arbeitsschritte zu einem Ausgabedokument: Die Funktion \lstinline!knit()!\index[func]{knit()@\lstinline{knit()}} aus dem Paket \lstinline!knitr!\index[pack]{knitr@\lstinline{knitr}} generiert zunächst zu jedem R Befehl die zugehörige Ausgabe, die normalerweise auf der Konsole oder als Diagramm angezeigt wird. Dann fügt \lstinline!knit()! diese zusammen mit den übrigen Textelementen in ein Ausgabedokument im markdown-Format (Dateiendung \lstinline!.md!) oder im \LaTeX-Format (Dateiendung \lstinline!.tex!) ein. Aus diesen Dateien lässt sich dann eine HTML-Datei oder (mit einer externen \LaTeX-Installation) ein PDF erzeugen. Für Word-Dokumente übernimmt pandoc diese Konvertierung. Die Funktion \lstinline!render()!\index[func]{render()@\lstinline{render()}} aus dem Paket \lstinline!rmarkdown!\index[pack]{rmarkdown@\lstinline{rmarkdown}} kombiniert die genannten Arbeitsschritte.
+
+Die Funktionalität von \lstinline!knitr!\index[pack]{knitr@\lstinline{knitr}} und \lstinline!rmarkdown!\index[pack]{rmarkdown@\lstinline{rmarkdown}} lässt sich in Form der genannten R Funktionen nutzen, die Input-Dokumente verarbeiten und das Ergebnis im gewünschten Format speichern. Einfacherer ist es jedoch, die sehr gute Unterstützung in der Entwicklungsumgebung RStudio (Abschn.\ \ref{sec:gui}) zu verwenden: Sie hat alle Arbeitsschritte in der Oberfläche integriert (Abb.\ \ref{fig:rstudio_rmd}) und bietet im Menü \emph{Help} $\rightarrow$ \emph{Markdown Quick Reference} eine Übersicht der wichtigsten Formatierungsmöglichkeiten in markdown-Syntax. Über den Menüeintrag \emph{File} $\rightarrow$ \emph{New File} $\rightarrow$ \emph{R Markdown...} lässt sich eine neue Datei im markdown-Format erstellen, die bereits ein typisches Grundgerüst enthält.
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=12.5cm]{rstudio_rmd}
+\vspace*{-0.5em}
+\caption{Werkzeuge für R Dokumente und Notebooks in der Entwicklungsumgebung RStudio (vergrößert und rot umrandet). 1: Ausgabedokument erzeugen mit icon \emph{Knit} inkl.\ Zugang zu Optionen. 2: Gliederungsansicht. 3: Reiter mit Ausgabe beim Erzeugen des Ausgabedokuments. 4: Werkzeuge zum Ausführen einzelner R Befehlsblöcke. 5: Markdown Hilfe}
+\label{fig:rstudio_rmd}
+\end{figure}
+
+Das folgende Beispieldokument in markdown-Syntax soll die wichtigsten Gestaltungsmöglichkeiten demonstrieren. Die ersten, zwischen zwei \lstinline!---! eingeschlossene Zeilen dienen dem Setzen von Optionen für das Zieldokument in \emph{YAML}-Syntax. Zugang zu diesen Optionen bietet RStudio im Zahnrad-icon, das in Abb.\ \ref{fig:rstudio_rmd} im Bereich 1 markiert ist. Abgesetzte R Befehlsblöcke (\emph{chunks}) beginnen mit \lstinline!```{r}! und enden mit \lstinline!```!. Im Text eingebettete R Befehle müssen in \lstinline!`r <<Befehle>>`! eingeschlossen sein.\footnote{In \LaTeX-Dokumenten beginnen Befehlsblöcke mit \texttt{<<>>=} und enden mit \lstinline!@!, im Text eingebettete R Befehle sind in \lstinline!\\Sexpr\{\}! einzuschließen. Weitere Minimalbeispiele zeigt \url{http://yihui.name/knitr/demo/minimal/}}
+
+Für jeden Befehlsblock lässt sich über eine Reihe von Optionen separat steuern, wie er durch \lstinline!knit()! behandelt wird.\footnote{\url{http://yihui.name/knitr/options/}} So können R Befehle etwa in der Ausgabe wiederholt oder mit \lstinline!```{r echo=FALSE}! ausgeblendet werden, so dass nur ihr Ergebnis sichtbar ist. Mit \lstinline!```{r include=FALSE}! wird ein Block zwar ausgeführt, bleibt im Ausgabedokument aber samt Ausgabe unsichtbar -- etwa um vorbereitende Berechnungen durchzuführen. Global für alle Befehlsblöcke eines Dokuments lassen sich diese Optionen zu Beginn mit \lstinline!knitr::opts_chunk$set()! festlegen.
+
+\begin{lstlisting}
+---
+title: "R markdown"
+author: "Daniel Wollschläger"
+output:
+  pdf_document:
+    toc: TRUE
+    number_sections: TRUE
+---
+
+```{r setup, include=FALSE}
+# Einstellungen - durch include=FALSE nicht im Dokument ausgegeben
+knitr::opts_chunk$set(tidy=FALSE, message=FALSE, comment=NA)
+options(replace.assign=TRUE, width=75, digits=3, useFancyQuotes=FALSE)
+```
+
+# Überschrift 1
+## Überschrift 2a
+
+R Befehle und Ausgaben als abgesetzter Block (chunk):
+
+```{r}
+x <- 5
+x
+```
+
+Im Text integrierte Ausgabe eines R Befehls:
+Wert von Objekt `x` ist `r x`
+
+## Überschrift 2b
+
+Diagramm
+
+```{r}
+plot(mpg ~ hp, data=mtcars, pch=19)
+```
+
+Textformatierungen: *kursiv*, **fett**
+
+[Hyperlink](http://www.r-project.org/)
+
+ * Listenelement
+   * Listenelement
+   * Listenelement
+
+Tabelle
+
+| rechts | links | normal | zentriert |
+|-------:|:------|--------|:---------:|
+|  47.5  |  FRA  |  0.23  | SFO       |
+|  39.2  |  BGO  |  0.07  | LAX       |
+\end{lstlisting}
+
+RStudio kann darüber hinaus in Form eines HTML-\emph{notebooks} auch den Grundtext im markdown-Format mit der zugehörigen Ausgabe in einem gemeinsamen Dokument integrieren, in dem jeder R Befehlsblock einzeln ausgeführt werden kann und die zugehörige Ausgabe direkt unter ihm dargestellt wird.\footnote{\url{http://rmarkdown.rstudio.com/r_notebooks.html}}

@@ -1,0 +1,49 @@
+---
+title: "R markdown"
+author: "Daniel Wollschläger"
+output:
+  pdf_document:
+    toc: TRUE
+    number_sections: TRUE
+---
+
+```{r setup, include=FALSE}
+# Einstellungen - durch include=FALSE nicht im Dokument ausgegeben
+knitr::opts_chunk$set(tidy=FALSE, message=FALSE, comment=NA)
+options(replace.assign=TRUE, width=75, digits=3, useFancyQuotes=FALSE)
+```
+
+# Überschrift 1
+## Überschrift 2a
+
+R Befehle und Ausgaben als abgesetzter Block (chunk):
+
+```{r}
+x <- 5
+x
+```
+
+Im Text integrierte Ausgabe eines R Befehls: Wert von Objekt `x` ist `r x`
+
+## Überschrift 2b
+
+Diagramm
+
+```{r}
+plot(mpg ~ hp, data=mtcars, pch=19)
+```
+
+Textformatierungen: *kursiv*, **fett**
+
+[Hyperlink](http://www.r-project.org/)
+
+ * Listenelement
+   * Listenelement
+   * Listenelement
+
+Tabelle
+
+| rechts | links | normal | zentriert |
+|-------:|:------|--------|:---------:|
+|  47.5  |  FRA  |  0.23  | SFO       |
+|  39.2  |  BGO  |  0.07  | LAX       |

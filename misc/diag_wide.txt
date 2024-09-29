@@ -1,0 +1,34 @@
+6
+x regrInfl
+x regrResid
+
+7
+x anovaDiag
+
+8
+x regrLogCD
+x regrOrdMod
+x regrMultNom
+
+14
+x plotTypes
+x barplotBeside
+x errorbars
+x hist
+x qq
+x 3dContour & 3dContourFilled & 3dSymbols
+
+15
+ggplot01a & ggplot01b
+ggplot02a & ggplot02b
+ggplot03a & ggplot03b
+ggplot05a & ggplot05b
+x ggplot06b
+ggplot07a & ggplot07b
+x ggplot08a & ggplot08b & ggplot08c
+x ggplot09
+ggplot10a & ggplot10b
+ggplot11a & ggplot11b
+
+16
+x splines

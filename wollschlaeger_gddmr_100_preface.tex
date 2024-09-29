@@ -1,0 +1,80 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\chapter*{Vorwort}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Dieses Buch liefert eine an wissenschaftlichen Anwendungen orientierte Einführung in die Datenauswertung mit R. R ist eine freie Umgebung zur umfassenden statistischen Analyse und grafischen Darstellung von Datensätzen, die befehlsorientiert arbeitet. Der vorliegende Text soll allen den Einstieg in R erleichtern, die in erster Linie grundlegende statistische Auswertungsverfahren anwenden möchten und keine Vorkenntnisse mit Programmen ohne grafische Benutzeroberfläche besitzen.
+
+Das Buch stellt die Umsetzung grafischer und deskriptiver Datenauswertung, nonparametrischer Verfahren, (verallgemeinerter) linearer Modelle und multivariater Methoden vor. Die Auswahl der behandelten statistischen Verfahren orientiert sich an den Anforderungen der Psychologie, deckt aber auch die wichtigsten Auswertungsmethoden anderer Human- und Sozialwissenschaften sowie der klinischen Forschung ab.
+
+\textit{Struktur und Lesereihenfolge}
+
+Das Buch besteht aus vier großen Teilen:
+\begin{enumerate}[label=\Roman*]
+\item \label{item:partI} Kapitel \ref{sec:firstSteps}--\ref{sec:manage} befassen sich mit den zum Einlesen und Verarbeiten von Daten notwendigen Grundlagen. Kapitel \ref{sec:firstSteps} dient der Einführung in den Umgang mit R sowie in die Syntax der Befehlssteuerung. In Kapitel \ref{sec:basics} werden grundlegende Datenstrukturen gemeinsam mit Methoden zur deskriptiven Datenauswertung behandelt. Kapitel \ref{sec:dfChap} erläutert den Import / Export und die Aufbereitung von Datensätzen. Arbeitstechniken für eine zuverlässige und reproduzierbare Datenauswertung bespricht Kapitel \ref{sec:manage}.
+\item \label{item:partII} Kapitel \ref{sec:prepStat}--\ref{sec:prediction} behandeln die Anwendung verschiedener statistischer Modelle und Methoden. Kapitel \ref{sec:prepStat} stellt Hilfsmittel für die schließende Statistik bereit. Diese wird in Kapitel \ref{sec:regression} (lineare Regression), \ref{sec:muTests} ($t$-Tests und Varianzanalysen), \ref{sec:glm} (Regression für kategoriale Daten), \ref{sec:survival} (Survival-Analyse), \ref{sec:bioStat} (klassische nonparametrische Tests), \ref{sec:resampling} (bootstrap und Permutationstests), \ref{sec:multivariate} (multivariate Methoden) und \ref{sec:prediction} (Vorhersagegüte prädiktiver Modelle) behandelt.
+\item \label{item:partIII} Kapitel \ref{sec:graphics}--\ref{sec:ggplot} stellen vor, wie Diagramme erstellt werden können. Kapitel \ref{sec:graphics} erläutert die allgemeinen Grundlagen sowie die relevanten Funktionen des Basisumfangs von R. Kapitel \ref{sec:ggplot} vermittelt den Umgang mit dem beliebten Zusatzpaket \lstinline!ggplot2!.
+\item \label{item:partIV} Kapitel \ref{sec:numerical}--\ref{sec:programming} beschreiben fortgeschrittene Techniken, insbesondere für maßgeschneiderte Auswertungen. Dazu zählen numerische Methoden in Kapitel \ref{sec:numerical} sowie der Einsatz von R als Programmiersprache in Kapitel \ref{sec:programming}.
+\end{enumerate}
+
+Die Lesereihenfolge muss der Reihenfolge der Kapitel nicht unbedingt folgen. Während Teil \ref{item:partI} universell für die meisten Anwendungen wichtig ist und daher zuerst gelesen werden sollte, lassen sich die Inhalte von Teil \ref{item:partII} und \ref{item:partIII} auch unabhängig voneinander nach Bedarf kombinieren. Teil \ref{item:partIV} ist optional und besonders für erfahrene Nutzer gedacht.
+
+\textit{Hinweise}
+
+Der Fokus des Buchs liegt auf der Umsetzung von Methoden zur Datenauswertung mit R, nicht aber auf der Vermittlung statistischer Grundlagen. Von diesen wird hier angenommen, dass die Leser mit ihnen vertraut sind. Auf Literatur zu den behandelten Verfahren wird jeweils hingewiesen.
+
+Um die Ergebnisse der R-eigenen Auswertungsfunktionen besser nachvollziehbar zu machen, wird ihre Anwendung an vielen Stellen durch manuelle Kontrollrechnungen begleitet. Die eigene Umsetzung soll zudem zeigen, wie auch Testverfahren, für die zunächst keine vorbereiteten Funktionen vorhanden sind, prinzipiell selbst verwirklicht werden können.
+
+%In den meisten Beispielen wird davon ausgegangen, dass die vorliegenden Daten bereits geprüft sind und eine hohe\index{Daten!Qualität} Datenqualität vorliegt: Fragen der Einheitlichkeit etwa hinsichtlich der Codierung von Datum und Uhrzeit, potentiell unvollständige Datensätze, fehlerhaft eingegebene oder unplausible Daten sowie doppelte Werte oder Ausreißer sollen ausgeschlossen sein. Besondere Aufmerksamkeit wird jedoch dem Thema fehlender Werte geschenkt.
+
+\textit{Änderungen in der zweiten Auflage}
+
+Das Buch vertieft nun das Thema der Verarbeitung von Zeichenketten sowie von Datumsangaben (Abschn.\ \ref{sec:stringMan}, \ref{sec:date}) und beinhaltet eine umfassendere Darstellung der Diagnostik und Kreuzvalidierung von Regressionsmodellen (Abschn.\ \ref{sec:regrDiag}, \ref{sec:regrCV}). Die Auswertung varianzanalytischer Fragestellungen berücksichtigt jetzt die Schätzung von Effektstärken (Abschn.\ \ref{sec:tTest}--\ref{sec:SPFpq}). Als Tests auf gleiche Variabilität werden zusätzlich jene nach Fligner-Killeen sowie nach Mood und Ansari-Bradley besprochen (\ref{sec:fligner}, \ref{sec:dispHom}). Das neue Kap.\ \ref{sec:resampling} führt in die Anwendung von bootstrapping und Permutationstests ein. Bei multivariaten Verfahren ist die Diskriminanzanalyse ebenso hinzugekommen wie eine Behandlung des allgemeinen linearen Modells (Abschn.\ \ref{sec:multDA}, \ref{sec:multALM}). Schließlich geht der Text nun auf Möglichkeiten zur Darstellung von Bitmap-Grafiken ein (Abschn.\ \ref{sec:rasterIm}) und beschreibt detaillierter, welche Möglichkeiten für Funktionsanalyse und debugging R bietet (Abschn.\ \ref{sec:debug}).
+
+\textit{Änderungen in der dritten Auflage}
+
+Abschnitt \ref{sec:dataExchange} behandelt ausführlicher den Datenaustausch mit Datenbanken. Der neue  Abschn.\ \ref{sec:files} stellt vor, wie man mit Dateien und Pfaden arbeitet. Hinweise auf Erweiterungen der linearen Regression liefert Abschn.\ \ref{sec:lmExtend}. Regressionsmodelle für kategoriale Daten und Zähldaten sind nun in Kap.\ \ref{sec:glm} zusammengefasst. Das neue Kap.\ \ref{sec:survival} führt in die Analyse von Ereigniszeiten mit Kaplan-Meier, Cox Regression und parametrischen Modellen ein. ROC-Kurven und AUC werden nun in Abschn.\ \ref{sec:rocAuc} beschrieben. Abschnitt \ref{sec:bootTwoInd} zeigt ein Beispiel für stratifiziertes bootstrapping, Abschn.\ \ref{sec:bootWild} demonstriert den wild bootstrap für lineare Modelle. Der Abschnitt zur Kreuzvalidierung linearer Modelle wurde zu Kap.\ \ref{sec:prediction} erweiter. Wie man mit dem Paket \lstinline!ggplot2! Diagramme erstellt, erläutert Kap.\ \ref{sec:ggplot}.
+
+\textit{Änderungen in der vierten Auflage}
+
+Abschnitt \ref{sec:packages} zur Arbeit mit Zusatzpaketen ist ausführlicher und klarer strukturiert. Abschnitte \ref{sec:stringMod} und \ref{sec:grep} beschreiben neu in R integrierte Funktionen zum Manipulieren und Suchen von Zeichenketten. Hinweise zur Prüfung der Datenqualität enthält der neue Abschn.\ \ref{sec:tidyData}. Informationen zu Dokumenten mit eingebetteten R-Auswertungen gibt Abschn.\ \ref{sec:rmd}. Abschnitt \ref{sec:bootParam} erweitert die Resampling-Verfahren um parametrisches bootstrapping. Der Abschnitt zum Erstellen von Diagrammen mit \lstinline!ggplot2! wurde deutlich erweitert zum neuen Kap.\ \ref{sec:ggplot}. Das ebenfalls neue Kap.\ \ref{sec:numerical} gibt einen Überblick über allgemeine numerische Methoden.
+
+\textit{Änderungen in der fünften Auflage}
+
+Das Hauptaugenmerk lag neben einer allgemeinen Aktualisierung und punktuellen Ergänzung darauf, \emph{data science} orientierte Inhalte zu stärken. Dazu wurde Kap.\ \ref{sec:dfChap} stark überarbeitet, insbesondere für die Darstellung der Datenaufbereitung mit dem Zusatzpaket \lstinline!dplyr! (Abschn.\ \ref{sec:dplyr}). Kapitel \ref{sec:manage} fokussiert auf zuverlässige und reproduzierbare Datenauswertungen mit dem erweiterten Abschn.\ \ref{sec:rmd} zu R-Markdown Dokumenten und dem neuen Abschn.\ \ref{sec:reproducibility} mit Hinweisen für bessere Reproduzierbarkeit. Abschnitt \ref{sec:parallel} zeigt, wie sich umfangreiche Auswertungen beschleunigen lassen, indem man sie auf mehrere Prozessoren verteilt und parallel bearbeitet.
+
+\textit{Änderungen in der sechsten Auflage}
+
+In der vorliegenden sechsten Auflage bezieht sich das Buch auf Version 4.4.1 von R. 
+\begin{itemize}
+\item Neben vielen Detailänderungen wurde die Auswahl verwendeter Zusatzpakete angepasst, neuere Literatur berücksichtigt, außerdem wurden Online-Quellen aktualisiert.
+\item 2.5.6 Werte ersetzen mit \lstinline!case_match()! sowie \lstinline!replace()!
+\item Berücksichtigung zahlreicher Veränderungen in den Paketen \lstinline!dplyr! sowie \lstinline!ggplot2!.
+\item Ergänzungen im Kapitel \lstinline!ggplot2!
+\item Pipe-Syntax \lstinline!|>! im Basisumfang von R
+\item Quarto
+\item Ergänzungen zum Einlesen aus Excel-Tabellen
+\item Ergänzungen zur replizierbaren Datenauswertungen
+\item Landschaft der IDEs
+\item Abschnitt Tests auf Normalverteilung
+\item PCA Darstellung Biplot
+\item Basisumfang von R: Erweiterung der Syntax vieler Funktionen um Möglichkeit Modellformel anzugeben
+\item Einheitlich \lstinline!emmeans! für moderierte Regression, simple effects, korrigierte Mittelwerte in ANCOVA
+\end{itemize}
+
+Korrekturen, Ergänzungen und Anregungen sind herzlich willkommen. Die verwendeten Daten sowie alle Befehle des Buches und ggf.\ notwendige Berichtigungen erhalten Sie online:
+
+\url{http://www.dwoll.de/r/}
+
+\textit{Danksagung}
+
+Mein Dank gilt den Personen, die an der Entstehung des Buches in frühen und späteren Phasen mitgewirkt haben: Abschnitte \ref{sec:intro} bis \ref{sec:workspace} entstanden auf der Grundlage eines Manuskripts von Dieter Heyer und Gisela Müller-Plath, denen ich für die Überlassung des Textes danken möchte. Zahlreiche Korrekturen und viele Verbesserungsvorschläge wurden von Federico Marini, Philipp Mildenberger, Julian Etzel, Andri Signorell, Ulrike Groemping, Wolfgang Ramos, Erwin Grüner, Johannes Andres, Sabrina Flindt und Susanne Wollschläger beigesteuert. Johannes Andres danke ich für seine ausführlichen Erläuterungen der statistischen Grundlagen. Die Entstehung des Buches wurde beständig durch die selbstlose Unterstützung von Heike, Martha und Nike Jores sowie von Vincent van Houten begleitet. Iris Ruhmann, Clemens Heine, Niels Peter Thomas und Alice Blanck vom Springer Verlag möchte ich herzlich für die freundliche Kooperation und Betreuung der Veröffentlichung danken.
+
+Zuvorderst ist den Entwicklern von R, dem CRAN-Team sowie den Autoren der zahlreichen Zusatzpakete besonderer Dank und Anerkennung dafür zu zollen, dass sie in freiwillig geleisteter Arbeit eine hervorragende Umgebung zur statistischen Datenauswertung geschaffen haben, deren mächtige Funktionalität hier nur zu einem Bruchteil vorgestellt werden kann.
+
+\vspace{\baselineskip}
+\begin{flushright}\noindent
+Mainz, \hfill \textit{Daniel Wollschläger}\\
+März 2020 \hfill \url{contact@dwoll.de}\\
+\end{flushright}
