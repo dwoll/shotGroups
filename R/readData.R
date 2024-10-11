@@ -65,7 +65,7 @@ function(fPath=".", fNames, fPat, combine=TRUE, dstTarget, conversion) {
     ## remove dots from variable names
     wants   <- c("distance", "group", "aimx", "aimy")  # useful
     vnNoDot <- vapply(strsplit(varNames, "\\."),
-                      function(y) { paste0(y, collapse="") },
+                      function(y) { paste(y, collapse="") },
                       character(1))
     has     <- wants %in% vnNoDot
 
@@ -170,7 +170,7 @@ function(fPath=".", fNames, fPat, combine=TRUE, dstTarget, conversion) {
 
     DFs <- lapply(files, readMe)
 
-    names(DFs) <- paste("file", seq_along(DFs), sep="")  # name them
+    names(DFs) <- paste0("file", seq_along(DFs))  # name them
 
     ##  build shared set of variable names
     varNames <- Reduce(intersect, lapply(DFs, names))
@@ -240,7 +240,7 @@ function(fPath=".", fNames, fPat, combine=TRUE, dstTarget, conversion) {
     
     DFs <- lapply(files, readMe)
 
-    names(DFs) <- paste("file", seq_along(DFs), sep="")  # name them
+    names(DFs) <- paste0("file", seq_along(DFs))  # name them
 
     ##  build shared set of variable names
     varNames <- Reduce(intersect, lapply(DFs, names))
@@ -346,7 +346,7 @@ function(fPath=".", fNames, fPat, combine=TRUE) {
     
     DFs <- lapply(files, readMe)
 
-    names(DFs) <- paste("file", seq_along(DFs), sep="")  # name them
+    names(DFs) <- paste0("file", seq_along(DFs))  # name them
     
     ##  build shared set of variable names
     varNames <- Reduce(intersect, lapply(DFs, names))
@@ -414,7 +414,7 @@ function(fPath=".", fNames, fPat, combine=TRUE) {
 
     DFs <- lapply(files, readMe)
         
-    names(DFs) <- paste("file", seq_along(DFs), sep="")  # name them
+    names(DFs) <- paste0("file", seq_along(DFs))  # name them
         
     ##  build shared set of variable names
     varNames <- Reduce(intersect, lapply(DFs, names))

@@ -21,7 +21,7 @@ function(x, lambda, h=rep(1, length(lambda)), delta=rep(0, length(lambda))) {
     stopifnot(length(x)     == 1L,
               length(h)     == n,
               length(delta) == n,
-              !any(is.na(lambda)),
+              !anyNA(lambda),
               ## function would work for negative eigenvalues (but not 0),
               ## but not relevant for covariance matrices
               all(lambda > 0))

@@ -15,5 +15,5 @@ function(xy) {
     if(!is.numeric(xy)) { stop("xy must be numeric") }
 
     xyCtr <- scale(xy, scale=FALSE, center=TRUE)  # centered data
-    return(sqrt(rowSums(xyCtr^2)))                # distances to center
+    sqrt(rowSums(xyCtr^2))                        # distances to center
 }

@@ -85,7 +85,7 @@ function(p, sigma=1, nPerGroup=5, nGroups=1, stat=c("ES", "FoM", "D"),
     # hasName(shotGroups::DFdistr, p_var)
     
     if(sum(idxGroup) < 1L) {
-        warning(paste0("Lookup table does not have quantile(s) for nGroups=", nGroups))
+        warning("Lookup table does not have quantile(s) for nGroups=", nGroups)
     } else {
         if(all(havePV)) {
             ## all probabilities available
@@ -108,7 +108,7 @@ function(p, sigma=1, nPerGroup=5, nGroups=1, stat=c("ES", "FoM", "D"),
             allP <- as.numeric(sub(paste0(stat, "_Q([[:digit:]]{3})$"), "\\1" , allPV)) / 1000
             ## make sure probabilities are sorted
             allPV <- allPV[order(allP)]
-            allP  <- allP[order(allP)]
+            allP  <- allP[ order(allP)]
             ## check range of p is within limits
             p_mm  <- range(allP)
             keep  <- (p >= p_mm[1]) & (p <= p_mm[2])

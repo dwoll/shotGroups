@@ -51,12 +51,12 @@ function(xy, center=FALSE, plots=TRUE, CEPlevel=0.5, CIlevel=0.95,
     ## check if CEP / CI level is given in percent
     if(CEPlevel >= 1) {
         while(CEPlevel >= 1) { CEPlevel <- CEPlevel / 100 }
-        warning(paste0("CEPlevel must be in (0,1) and was set to ", CEPlevel))
+        warning("CEPlevel must be in (0,1) and was set to ", CEPlevel)
     }
 
     if(CIlevel >= 1) {
         while(CIlevel >= 1) { CIlevel <- CIlevel / 100 }
-        warning(paste0("CIlevel must be in (0,1) and was set to ", CIlevel))
+        warning("CIlevel must be in (0,1) and was set to ", CIlevel)
     }
 
     dstTarget <- if(missing(dstTarget)    ||
@@ -378,8 +378,8 @@ function(xy, center=FALSE, plots=TRUE, CEPlevel=0.5, CIlevel=0.95,
 
         ## add legend
         legend(x="bottomleft", legend=c("center", "center (robust)",
-               paste(100*CEPlevel, "% confidence ellipse", sep=""),
-               paste(100*CEPlevel, "% confidence ellipse (robust)", sep=""),
+               paste0(100*CEPlevel, "% confidence ellipse"),
+               paste0(100*CEPlevel, "% confidence ellipse (robust)"),
                "mean distance to center"),
                col=c("red", "blue", "red", "blue", "black"),
                pch=c(4, 4, NA, NA, NA),
@@ -640,8 +640,8 @@ function(xy, which=1L, center=FALSE, CEPlevel=0.5, CIlevel=0.95,
 
         ## add legend
         legend(x="bottomleft", legend=c("center", "center (robust)",
-               paste(100*CEPlevel, "% confidence ellipse", sep=""),
-               paste(100*CEPlevel, "% confidence ellipse (robust)", sep=""),
+               paste0(100*CEPlevel, "% confidence ellipse"),
+               paste0(100*CEPlevel, "% confidence ellipse (robust)"),
                "mean distance to center"),
                col=c("red", "blue", "red", "blue", "black"),
                pch=c(4, 4, NA, NA, NA),

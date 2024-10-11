@@ -107,12 +107,16 @@ function(DF,
         ## remove series with too few points
         rem <- names(cTab[cTab < 2L])
         idx <- DF[["series"]] %in% rem
-        DF  <- droplevels(DF[!idx, , drop=FALSE])
-        if(length(dstTarget == nrow(DF))) {
+        
+        ## drop series entries with too few points
+        ## from dstTarget and data frame
+        if(length(dstTarget) == nrow(DF)) {
             dstTarget <- dstTarget[!idx]
         }
+        
+        DF <- droplevels(DF[!idx, , drop=FALSE])
         warning(paste0("Removed series ",
-                       paste(rem, collapse=", "),
+                       toString(rem),
                        " with < 2 points per group"))
     }
 
@@ -360,7 +364,7 @@ function(DF,
         devNew()                         # open new diagram
         plot(y ~ x, data=DF, xlim=xLims, ylim=yLims, asp=1, lwd=2,
              pch=syms[unclass(DF$series)], col=cols[unclass(DF$series)],
-             main=paste0("Groups with ", 100*CEPlevel, "% confidence ellipse", sep=""),
+             main=paste0("Groups with ", 100*CEPlevel, "% confidence ellipse"),
              sub=paste("distance:", dstTargetPlot, unitDst),
              xlab=paste0("X [", unitXY, "]"), ylab=paste0("Y [", unitXY, "]"))
         abline(v=0, h=0, col="lightgray")  # add point of aim
@@ -540,12 +544,13 @@ function(DF, which=1L, xyTopLeft=TRUE, center=FALSE,
         ## remove series with too few points
         rem <- names(cTab[cTab < 2L])
         idx <- DF[["series"]] %in% rem
-        DF  <- droplevels(DF[!idx, , drop=FALSE])
-        if(length(dstTarget == nrow(DF))) {
+        if(length(dstTarget) == nrow(DF)) {
             dstTarget <- dstTarget[!idx]
         }
+        
+        DF <- droplevels(DF[!idx, , drop=FALSE])
         warning(paste0("Removed series ",
-                       paste(rem, collapse=", "),
+                       toString(rem),
                        " with < 2 points per group"))
     }
     
@@ -704,7 +709,7 @@ function(DF, which=1L, xyTopLeft=TRUE, center=FALSE,
         ## diagram: 2D-scatter plot for the (x,y)-distribution
         plot(y ~ x, data=DF, xlim=xLims, ylim=yLims, asp=1, lwd=2,
              pch=syms[unclass(DF$series)], col=cols[unclass(DF$series)],
-             main=paste0("Groups with ", 100*CEPlevel, "% confidence ellipse", sep=""),
+             main=paste0("Groups with ", 100*CEPlevel, "% confidence ellipse"),
              sub=paste("distance:", dstTargetPlot, unitDst),
              xlab=paste0("X [", unitXY, "]"), ylab=paste0("Y [", unitXY, "]"))
         abline(v=0, h=0, col="lightgray")  # add point of aim

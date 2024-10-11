@@ -644,9 +644,10 @@ function(xy, center=FALSE,
             idx      <- which.max(ellCtrL[[1]][ , 1])
             txtPos_X <- ellCtrL[[1]][idx, 1] + strheight("1234")
             txtPos_Y <- ellCtrL[[1]][idx, 2]
-            label    <- paste0(c(round(cEllCopy[[1]]$size["semi-major"], 2),
-                                 round(cEllCopy[[1]]$size["semi-minor"], 2)),
-                               collapse="; ")
+            label    <- paste(c(round(cEllCopy[[1]]$size["semi-major"], 2),
+                                round(cEllCopy[[1]]$size["semi-minor"], 2)),
+                              collapse="; ")
+            
             text(x=txtPos_X, y=txtPos_Y, labels=label,
                  srt=-90, col=cols["confEll"], adj=c(0.5, 0.5))
         }
@@ -655,6 +656,7 @@ function(xy, center=FALSE,
     if(CEP != "FALSE") {                 # circular error probable
         lapply(CEPres$CEP, function(x) {
             drawCircle(CEPres$ctr, x["unit", CEPtype], fg=cols["CEP"], lwd=2) })
+        
         legText <- c(legText, paste("CEP", CEPtype, paste(level, collapse=" ")))
         legCol  <- c(legCol, cols["CEP"])
         legLty  <- c(legLty, 1)

@@ -6,21 +6,21 @@ remove_bom <- function(x, encoding=c("UTF-8", "UTF-16LE", "UTF-16BE")) {
     
     if(encoding == "UTF-8") {
         bom <- rawToChar(as.raw(strtoi(c("EF", "BB", "BF"), base=16L)))
-        if(grepl(bom, paste0(line1[1:3], collapse=""))) {
+        if(grepl(bom, paste(line1[1:3], collapse=""))) {
             line1[1:3] <- ""
-            x          <- paste0(line1, collapse="")
+            x          <- paste(line1, collapse="")
         }
     } else if(encoding == "UTF-16LE") {
         bom <- rawToChar(as.raw(strtoi(c("FF", "FE"), base=16L)))
-        if(grepl(bom, paste0(line1[1:2], collapse=""))) {
+        if(grepl(bom, paste(line1[1:2], collapse=""))) {
             line1[1:2] <- ""
-            x          <- paste0(line1, collapse="")
+            x          <- paste(line1, collapse="")
         }
     } else if(encoding == "UTF-16BE") {
         bom <- rawToChar(as.raw(strtoi(c("FE", "FF"), base=16L)))
-        if(grepl(bom, paste0(line1[1:2], collapse=""))) {
+        if(grepl(bom, paste(line1[1:2], collapse=""))) {
             line1[1:2] <- ""
-            x          <- paste0(line1, collapse="")
+            x          <- paste(line1, collapse="")
         }
     }
     

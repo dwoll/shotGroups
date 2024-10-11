@@ -98,5 +98,5 @@ function(DF,
         NULL
     }
 
-    return(cbind(x, y, z))               # new (x,y)-coords as matrix
+    cbind(x, y, z)               # new (x,y)-coords as matrix
 }
