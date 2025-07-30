@@ -1,7 +1,7 @@
 Package: shotGroups
 Type: Package
 Title: Analyze Shot Group Data
-Version: 0.8.3
+Version: 0.8.4
 Date: 2025-07-30
 Authors@R: person("Daniel", "Wollschlaeger", role=c("aut", "cre"), email="dwoll@kuci.org")
 Maintainer: Daniel Wollschlaeger <dwoll@kuci.org>

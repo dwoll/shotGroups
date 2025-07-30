@@ -8,7 +8,7 @@
 \tabular{ll}{
 Package: \tab shotGroups\cr
 Type: \tab Package\cr
-Version: \tab 0.8.2.0.999\cr
+Version: \tab 0.8.4\cr
 Date: \tab 2025-07-30\cr
 Depends: \tab R (>= 3.5.0)\cr
 Imports: \tab boot, CompQuadForm (>= 1.4.2), graphics, grDevices, KernSmooth, stats, tools, utils\cr

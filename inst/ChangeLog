@@ -1,8 +1,11 @@
-$Date: 2025-07-30 21:38:29 +0000 (Wed, 30 Jul 2025) $
+$Date: 2025-07-30 23:38:29 +0000 (Wed, 30 Jul 2025) $
 
 SHOTGROUPS RELEASE VERSIONS at https://cran.r-project.org/
 
-Version 0.8.3(Jul 30, 2025)
+Version 0.8.4 (Jul 30, 2025)
+    * Avoid CRAN NOTEs
+
+Version 0.8.3 (Jul 30, 2025)
     * DESCRIPTION
       - move packages coin, robustbase to Suggests to reduce the
         number of hard dependencies

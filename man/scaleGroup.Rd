@@ -30,8 +30,6 @@ In a different application, one may be interested in discounting the vertical va
 \value{
 A \code{matrix} with the scaled (x,y)-coordinates.
 }
-\references{
-}
 \seealso{
 \code{\link[shotGroups]{getRayParam}}
 }
