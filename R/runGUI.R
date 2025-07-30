@@ -27,8 +27,6 @@ function(app=c("analyze", "hitprob", "range", "angular"), ...) {
             ## check which version is available
             bs4Dash_version <- packageVersion("bs4Dash")
             if(compareVersion("2.0.0", as.character(bs4Dash_version)) <= 0) {
-                # shiny::runApp(appDir, ...)
-                warning("bs4Dash version 2.0 support is experimental")
                 # appDir_legacy <- paste0(appDir, "_legacy")
                 # shiny::runApp(appDir_legacy, ...)
                 shiny::runApp(appDir, ...)

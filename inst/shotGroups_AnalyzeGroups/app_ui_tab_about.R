@@ -15,7 +15,7 @@ fluidPage(
                       descriptive statistics, and inference tests using standard, but also
                       non-parametric and robust statistical methods. The data can be imported
                       from files produced by",
-              a("OnTarget PC and OnTarget TDS", href="https://ontargetshooting.com/tds/"), ", ",
+              a("OnTarget PC and OnTarget TDS", href="https://ontargetshooting.com/"), ", ",
               a("TARAN", href="http://taran.ptosis.ch/"), ", ",
               a("ShotMarker e-target", href="https://autotrickler.com/pages/shotmarker"), ", ",
               a("Silver Mountain e-target", href="https://www.silvermountaintargets.com/"), ", ",
@@ -55,44 +55,43 @@ fluidPage(
               uses functionality provided by the R packages boot, coin, CompQuadForm,
               energy, mvoutlier, and robustbase:"),
             
-            p("Canty, A., & Ripley, B. D. (2023). boot: Bootstrap R (S-Plus) Functions.", br(),
+            p("Canty A, & Ripley BD. (2025). boot: Bootstrap R (S-Plus) Functions.", br(),
               a("https://CRAN.R-project.org/package=boot",
                 href="https://CRAN.R-project.org/package=boot")),
-            p("Duchesne, P., & Lafaye de Micheaux, P. (2010). Computing the distribution
+            p("Duchesne P & Lafaye de Micheaux P. (2010). Computing the distribution
                        of quadratic forms: Further comparisons between the Liu-Tang-Zhang
                        approximation and exact methods. Computational Statistics and Data
                        Analysis, 54 (4), 858-862.", br(),
               a("https://CRAN.R-project.org/package=CompQuadForm",
                 href="https://CRAN.R-project.org/package=CompQuadForm")),
-            p("Filzmoser, P., & Gschwandtner, M. (2021). mvoutlier: Multivariate
+            p("Filzmoser P & Gschwandtner M. (2025). mvoutlier: Multivariate
                        outlier detection based on robust methods.", br(),
               a("https://CRAN.R-project.org/package=mvoutlier",
                 href="https://CRAN.R-project.org/package=mvoutlier")),
-            p("Granjon, D. (2022). bs4Dash: A 'Bootstrap 4' Version of 'shinydashboard'.", br(),
+            p("Granjon D. (2025). bs4Dash: A 'Bootstrap 4' Version of 'shinydashboard'.", br(),
               a("https://CRAN.R-project.org/package=bs4Dash",
                 href="https://CRAN.R-project.org/package=bs4Dash")),
-            p("Hothorn, T., Hornik, K., van de Wiel, M. A., & Zeileis, A. (2008).
+            p("Hothorn T, Hornik K, van de Wiel MA, Zeileis A. (2008).
                        Implementing a Class of Permutation Tests: The coin Package. Journal of
                        Statistical Software, 28 (8), 1-23.", br(),
               a("https://www.jstatsoft.org/v28/i08/",
                 href="https://www.jstatsoft.org/v28/i08/"), br(),
               a("https://CRAN.R-project.org/package=coin",
                 href="https://CRAN.R-project.org/package=coin")),
-            p("R Core Team (2023). R: A language and environment for statistical computing.
+            p("R Core Team (2025). R: A language and environment for statistical computing.
                        R Foundation for Statistical Computing, Vienna, Austria.", br(),
               a("https://www.R-project.org/", br(), href="https://www.R-project.org/")),
-            p("Rizzo, M. L., & Szekely, G. J. (2022). energy: E-statistics
+            p("Rizzo ML & Szekely GJ. (2025). energy: E-statistics
                       (energy statistics).", br(),
               a("https://CRAN.R-project.org/package=energy",
                 href="https://CRAN.R-project.org/package=energy")),
-            p("Rousseeuw, P. J., Croux, C., Todorov, V., Ruckstuhl, A., Salibian-Barrera, M.,
-                       Verbeke, T., & Maechler, M. (2023). robustbase: Basic Robust Statistics.", br(),
+            p("Rousseeuw PJ, Croux C, Todorov V et al. (2025). robustbase: Basic Robust Statistics.", br(),
               a("https://CRAN.R-project.org/package=robustbase",
                 href="https://CRAN.R-project.org/package=robustbase")),
-            p("RStudio Inc. (2022). shiny: Web Application Framework for R.", br(),
+            p("Chang W, Cheng J, Allaire JJ et al. (2025). shiny: Web Application Framework for R.", br(),
               a("https://CRAN.R-project.org/package=shiny", href="https://CRAN.R-project.org/package=shiny"), br(),
               a("https://shiny.rstudio.com/", href="https://shiny.rstudio.com/")),
-            p("Wollschlaeger, D. (2022). shotGroups: Analyze shot group data.", br(),
+            p("Wollschlaeger, D. (2025). shotGroups: Analyze shot group data.", br(),
               a("https://CRAN.R-project.org/package=shotGroups",
                 href="https://CRAN.R-project.org/package=shotGroups"), br(),
               a("https://github.com/dwoll/shotGroups/",

@@ -1,9 +1,9 @@
 Package: shotGroups
 Type: Package
 Title: Analyze Shot Group Data
-Version: 0.8.2.0.999
-Date: 2023-04-01
-Author: Daniel Wollschlaeger
+Version: 0.8.3
+Date: 2025-07-30
+Authors@R: person("Daniel", "Wollschlaeger", role=c("aut", "cre"), email="dwoll@kuci.org")
 Maintainer: Daniel Wollschlaeger <dwoll@kuci.org>
 Depends: R (>= 3.5.0)
 Imports: boot, CompQuadForm (>= 1.4.2), graphics, grDevices,

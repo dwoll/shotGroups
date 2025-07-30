@@ -2,12 +2,15 @@
 \alias{readDataSIUS}
 \title{Read data files exported by the SIUS e-target system}
 \description{Reads in data from files exported by the SIUS e-target system using semi-colon separated text files without headers. Several files can be read with one call.}
-\usage{readDataSIUS(fPath = ".", fNames, fPat, combine = TRUE)}
+\usage{readDataSIUS(fPath = ".", fNames, fPat, combine = TRUE,
+             dstTarget, conversion)}
 \arguments{
   \item{fPath}{a character string containing the path to the folder with the SIUS output files, e.g. \code{'c:/folder/siusFiles'}.}
   \item{fNames}{a character vector containing the file names of the files that should be read in.}
   \item{fPat}{a character string containing the regular-expression that describes all names of files that should be read in. E.g., \code{'^points[[:digit:]]{2}\\\\.txt$'} for filenames \code{'points**.txt'}, where \code{**} are 2 digits. See \code{\link{regex}}, \code{\link[utils]{glob2rx}}.}
   \item{combine}{logical: combine the data into one big data frame with \code{\link[shotGroups]{combineData}}?}
+  \item{dstTarget}{a numerical value/vector giving the distance to the target - used in MOA calculation. Acts as override if variable \code{distance} is already included in the data.}
+  \item{conversion}{how to convert the measurement unit for distance to target to that of the (x,y)-coordinates in MOA calculation. Example \code{'m2cm'}. See \code{\link[shotGroups]{getMOA}}.}
 }
 
 \details{
