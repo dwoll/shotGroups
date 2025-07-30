@@ -14,10 +14,9 @@ function(r=1, sigma=diag(2), mu, e, x0, lower.tail=TRUE,
     }
     
     sigma <- as.matrix(sigma)
-    e     <- as.matrix(e)
     if(missing(mu)) { mu <- numeric(ncol(sigma)) }
     if(missing(x0)) { x0 <- numeric(ncol(sigma)) }
-    if(missing(e))  { e  <- diag(ncol(sigma)) }
+    if(missing(e))  { e  <- diag(ncol(sigma))    } else { e <- as.matrix(e) }
     if(!isTRUE(all.equal(sigma, t(sigma)))) { stop("sigma must be symmetric") }
     if(!isTRUE(all.equal(e, t(e))))         { stop("e must be symmetric") }
 
@@ -89,15 +88,13 @@ function(r=1, sigma=diag(2), mu, e, x0, lower.tail=TRUE,
 qmvnEll <-
 function(p, sigma=diag(2), mu, e, x0, lower.tail=TRUE, loUp=NULL,
          method_cdf=c("integrate", "saddlepoint")) {
-    sigma <- as.matrix(sigma)
-    e     <- as.matrix(e)
+    method_cdf <- match.arg(method_cdf)
+    sigma      <- as.matrix(sigma)
     if(missing(mu)) { mu <- numeric(ncol(sigma)) }
     if(missing(x0)) { x0 <- numeric(ncol(sigma)) }
-    if(missing(e))  { e  <- diag(ncol(sigma)) }
+    if(missing(e))  { e  <- diag(ncol(sigma))    } else { e <- as.matrix(e) }
     if(!isTRUE(all.equal(sigma, t(sigma)))) { stop("sigma must be symmetric") }
     if(!isTRUE(all.equal(e, t(e))))         { stop("e must be symmetric") }
-
-    method_cdf <- match.arg(method_cdf)
     
     ## checks on mu, sigma, e are done in getGrubbsParam(), pmvnEll()
     ## initialize quantiles to NA
@@ -151,16 +148,14 @@ function(p, sigma=diag(2), mu, e, x0, lower.tail=TRUE, loUp=NULL,
 rmvnEll <-
 function(n, sigma=diag(2), mu, e, x0, method=c("eigen", "chol", "cdf"),
          loUp=NULL, method_cdf=c("integrate", "saddlepoint")) {
-    sigma <- as.matrix(sigma)
-    e     <- as.matrix(e)
-    if(missing(mu)) { mu <- numeric(ncol(sigma)) }
-    if(missing(x0)) { x0 <- numeric(ncol(sigma)) }
-    if(missing(e))  { e  <- diag(ncol(sigma)) }
-    if(!isTRUE(all.equal(sigma, t(sigma)))) { stop("sigma must be symmetric") }
-    if(!isTRUE(all.equal(e, t(e))))         { stop("e must be symmetric") }
-
     method     <- match.arg(method)
     method_cdf <- match.arg(method_cdf)
+    sigma      <- as.matrix(sigma)
+    if(missing(mu)) { mu <- numeric(ncol(sigma)) }
+    if(missing(x0)) { x0 <- numeric(ncol(sigma)) }
+    if(missing(e))  { e  <- diag(ncol(sigma))    } else { e <- as.matrix(e) }
+    if(!isTRUE(all.equal(sigma, t(sigma)))) { stop("sigma must be symmetric") }
+    if(!isTRUE(all.equal(e, t(e))))         { stop("e must be symmetric") }
 
     ## checks on mu, sigma, e are done in getGrubbsParam(), pmvnEll()
     ## if n is a vector, its length determines number of random variates

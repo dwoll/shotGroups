@@ -38,14 +38,14 @@ function(xy, tol=0.001, max_iter=1000) {
     # Khachiyan's algorithm
     while((err > tol) && (iter < max_iter)) {
         X         <- Q %*% diag(u) %*% t(Q)
-        m         <- diag(t(Q) %*% solve(X) %*% Q)
+        m         <- diag(t(Q) %*% chol2inv(chol(X)) %*% Q) # avoid solve(X)
         maximum   <- max(m)
         j         <- which.max(m)
         step_size <- (maximum - p-1) / ((p+1)*(maximum-1))
         new_u     <- (1 - step_size)*u
         new_u[j]  <- new_u[j] + step_size
         err       <- sqrt(sum((new_u-u)^2))
-        iter     <- iter + 1
+        iter      <- iter + 1
         u         <- new_u
     }
     
@@ -54,8 +54,9 @@ function(xy, tol=0.001, max_iter=1000) {
     }
     
     ctr  <- hPts %*% u
-    E    <- (1/p) * solve((hPts %*% diag(u) %*% t(hPts)) - tcrossprod(ctr))
-    S    <- solve(E)
+    HuHc <- (hPts %*% diag(u) %*% t(hPts)) - tcrossprod(ctr)
+    E    <- (1/p) * chol2inv(chol(HuHc)) # avoid solve()
+    S    <- chol2inv(chol(E)) # avoid solve(E)
     Seig <- eigen(S)
     e    <- Seig$vectors[ , 1]
     eUp  <- e * sign(e[2])                  # rotate upwards 180 deg if necessary

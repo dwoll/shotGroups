@@ -33,7 +33,7 @@ function(x, lambda, h=rep(1, length(lambda)), delta=rep(0, length(lambda))) {
 
     ## scale by max eigenvalue
     lambda_scl <- lambda / max(lambda)
-    x_scl      <- x / max(lambda)
+    x_scl      <- x      / max(lambda)
     
     ## cumulant generating function
     K <- function(zeta) {
