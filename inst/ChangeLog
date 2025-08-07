@@ -29,7 +29,7 @@ Version 0.8.3 (Jul 30, 2025)
     * getRangeStatEff()
       - new function to calculate efficiency of range statistics
         for given number of shots per group and number of groups
-    * scaleGrpoup()
+    * scaleGroup()
       - new function to artificially scale a shot group in the
         horizontal or vertical direction to remove variance
         components that are considered extraneous
