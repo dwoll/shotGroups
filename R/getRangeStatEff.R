@@ -1,4 +1,4 @@
-## asume Rayleigh case
+## assume Rayleigh case
 ## calculate efficiency of range statistics
 ## independent of nGroups (because coefficient of variation is)
 ## but accept nGroups anyway to check
