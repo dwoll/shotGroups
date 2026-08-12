@@ -2,7 +2,7 @@
 ## c4(n) correction factor for taking the square root of the variance of a
 ## normally distributed random variable with n observations -> E(s) = c4*sigma
 ## https://en.wikipedia.org/wiki/Unbiased_estimation_of_standard_deviation
-## http://ballistipedia.com/index.php?title=Measuring_Precision#Estimating_.CF.83
+## https://ballistipedia.com/index.php?title=Measuring_Precision#Estimating_.CF.83
 ## always <= 1
 c4 <-
 function(n) {
@@ -42,13 +42,13 @@ function(xy, level=0.95, mu, doRob=FALSE) {
     N     <- nrow(xy)
     p     <- ncol(xy)
     alpha <- 1-level
-    
+
     ## check if we can do robust estimation if so required
     haveRob <- if(nrow(xy) < 4L) {
         if(doRob) {
             warning("We need >= 4 points for robust estimations")
         }
-        
+
         FALSE
     } else {
         rob <- robustbase::covMcd(xy, cor=FALSE)

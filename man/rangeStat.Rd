@@ -34,7 +34,7 @@ Based on the lookup table \code{\link[shotGroups]{DFdistr}} with results form a 
 \value{
 \code{pRangeStat} gives the cumulative distribution function, \code{qRangeStat} gives the quantile function, \code{rRangeStat} generates random deviates.}
 \references{
-\url{http://ballistipedia.com/index.php?title=Range_Statistics}
+\url{https://ballistipedia.com/index.php?title=Range_Statistics}
 }
 \seealso{
 \code{\link[shotGroups]{DFdistr}},

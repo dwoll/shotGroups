@@ -63,9 +63,9 @@ A list with the results from the numerical analyses and statistical tests.
 \item{CEP}{estimate(s) for the circular error probable (CEP, in original measurement units, MOA, SMOA, milliradian).}
 }
 \references{
-\url{http://ballistipedia.com/index.php?title=Describing_Precision}
+\url{https://ballistipedia.com/index.php?title=Describing_Precision}
 
-\url{http://ballistipedia.com/index.php?title=Measuring_Precision}
+\url{https://ballistipedia.com/index.php?title=Measuring_Precision}
 }
 \seealso{
 \code{\link[shotGroups]{getDistToCtr}},

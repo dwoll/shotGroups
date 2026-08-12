@@ -5,9 +5,9 @@ fluidPage(
             # height = "600px",
             title = "About",
             width = 6,
-            # status = NULL, 
+            # status = NULL,
             # closable = FALSE,
-            # maximizable = FALSE, 
+            # maximizable = FALSE,
             # collapsible = TRUE,
             p("The", a("shotGroups", href="https://CRAN.R-project.org/package=shotGroups"),
               "package for", a("R", href="https://www.r-project.org/"),
@@ -26,7 +26,7 @@ fluidPage(
               a("package vignette",
                 href="https://CRAN.rstudio.com/web/packages/shotGroups/vignettes/shotGroups.pdf"),
               ". Many statistical methods are described on",
-              a("Ballistipedia", href="http://ballistipedia.com/"), "."),
+              a("Ballistipedia", href="https://ballistipedia.com/"), "."),
             p("shotGroups and this web application are written by:", br(),
               "Daniel", HTML("Wollschl&auml;ger"),
               a("<dwoll@kuci.org>", href="mailto:dwoll@kuci.org"), br(),
@@ -34,19 +34,19 @@ fluidPage(
                 href="https://github.com/dwoll/shotGroups/"), br(),
               a("Source code shiny app",
                 href="https://github.com/dwoll/shotGroups/tree/master/inst/shotGroups_AnalyzeGroups")),
-            
+
             h6("More shotGroups web applications"),
             p("Absolute", icon("resize-horizontal", lib="glyphicon"),
               "angular size conversions:",
-              a("http://shiny.imbei.uni-mainz.de:3838/shotGroups_AngularSize/",
-                href="shiny.imbei.uni-mainz.de:3838/shotGroups_AngularSize/"), br(),
+              a("https://shiny.imbei.uni-mainz.de/shotGroups_AngularSize/",
+                href="https://shiny.imbei.uni-mainz.de/shotGroups_AngularSize/"), br(),
               "Region", icon("resize-horizontal", lib="glyphicon"),
               "hit probability calculations:",
-              a("http://shiny.imbei.uni-mainz.de:3838/shotGroups_HitProb/",
-                href="http://shiny.imbei.uni-mainz.de:3838/shotGroups_HitProb/"), br(),
+              a("https://shiny.imbei.uni-mainz.de/shotGroups_HitProb/",
+                href="https://shiny.imbei.uni-mainz.de/shotGroups_HitProb/"), br(),
               "Estimate Rayleigh sigma from range statistics:",
-              a("http://shiny.imbei.uni-mainz.de:3838/shotGroups_RangeStat/",
-                href="http://shiny.imbei.uni-mainz.de:3838/shotGroups_RangeStat/"))
+              a("https://shiny.imbei.uni-mainz.de/shotGroups_RangeStat/",
+                href="https://shiny.imbei.uni-mainz.de/shotGroups_RangeStat/"))
         ),
         bs4Box(
             title="References",
@@ -55,7 +55,7 @@ fluidPage(
               The shotGroups package
               uses functionality provided by the R packages boot, coin, CompQuadForm,
               energy, mvoutlier, and robustbase:"),
-            
+
             p("Canty, A., & Ripley, B. D. (2020). boot: Bootstrap R (S-Plus) Functions.", br(),
               a("https://CRAN.R-project.org/package=boot",
                 href="https://CRAN.R-project.org/package=boot")),

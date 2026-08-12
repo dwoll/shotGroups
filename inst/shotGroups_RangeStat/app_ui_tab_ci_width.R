@@ -34,7 +34,7 @@ fluidPage(
                2, ..., 100 shots per group in 1, ..., 10 groups.", br(),
               "For more information, see the",
               a("Ballistipedia entry on range statistics",
-                href="http://ballistipedia.com/index.php?title=Range_Statistics"),
+                href="https://ballistipedia.com/index.php?title=Range_Statistics"),
               ".")
         )
     )

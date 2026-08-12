@@ -36,14 +36,14 @@ fluidPage(
               "Distance to target, and information on the measurement
                       unit for distance and range statistic is only used for
                       the conversion to",
-              a("angular size", href="http://shiny.imbei.uni-mainz.de:3838/shotGroups_AngularSize/"),
+              a("angular size", href="https://shiny.imbei.uni-mainz.de/shotGroups_AngularSize/"),
               "."),
             verbatimTextOutput("range2sigma"),
             p("Based on a Monte Carlo simulation with 2 million repetions of
                       2, ..., 100 shots per group in 1, ..., 10 groups.", br(),
               "For more information, see the",
               a("Ballistipedia entry on range statistics",
-                href="http://ballistipedia.com/index.php?title=Range_Statistics"),
+                href="https://ballistipedia.com/index.php?title=Range_Statistics"),
               ".")
         )
     )

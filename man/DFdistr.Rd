@@ -90,13 +90,13 @@ Lookup table for the distribution of range statistics and Rayleigh sigma from a 
 \details{
 The Monte Carlo distribution used 10 million repetitions in each scenario. One scenario was a combination of the \code{n} shots in each group, and the \code{nGroups} groups over which individual range statistics were averaged. Values for \code{n} were 2, 3, ..., 49, 50, 45, ..., 95, 100. Values for \code{nGroups} were 1, 2, ... 9, 10.
 
-Skewness and kurtosis were smoothed using separate linear spline fits for each number of groups except for kurtosis of Rayleigh sigma which was fitted using the density of the gamma distribution. 
+Skewness and kurtosis were smoothed using separate linear spline fits for each number of groups except for kurtosis of Rayleigh sigma which was fitted using the density of the gamma distribution.
 
 Used in \code{\link[shotGroups]{range2sigma}} to estimate Rayleigh parameter sigma from range statistics, and in \code{\link[shotGroups]{efficiency}} to estimate the number of groups and total shots required to estimate the confidence interval (CI) for Rayleigh sigma with a given coverage probability (CI level) and width.
 
 See the following source for an independent simulation, and for the rationale behind using it to estimate Rayleigh sigma:
 
-\url{http://ballistipedia.com/index.php?title=Range_Statistics}
+\url{https://ballistipedia.com/index.php?title=Range_Statistics}
 
 An older eqivalent simulation with less repetitions was done by Taylor and Grubbs (1975).
 }

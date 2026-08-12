@@ -2,7 +2,7 @@
 ## convert extreme spread / figure of merit / bounding box diagonal
 ## to Rayleigh sigma using lookup table from 1000000 runs for each
 ## combination of n*nGroups
-## http://ballistipedia.com/index.php?title=Range_Statistics
+## https://ballistipedia.com/index.php?title=Range_Statistics
 
 range2sigma <-
 function(x, stat="ES", n, nGroups, CIlevel=0.95, collapse=TRUE,
@@ -13,11 +13,11 @@ function(x, stat="ES", n, nGroups, CIlevel=0.95, collapse=TRUE,
               n       > 1L, n       <= max(shotGroups::DFdistr[["n"]]),
               nGroups > 0L, nGroups <= max(shotGroups::DFdistr[["nGroups"]]),
               CIlevel > 0)
-    
+
     stat <- match.arg(toupper(stat),
                       choices=c("ES", "FOM", "D"),
                       several.ok=TRUE)
-    
+
     argL <- recycle(x, stat)
     x    <- argL[[1]]
     stat <- c(ES="ES", FOM="FoM", D="D")[argL[[2]]]
@@ -36,7 +36,7 @@ function(x, stat="ES", n, nGroups, CIlevel=0.95, collapse=TRUE,
     } else {
         unique(dstTarget)
     }
-    
+
     conversion <- if(missing(conversion)    ||
                      all(is.na(conversion)) ||
                      (length(unique(conversion)) > 1L)) {
@@ -44,7 +44,7 @@ function(x, stat="ES", n, nGroups, CIlevel=0.95, collapse=TRUE,
     } else {
         unique(conversion)
     }
-    
+
     alpha    <- 1 - CIlevel
     idxGroup <- which(shotGroups::DFdistr[["nGroups"]] == nGroups)
     haveN    <- unique(shotGroups::DFdistr[["n"]][idxGroup])
@@ -56,7 +56,7 @@ function(x, stat="ES", n, nGroups, CIlevel=0.95, collapse=TRUE,
         ## can use lookup table for sigma estimate
         idx <- which((shotGroups::DFdistr[["n"]]       == n) &
                      (shotGroups::DFdistr[["nGroups"]] == nGroups))
-        
+
         M <- data.matrix(shotGroups::DFdistr[idx, paste0(stat, "_M"), drop=FALSE])
         M <- setNames(c(M), stat)
 
@@ -152,7 +152,7 @@ function(x, stat="ES", n, nGroups, CIlevel=0.95, collapse=TRUE,
     if(is.matrix(sigma)) {
         colnames(sigma) <- paste0(names(x), "_", round(x, digits=3))
     }
-    
+
     sigmaESCI  <- lapply(seq_along(ES_CIlo),  function(i) {
         makeMOA(c("sigma ("=ES_CIlo[i], "sigma )" =ES_CIup[i]),
                 dst=dstTarget, conversion=conversion) })

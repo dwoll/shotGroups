@@ -21,7 +21,7 @@ For conversion to the circular error probable, see \code{\link[shotGroups]{range
 
 Details for the calculation can be found under
 
-\url{http://ballistipedia.com/index.php?title=Range_Statistics}
+\url{https://ballistipedia.com/index.php?title=Range_Statistics}
 
 If package \code{shiny} is installed, an interactive web app for this functionality can be run with \code{runGUI("range")}.
 }
@@ -52,4 +52,3 @@ range2sigma(c(es, fom, d), stat=c("ES", "FoM", "D"),
 # (x,y)-coordinates of all shots
 getRayParam(DFscar17, level=0.9)
 }
-

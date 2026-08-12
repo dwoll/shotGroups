@@ -92,10 +92,10 @@ Use \verb+help(package="shotGroups")+ for a list of all functions and links to t
 For users who are unfamiliar with \textsf{R}, \texttt{shotGroups} includes a set of \texttt{shiny}-based web applications \cite{RStudioShiny2014} running locally that eliminate the need to use \textsf{R} syntax. The applications implement different aspects of the functionality of \texttt{shotGroups}:
 
 \begin{itemize}
-\item \texttt{runGUI("analyze")} -- Comprehensive shot group analysis and visualization (sections \ref{sec:groupShape}, \ref{sec:groupSpread}, \ref{sec:groupLocation}, \ref{sec:drawGroup})\footnote{\url{http://shiny.imbei.uni-mainz.de:3838/shotGroups_AnalyzeGroups/}}
-\item \texttt{runGUI("hitprob")} -- Region $\leftrightarrow$ hit probability calculations (sections \ref{sec:CEPinv}, \ref{sec:CEPinv})\footnote{\url{http://shiny.imbei.uni-mainz.de:3838/shotGroups_HitProb/}}
-\item \texttt{runGUI("range")} -- Estimate Rayleigh $\sigma$ from range statistics and do efficiency calculations for group statistics (section \ref{sec:rangeStat})\footnote{\url{http://shiny.imbei.uni-mainz.de:3838/shotGroups_RangeStat/}}
-\item \texttt{runGUI("angular")} -- Absolute $\leftrightarrow$ angular size conversions (section \ref{sec:unitConversion})\footnote{\url{http://shiny.imbei.uni-mainz.de:3838/shotGroups_AngularSize/}}
+\item \texttt{runGUI("analyze")} -- Comprehensive shot group analysis and visualization (sections \ref{sec:groupShape}, \ref{sec:groupSpread}, \ref{sec:groupLocation}, \ref{sec:drawGroup})\footnote{\url{https://shiny.imbei.uni-mainz.de/shotGroups_AnalyzeGroups/}}
+\item \texttt{runGUI("hitprob")} -- Region $\leftrightarrow$ hit probability calculations (sections \ref{sec:CEPinv}, \ref{sec:CEPinv})\footnote{\url{https://shiny.imbei.uni-mainz.de/shotGroups_HitProb/}}
+\item \texttt{runGUI("range")} -- Estimate Rayleigh $\sigma$ from range statistics and do efficiency calculations for group statistics (section \ref{sec:rangeStat})\footnote{\url{https://shiny.imbei.uni-mainz.de/shotGroups_RangeStat/}}
+\item \texttt{runGUI("angular")} -- Absolute $\leftrightarrow$ angular size conversions (section \ref{sec:unitConversion})\footnote{\url{https://shiny.imbei.uni-mainz.de/shotGroups_AngularSize/}}
 \end{itemize}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -113,7 +113,7 @@ Analyzing shot groups usually takes the following steps:
 \item Use additional utility functions to individually explore different aspects of a given group (section \ref{sec:addFunc})
 \end{itemize}
 
-\citeA{Grubbs1964b} and \url{http://ballistipedia.com/} are good sources for statistical methods for analyzing shot groups.
+\citeA{Grubbs1964b} and \url{https://ballistipedia.com/} are good sources for statistical methods for analyzing shot groups.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Reading in data}
@@ -645,7 +645,7 @@ rRangeStat(5, sigma=2, nPerGroup=5, nGroups=3, stat="D")
 
 Based on the lookup table from the Monte Carlo simulation, function \texttt{range2sigma()} estimates the Rayleigh $\sigma$ parameter from measured range statistics -- extreme spread, figure of merit, and the bounding box diagonal, assuming a circular bivariate normal shot distribution with 0 mean. This is possible because, conditional on $n$ and $n_{g}$, range statistics directly scale with $\sigma$. Dividing the simulated mean range statistic for $\sigma = 1$ and the given $n$ as well as $n_{g}$ by the empirically measured range statistic therefore estimates $\sigma$. Confidence intervals can be inferred from the corresponding quantiles of the Monte Carlo distribution.
 
-If $\sigma$ should be estimated for a value of $n$ that was not simulated (but is less than 100), a monotonic spline interpolation between the neighboring supporting points is used. If the desired coverage probability for the confidence interval corresponds to quantiles that were not calculated, the Monte Carlo distribution of squared extreme spread is approximated by a Patnaik $\chi^{2}$ distribution as suggested by \citeA{Taylor1975b}.\footnote{Fort details, see \url{http://ballistipedia.com/index.php?title=Range_Statistics}}
+If $\sigma$ should be estimated for a value of $n$ that was not simulated (but is less than 100), a monotonic spline interpolation between the neighboring supporting points is used. If the desired coverage probability for the confidence interval corresponds to quantiles that were not calculated, the Monte Carlo distribution of squared extreme spread is approximated by a Patnaik $\chi^{2}$ distribution as suggested by \citeA{Taylor1975b}.\footnote{Fort details, see \url{https://ballistipedia.com/index.php?title=Range_Statistics}}
 
 <<cRange1>>=
 # get range statistics from DFscar17 data
@@ -674,8 +674,8 @@ Function \texttt{range2CEP()} directly estimates Rayleigh CEP from range statist
 Assuming a circular bivariate normal shot distribution with 0 mean, the efficiency of using range statistics for inference on the Rayleigh $\sigma$ parameter can be estimated when the distribution of the mean range statistic is assumed to be approximately normal -- by appeal to the central limit theorem.
 
 Given the number of shots per group $n$, it is then possible to determine the number of groups $n_{g}$ that is required to achieve a desired coverage probability (level) for the confidence interval (CI) for $\sigma$ with a desired CI width expressed as a fraction of the mean. Conversely, given $n$ and the number of groups $n_{g}$ over which the range statistic was averaged, we can estimate the CI width as a fraction of the mean for the given coverage probability. The CI width is a measure for the \emph{statistical} precision of the estimator with more narrow CIs for the same level indicating better precision.\footnote{For details, noting that $E$ in the references is half the CI width, see\\
-\url{http://ballistipedia.com/index.php?title=Range_Statistics}\\
-\url{http://ballistipedia.com/images/3/32/Sitton_1990.pdf}}
+\url{https://ballistipedia.com/index.php?title=Range_Statistics}\\
+\url{https://ballistipedia.com/images/3/32/Sitton_1990.pdf}}
 
 Get the number of groups and total number of shots required to achieve a 90\% CI with a CI width of 20\% of the mean ($E=10$\% on either side), using 3, 5, or 10 shots per group and measuring extreme spread.
 <<cEfficiency1>>=
@@ -938,7 +938,7 @@ The \texttt{shotGroups} package includes a number of empirical data sets with sh
 
 \begin{itemize}
 \item \texttt{DFlandy01}, \texttt{DFlandy02}, \texttt{DFlandy03}, \texttt{DFlandy04}: Groups and chronograph readings from shooting a .22LR rifle at 50\,m or 50\,yd (905 observations)\footnote{Thanks: Larry Landercasper \& Albert Highe.}
-\item \texttt{DF300BLK}: One group of shooting a Noveske AR-15 rifle in 300BLK at 100\,yd with factory ammunition (20 observations)\footnote{\label{ftn:DF300BLK}Thanks: David Bookstaber \url{http://ballistipedia.com/}}
+\item \texttt{DF300BLK}: One group of shooting a Noveske AR-15 rifle in 300BLK at 100\,yd with factory ammunition (20 observations)\footnote{\label{ftn:DF300BLK}Thanks: David Bookstaber \url{https://ballistipedia.com/}}
 \item \texttt{DF300BLKhl}: Three groups of shooting a Noveske AR-15 rifle in 300BLK at 100\,yd with handloaded ammunition (60 observations, see footnote \ref{ftn:DF300BLK})
 \item \texttt{DFcciHV}: Two groups of shooting a PWS T3 rifle in .22LR at 100\,yd (40 observations, see footnote \ref{ftn:DF300BLK})
 \item \texttt{DFcm}: Several groups of shooting a 9x19mm pistol at 25\,m (487 observations)

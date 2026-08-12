@@ -16,11 +16,11 @@ Based on the lookup table \code{\link[shotGroups]{DFdistr}} with results form a 
 
 The number of required groups is approximate as the calculation assumes a normal distribution for the mean statistic. Details for the calculation can be found under
 
-\url{http://ballistipedia.com/index.php?title=Range_Statistics}
+\url{https://ballistipedia.com/index.php?title=Range_Statistics}
 
 \url{http://www.geoffrey-kolbe.com/articles/rimfire_accuracy/group_statistics.htm}
 
-\url{http://ballistipedia.com/images/3/32/Sitton_1990.pdf}
+\url{https://ballistipedia.com/images/3/32/Sitton_1990.pdf}
 
 If package \code{shiny} is installed, an interactive web app for this functionality can be run with \code{runGUI("range")}.
 }
@@ -67,4 +67,3 @@ with(subset(DFdistr, (n == 10L) & (nGroups == 10L)),
 # using extreme spread
 efficiency(n=5, nGroups=10, CIlevel=0.9, stat="ES")
 }
-

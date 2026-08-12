@@ -2,7 +2,7 @@
 ## get range statistic CIs
 ## using lookup table from 1000000 runs for each
 ## combination of n*nGroups
-## http://ballistipedia.com/index.php?title=Range_Statistics
+## https://ballistipedia.com/index.php?title=Range_Statistics
 
 getRangeStatCI <-
 function(x, stat="ES", n, nGroups, CIlevel=0.95, collapse=TRUE,
@@ -13,17 +13,17 @@ function(x, stat="ES", n, nGroups, CIlevel=0.95, collapse=TRUE,
               n       > 1L,
               nGroups > 0L,
               CIlevel > 0)
-    
+
     stat <- match.arg(toupper(stat),
                       choices=c("ES", "FOM", "D"),
                       several.ok=TRUE)
-    
+
     argL  <- recycle(x, stat)
     x     <- argL[[1]]
     stat  <- c(ES="ES", FOM="FoM", D="D")[argL[[2]]]
     x     <- setNames(x, stat)
     x_out <- makeMOA(x, dst=dstTarget, conversion=conversion)
-    
+
     if((n       > max(shotGroups::DFdistr[["n"]])) ||
        (nGroups > max(shotGroups::DFdistr[["nGroups"]]))) {
         warning("n or nGroups are beyond tabulated data")
@@ -31,11 +31,11 @@ function(x, stat="ES", n, nGroups, CIlevel=0.95, collapse=TRUE,
             rbind(unit=setNames(c(NA_real_, NA_real_),
                                 paste0(s, c(" (", " )"))))
         })
-        
+
         return(list(range_stat=x_out,
                     CI=CIL))
     }
-    
+
     ## check if CIlevel is given in percent
     if(CIlevel >= 1) {
         while(CIlevel >= 1) { CIlevel <- CIlevel / 100 }
@@ -49,7 +49,7 @@ function(x, stat="ES", n, nGroups, CIlevel=0.95, collapse=TRUE,
     } else {
         unique(dstTarget)
     }
-    
+
     conversion <- if(missing(conversion)    ||
                      all(is.na(conversion)) ||
                      (length(unique(conversion)) > 1L)) {
@@ -57,7 +57,7 @@ function(x, stat="ES", n, nGroups, CIlevel=0.95, collapse=TRUE,
     } else {
         unique(conversion)
     }
-    
+
     alpha    <- 1 - CIlevel
     idxGroup <- which(shotGroups::DFdistr[["nGroups"]] == nGroups)
     haveN    <- unique(shotGroups::DFdistr[["n"]])
@@ -69,7 +69,7 @@ function(x, stat="ES", n, nGroups, CIlevel=0.95, collapse=TRUE,
         ## can use lookup table for sigma estimate
         idx <- which((shotGroups::DFdistr[["n"]]       == n) &
                      (shotGroups::DFdistr[["nGroups"]] == nGroups))
-        
+
         M <- data.matrix(shotGroups::DFdistr[idx, paste0(stat, "_M"), drop=FALSE])
         M <- setNames(c(M), stat)
 
@@ -110,7 +110,7 @@ function(x, stat="ES", n, nGroups, CIlevel=0.95, collapse=TRUE,
     mES  <- setNames(M[names(x) == "ES"],  NULL)
     mFoM <- setNames(M[names(x) == "FoM"], NULL)
     mD   <- setNames(M[names(x) == "D"],   NULL)
-    
+
     ## 2nd: provided point estimates
     xES  <- setNames(x[names(x) == "ES"],  NULL)
     xFoM <- setNames(x[names(x) == "FoM"], NULL)

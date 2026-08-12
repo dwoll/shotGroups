@@ -2,14 +2,14 @@
 ## calculate efficiency of range statistics
 ## independent of nGroups (because coefficient of variation is)
 ## but accept nGroups anyway to check
-## http://ballistipedia.com/index.php?title=Range_Statistics
+## https://ballistipedia.com/index.php?title=Range_Statistics
 getRangeStatEff <-
 function(n, nGroups=1) {
     stopifnot(is.numeric(n),
               all(n > 1L),
               all(n     <= max(shotGroups::DFdistr[["n"]])),
               all(nGroups %in% shotGroups::DFdistr[["nGroups"]]))
-    
+
     ## recycle arguments
     n        <- as.integer(n)
     nGroups  <- as.integer(nGroups)

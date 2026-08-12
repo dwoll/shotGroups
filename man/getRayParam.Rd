@@ -27,7 +27,7 @@ A list with the estimates for sigma, RSD, MR, and MEDR including the confidence 
 \item{MEDR}{A vector with the MEDR estimate and confidence interval bounds as named elements \code{MEDR}, \code{MEDRciLo}, \code{MEDRciUp}.}
 }
 \references{
-\url{http://ballistipedia.com/index.php?title=Closed_Form_Precision}
+\url{https://ballistipedia.com/index.php?title=Closed_Form_Precision}
 
 Singh, H. P. 1992. Estimation of Circular Probable Error. The Indian Journal of Statistics, Series B 5(3), 289-305.
 }

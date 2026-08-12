@@ -32,12 +32,12 @@ fluidPage(
                   <li>CIlevel - desired CI level (coverage probability)</li>
                   <li>CIwidth - desired CI width (as a fraction of the mean)</li>
                   </ul>"),
-            
+
             p("Based on a Monte Carlo simulation with 2 million repetions of
                2, ..., 100 shots per group in 1, ..., 10 groups.", br(),
               "For more information, see the",
               a("Ballistipedia entry on range statistics",
-                href="http://ballistipedia.com/index.php?title=Range_Statistics"),
+                href="https://ballistipedia.com/index.php?title=Range_Statistics"),
               ".")
         )
     )

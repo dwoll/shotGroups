@@ -197,15 +197,15 @@ shinyUI(fluidPage(
 
                     h6("More shotGroups web applications"),
                     p("Comprehensive shot group analysis:",
-                      a("http://shiny.imbei.uni-mainz.de:3838/shotGroups_AnalyzeGroups",
-                        href="http://shiny.imbei.uni-mainz.de:3838/shotGroups_AnalyzeGroups/"), br(),
+                      a("https://shiny.imbei.uni-mainz.de/shotGroups_AnalyzeGroups",
+                        href="https://shiny.imbei.uni-mainz.de/shotGroups_AnalyzeGroups/"), br(),
                       "Absolute", icon("resize-horizontal", lib="glyphicon"),
                       "angular size conversion:",
-                      a("http://shiny.imbei.uni-mainz.de:3838/shotGroups_AngularSize/",
-                        href="http://shiny.imbei.uni-mainz.de:3838/shotGroups_AngularSize/"), br(),
+                      a("https://shiny.imbei.uni-mainz.de/shotGroups_AngularSize/",
+                        href="https://shiny.imbei.uni-mainz.de/shotGroups_AngularSize/"), br(),
                       "Estimate Rayleigh sigma from range statistics:",
-                      a("http://shiny.imbei.uni-mainz.de:3838/shotGroups_RangeStat/",
-                        href="http://shiny.imbei.uni-mainz.de:3838/shotGroups_RangeStat/")),
+                      a("https://shiny.imbei.uni-mainz.de/shotGroups_RangeStat/",
+                        href="https://shiny.imbei.uni-mainz.de/shotGroups_RangeStat/")),
 
                     h6("Acknowledgements"),
                     p("Thanks to David Bookstaber for testing, feedback and data.")

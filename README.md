@@ -7,12 +7,12 @@ The `shotGroups` package adds functionality to the open source [R environment fo
 
  * The package includes limited support for the analysis of three-dimensional data.
  * Inference from range statistics like extreme spread is also supported.
- * For a set of interactive, [`shiny`](https://shiny.rstudio.com/)-based web applications that implement different aspects of the functionality of `shotGroups`, see
-    * [shiny.imbei.uni-mainz.de:3838/shotGroups_AnalyzeGroups/](http://shiny.imbei.uni-mainz.de:3838/shotGroups_AnalyzeGroups/)
-    * [shiny.imbei.uni-mainz.de:3838/shotGroups_AngularSize/](http://shiny.imbei.uni-mainz.de:3838/shotGroups_AngularSize/)
-    * [shiny.imbei.uni-mainz.de:3838/shotGroups_HitProb/](http://shiny.imbei.uni-mainz.de:3838/shotGroups_HitProb/)
-    * [shiny.imbei.uni-mainz.de:3838/shotGroups_RangeStat/](http://shiny.imbei.uni-mainz.de:3838/shotGroups_RangeStat/)
- * For further explanations and an example walkthrough, see the [package vignette](https://cran.rstudio.com/web/packages/shotGroups/vignettes/shotGroups.pdf).
- * A good source for statistical methods for analyzing shot groups is [Ballistipedia](http://ballistipedia.com/).
+ * For a set of interactive, [`shiny`](https://shiny.posit.co/)-based web applications that implement different aspects of the functionality of `shotGroups`, see
+    * [shiny.imbei.uni-mainz.de/shotGroups_AnalyzeGroups/](https://shiny.imbei.uni-mainz.de/shotGroups_AnalyzeGroups/)
+    * [shiny.imbei.uni-mainz.de/shotGroups_AngularSize/](https://shiny.imbei.uni-mainz.de/shotGroups_AngularSize/)
+    * [shiny.imbei.uni-mainz.de/shotGroups_HitProb/](https://shiny.imbei.uni-mainz.de/shotGroups_HitProb/)
+    * [shiny.imbei.uni-mainz.de/shotGroups_RangeStat/](https://shiny.imbei.uni-mainz.de/shotGroups_RangeStat/)
+ * For further explanations and an example walkthrough, see the [package vignette](https://cloud.r-project.org/web/packages/shotGroups/vignettes/shotGroups.pdf).
+ * A good source for statistical methods for analyzing shot groups is [Ballistipedia](https://ballistipedia.com/).
 
 Daniel Wollschlaeger

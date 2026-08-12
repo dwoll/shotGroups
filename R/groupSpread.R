@@ -15,12 +15,12 @@ function(xy, center=FALSE, plots=TRUE, CEPlevel=0.5, CIlevel=0.95,
             NA_real_
         }
     }
-    
+
     ## determine conversion factor from data if override is not given
     if(missing(conversion)) {
         conversion <- determineConversion(xy)
     }
-    
+
     xy     <- getXYmat(xy, center=center)
     center <- FALSE                   # centering was done in getXYmat()
 
@@ -66,7 +66,7 @@ function(xy, center=FALSE, plots=TRUE, CEPlevel=0.5, CIlevel=0.95,
     } else {
         mean(dstTarget)
     }
-    
+
     conversion <- if(missing(conversion)    ||
                      all(is.na(conversion)) ||
                      (length(unique(conversion)) > 1L)) {
@@ -74,7 +74,7 @@ function(xy, center=FALSE, plots=TRUE, CEPlevel=0.5, CIlevel=0.95,
     } else {
         unique(conversion)
     }
-    
+
     #####-----------------------------------------------------------------------
     ## prepare data
     X    <- xy[ , 1]                     # x-coords
@@ -90,11 +90,11 @@ function(xy, center=FALSE, plots=TRUE, CEPlevel=0.5, CIlevel=0.95,
         if(Npts < 4L) {
             warning("We need >= 4 points for robust estimations")
         }
-        
+
         if(!haveRobustbase) {
             warning("Please install package 'robustbase' for robust estimations")
         }
-        
+
         FALSE
     }
 
@@ -213,7 +213,7 @@ function(xy, center=FALSE, plots=TRUE, CEPlevel=0.5, CIlevel=0.95,
     dstCtrMax  <- max(dstCtr)
 
     ## radial standard deviation
-    ## http://ballistipedia.com/index.php?title=Describing_Precision
+    ## https://ballistipedia.com/index.php?title=Describing_Precision
     rayParam <- getRayParam(xy, level=CIlevel, doRob=FALSE)
 
     ## sigma, RSD, MR estimates with parametric confidence intervals
@@ -274,7 +274,7 @@ function(xy, center=FALSE, plots=TRUE, CEPlevel=0.5, CIlevel=0.95,
     minEll <- getMinEllipse(xy)          # minimum enclosing circle
     res$minEll <- t(rbind(semi_major=makeMOA(minEll$size[1], dst=dstTarget, conversion=conversion),
                           semi_minor=makeMOA(minEll$size[2], dst=dstTarget, conversion=conversion)))
-    
+
     #####-----------------------------------------------------------------------
     ## confidence ellipse measures
     confEll     <- getConfEll(xy, CEPlevel, dstTarget=dstTarget,
@@ -448,7 +448,7 @@ function(xy, which=1L, center=FALSE, CEPlevel=0.5, CIlevel=0.95,
     } else {
         mean(dstTarget)
     }
-    
+
     conversion <- if(missing(conversion)    ||
                      all(is.na(conversion)) ||
                      (length(unique(conversion)) > 1L)) {
@@ -456,7 +456,7 @@ function(xy, which=1L, center=FALSE, CEPlevel=0.5, CIlevel=0.95,
     } else {
         unique(conversion)
     }
-    
+
     #####-----------------------------------------------------------------------
     ## prepare data
     X    <- xy[ , 1]                     # x-coords
@@ -472,14 +472,14 @@ function(xy, which=1L, center=FALSE, CEPlevel=0.5, CIlevel=0.95,
         if(Npts < 4L) {
             warning("We need >= 4 points for robust estimations")
         }
-        
+
         if(!haveRobustbase) {
             warning("Please install package 'robustbase' for robust estimations")
         }
-        
+
         FALSE
     }
-    
+
     ## to determine axis limits later, collect all results in a vector
     axesCollX <- numeric(0)
     axesCollY <- numeric(0)
@@ -512,7 +512,7 @@ function(xy, which=1L, center=FALSE, CEPlevel=0.5, CIlevel=0.95,
     dstCtr <- getDistToCtr(xy)
 
     ## radial standard deviation
-    ## http://ballistipedia.com/index.php?title=Describing_Precision
+    ## https://ballistipedia.com/index.php?title=Describing_Precision
     rayParam <- getRayParam(xy, level=CIlevel, doRob=FALSE)
 
     ## sigma, RSD, MR estimates with parametric confidence intervals
@@ -565,7 +565,7 @@ function(xy, which=1L, center=FALSE, CEPlevel=0.5, CIlevel=0.95,
     axesCollY <- c(axesCollY,
                    minEll$ctr[2] + minEll$size[1],
                    minEll$ctr[2] - minEll$size[1])
-    
+
     if(haveRob) {
         res$confEllRob <- confEll$sizeRob
 
@@ -588,7 +588,7 @@ function(xy, which=1L, center=FALSE, CEPlevel=0.5, CIlevel=0.95,
 
     ## distance to target may be heterogeneous
     dstTargetPlot <- paste(unique(round(na.omit(dstTarget))), collapse=", ")
-    
+
     if(which == 1L) {
         #####-------------------------------------------------------------------
         ## diagram: histogram for distances to group center
@@ -687,7 +687,7 @@ function(xy, which=1L, center=FALSE, CEPlevel=0.5, CIlevel=0.95,
              xlab=paste0("X [", unitXY, "]"), ylab=paste0("Y [", unitXY, "]"))
         abline(v=0, h=0, col="lightgray")                            # add point of aim
         points(ctr[1], ctr[2], col="gray40", pch=4, lwd=4, cex=2.5)  # add group center
-        
+
         ## add minimum enclosing circle, minimum enclosing ellipse,
         ## and maximum group spread
         drawCircle(minCirc, fg="magenta", lwd=2)
@@ -695,7 +695,7 @@ function(xy, which=1L, center=FALSE, CEPlevel=0.5, CIlevel=0.95,
         segments(x0=xy[maxPD$idx[1], 1], y0=xy[maxPD$idx[1], 2],
                  x1=xy[maxPD$idx[2], 1], y1=xy[maxPD$idx[2], 2],
                  col="blue", lwd=2)
-        
+
         ## add legend
         legend(x="bottomleft",
                legend=c("group center",
@@ -708,7 +708,7 @@ function(xy, which=1L, center=FALSE, CEPlevel=0.5, CIlevel=0.95,
                lwd=2,
                bg=rgb(1, 1, 1, 0.7))
     }                                    # if(plots)
-    
+
     #####-----------------------------------------------------------------------
     ## return all the collected numerical results and tests
     return(invisible(NULL))

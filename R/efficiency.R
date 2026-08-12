@@ -1,5 +1,5 @@
 ## asumme Rayleigh case
-## http://ballistipedia.com/index.php?title=Range_Statistics
+## https://ballistipedia.com/wiki/Range_Statistics/
 
 efficiency <-
 function(n, nGroups, CIlevel=0.95, CIwidth,
@@ -13,7 +13,7 @@ function(n, nGroups, CIlevel=0.95, CIwidth,
     if(!missing(nGroups)) {
         stopifnot(is.numeric(nGroups),
                   nGroups > 0)
-        
+
         nGroups <- as.integer(nGroups)
         argsL   <- recycle(n, nGroups)
         n       <- argsL[[1]]
@@ -26,15 +26,15 @@ function(n, nGroups, CIlevel=0.95, CIwidth,
     stat  <- match.arg(toupper(stat),
                        choices=c("RAYLEIGH", "ES", "FOM", "D"),
                        several.ok=FALSE)
-    
+
     ## number of shots per group and number of groups
     ## that is tabulated in DFdistr
     have_n       <- sort(unique(shotGroups::DFdistr[["n"]]))
     have_nGroups <- sort(unique(shotGroups::DFdistr[["nGroups"]]))
-    
+
     CV_map  <- c("RAYLEIGH"="RS", "ES"="ES", "FOM"="FoM", "D"="D")
     CV_name <- unname(CV_map[stat])
-    
+
     ## check if CIlevel is given in percent
     if(CIlevel >= 1) {
         while(CIlevel >= 1) { CIlevel <- CIlevel / 100 }
@@ -56,7 +56,7 @@ function(n, nGroups, CIlevel=0.95, CIwidth,
             ## get index for n/nGroups combination
             idx <- which((shotGroups::DFdistr[["n"]]       == n_here) &
                          (shotGroups::DFdistr[["nGroups"]] == nG_here))
-            
+
             CV_names <- c("ES", "FoM", "D", "RS")
             data.matrix(setNames(DFdistr[idx, paste0(CV_names, "_CV")], CV_names))[1, , drop=TRUE]
         } else {
@@ -70,10 +70,10 @@ function(n, nGroups, CIlevel=0.95, CIwidth,
                RS =splinefun(n_all, DF_here[["RS_CV"]],  method="monoH.FC")(n_here))
         }
     }
-    
+
     ## coefficient of variation
     CV_m <- vapply(seq_along(n), get_CV, numeric(4))
-    
+
     if(missing(nGroups) && !missing(CIwidth)) {
         ## nGroups is requested, CI width is given
         CIwidth <- CIwidth[1]
