@@ -16,7 +16,7 @@ fluidPage(
                       non-parametric and robust statistical methods. The data can be imported
                       from files produced by",
               a("OnTarget PC and OnTarget TDS", href="https://ontargetshooting.com/"), ", ",
-              a("TARAN", href="http://taran.ptosis.ch/"), ", ",
+              a("TARAN", href="https://taran.ptosis.ch/"), ", ",
               a("ShotMarker e-target", href="https://autotrickler.com/pages/shotmarker"), ", ",
               a("Silver Mountain e-target", href="https://www.silvermountaintargets.com/"), ", ",
               a("SIUS e-target", href="https://www.sius.com/"), ", ",

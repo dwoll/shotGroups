@@ -221,7 +221,7 @@ Version 0.6.1 (September 07, 2015)
       - also use the Marcum Q-function - like pRice() already did. Remove loUp
         argument in qRice() and rRice() for numerical root finding of cdf
     * readDataMisc()
-      - read data exported from Taran 1.0 (http://taran.ptosis.ch/taran.html)
+      - read data exported from Taran 1.0 (https://taran.ptosis.ch/taran.html)
 
 Version 0.6 (August 25, 2014)
     * Note that this release breaks backwards compatibility in getCEP(),
